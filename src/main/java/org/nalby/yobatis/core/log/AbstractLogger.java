@@ -46,7 +46,7 @@ public abstract class AbstractLogger implements Logger {
 		if (args == null || args.length == 0) {
 			return format;
 		}
-		Object[] strings = new String[args.length];
+		String[] strings = new String[args.length];
 		for (int i = 0; i < args.length; i++) {
 			Object arg = args[i];
 			if (arg instanceof String) {
@@ -85,7 +85,6 @@ public abstract class AbstractLogger implements Logger {
 		String msg =  timestamp + " " + level + " " + className + " - " + tmp + "\n";
 		wirteToConsole(msg);
 	}
-
 
 	@Override
 	public void info(String format, Object... args) {

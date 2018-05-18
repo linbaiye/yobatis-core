@@ -20,17 +20,12 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.mybatis.generator.api.LibraryRunner;
-import org.nalby.yobatis.core.mybatis.MybatisGeneratorXmlReader;
+import org.nalby.yobatis.core.mybatis.*;
 import org.nalby.yobatis.core.structure.PomTree;
 import org.nalby.yobatis.core.structure.SpringAntPathFileManager;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.log.LogFactory;
 import org.nalby.yobatis.core.log.Logger;
-import org.nalby.yobatis.core.mybatis.MybatisFilesWriter;
-import org.nalby.yobatis.core.mybatis.MybatisGenerator;
-import org.nalby.yobatis.core.mybatis.MybatisGeneratorXmlCreator;
-import org.nalby.yobatis.core.mybatis.TableGroup;
-import org.nalby.yobatis.core.mybatis.TokenSimilarityTableGrouper;
 import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.mysql.MysqlDatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.mysql.MysqlDatabaseMetadataProvider.Builder;
@@ -61,10 +56,10 @@ public class Yobatis {
 		String driverClassName = springParser.getDatabaseDriverClassName();
 
 		Builder builder = MysqlDatabaseMetadataProvider.builder();
-		builder.setConnectorJarPath(pomTree.getDatabaseJarPath(driverClassName))
+		builder.setConnectorJarPath(project.getAbsPathOfSqlConnector())
 		.setDriverClassName(springParser.getDatabaseDriverClassName())
 		.setUsername(springParser.getDatabaseUsername())
-		.setPassword(springParser.getDatabaseUsername())
+		.setPassword(springParser.getDatabasePassword())
 		.setUrl(springParser.getDatabaseUrl());
 
 		DatabaseMetadataProvider provider = builder.build();
@@ -77,13 +72,13 @@ public class Yobatis {
 	}
 	
 
-	private static LibraryRunner buildMyBatisRunner(Project project) {
+	private static MybatisGeneratorRunner buildMyBatisRunner(Project project) {
 		try {
 			File file = project.findFile(MybatisGenerator.CONFIG_FILENAME);
 			try (InputStream inputStream = file.open()) {
-				LibraryRunner libraryRunner = new LibraryRunner();
-				libraryRunner.parse(inputStream);
-				return libraryRunner;
+			    MybatisGeneratorRunner runner = new MybatisGeneratorRunner();
+				runner.parse(inputStream);
+				return runner;
 			}
 		} catch (Exception e) {
 			throw new InvalidMybatisGeneratorConfigException(e);
@@ -119,7 +114,7 @@ public class Yobatis {
 	
 	public static void onClickFile(Project project) {
 		logger.info("Using existent config file.");
-		LibraryRunner runner = buildMyBatisRunner(project);
+		MybatisGeneratorRunner runner = buildMyBatisRunner(project);
 		new MybatisFilesWriter(project, runner).writeAll();;
 	}
 

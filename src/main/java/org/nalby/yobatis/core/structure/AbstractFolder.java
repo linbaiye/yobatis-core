@@ -45,6 +45,10 @@ public abstract class AbstractFolder implements Folder {
 	 */
 	protected List<File> files;
 
+	public AbstractFolder(String path, String name) {
+	    this.path = path;
+		this.name = name;
+	}
 
 	protected abstract List<Folder> doListFolders();
 

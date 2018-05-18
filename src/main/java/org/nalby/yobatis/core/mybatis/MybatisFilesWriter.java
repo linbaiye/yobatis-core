@@ -20,8 +20,6 @@ import java.util.List;
 import org.mybatis.generator.api.GeneratedFile;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.GeneratedXmlFile;
-import org.mybatis.generator.api.LibraryRunner;
-import org.mybatis.generator.api.YobatisJavaFile;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.log.LogFactory;
 import org.nalby.yobatis.core.log.Logger;
@@ -37,7 +35,7 @@ import org.nalby.yobatis.core.xml.SqlMapperParser;
  */
 public class MybatisFilesWriter {
 
-	private LibraryRunner runner;
+	private MybatisGeneratorRunner runner;
 
 	private Project project;
 	
@@ -48,7 +46,7 @@ public class MybatisFilesWriter {
 		boolean select(GeneratedFile file);
 	}
 
-	public MybatisFilesWriter(Project project, LibraryRunner mybatisRunner) {
+	public MybatisFilesWriter(Project project, MybatisGeneratorRunner mybatisRunner) {
 		Expect.notNull(project, "project must not be null.");
 		Expect.notNull(mybatisRunner, "mybatisRunner must not be null.");
 		this.project = project;
@@ -83,7 +81,7 @@ public class MybatisFilesWriter {
 				continue;
 			}
 			YobatisJavaFile javaFile = (YobatisJavaFile)tmp;
-			if (javaFile.isOverwrite()) {
+			if (javaFile.isOverWritable()) {
 				writeJavaFile(javaFile, true);
 			} else {
 				writeJavaFile(javaFile, false);

@@ -217,8 +217,8 @@ public final class SpringParser {
 	}
 	
 	/**
-	 * Get the database's driver class name configured among spring config files. The returned
-	 * value would be a placeholder (for instance ${jdbc.url}) if the placeholder
+	 * Get the database's driver class name configured among spring config files. The
+	 * value returned would be a placeholder (for instance ${jdbc.url}) if the placeholder
 	 * could not be found anywhere.
 	 * @return The value if configured, null otherwise.
 	 */

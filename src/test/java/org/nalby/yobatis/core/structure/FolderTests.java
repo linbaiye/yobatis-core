@@ -31,9 +31,8 @@ public class FolderTests {
 		private CreateFolderHandler createFolderHandler;
 
 		public TestFolder(String path, String name) {
-			this.name = name;
-			this.path = path;
-		} 
+			super(path, name);
+		}
 
 		@Override
 		protected List<Folder> doListFolders() {

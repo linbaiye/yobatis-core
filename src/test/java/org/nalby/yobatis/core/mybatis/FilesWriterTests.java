@@ -21,7 +21,7 @@ import org.nalby.yobatis.core.util.TestUtil;
 
 public class FilesWriterTests {
 	
-	private LibraryRunner libraryRunner;
+	private MybatisGeneratorRunner libraryRunner;
 	
 	private List<GeneratedJavaFile> javaFiles;
 	
@@ -109,7 +109,7 @@ public class FilesWriterTests {
 	
 	@Before
 	public void setup() {
-		libraryRunner = mock(LibraryRunner.class);
+		libraryRunner = mock(MybatisGeneratorRunner.class);
 		javaFiles = new LinkedList<>();
 		xmlFiles = new LinkedList<>();
 		when(libraryRunner.getGeneratedJavaFiles()).thenReturn(javaFiles);

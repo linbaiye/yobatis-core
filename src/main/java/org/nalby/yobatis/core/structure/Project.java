@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.util.Expect;
 import org.nalby.yobatis.core.util.FolderUtil;
 
@@ -29,7 +30,10 @@ public abstract class Project implements Folder {
 	 * The folder of the project itself.
 	 */
 	protected Folder root;
-	
+
+	public Project(Folder root) {
+		this.root = root;
+	}
 	/**
 	 * It is left to the platform to find out where the maven repository is.
 	 * @return the maven path, null if failed to find.
@@ -41,9 +45,13 @@ public abstract class Project implements Folder {
 		if (path.startsWith(root.path())) {
 			return path.replaceFirst(root.path() + "/", "");
 		}
+		if (path.startsWith("/")) {
+			throw new InvalidMybatisGeneratorConfigException("Path " + path + " should start with /" + root.name());
+		}
 		return path;
 	}
 
+	abstract public String getAbsPathOfSqlConnector();
 
 	public String concatMavenRepositoryPath(String path) {
 		Expect.notEmpty(path, "path must not be null.");

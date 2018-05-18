@@ -16,30 +16,19 @@
 package org.nalby.yobatis.core.database.mysql;
 
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.DriverPropertyInfo;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.nalby.yobatis.core.exception.ProjectException;
-import org.nalby.yobatis.core.log.LogFactory;
-import org.nalby.yobatis.core.util.Expect;
-import org.nalby.yobatis.core.exception.InvalidSqlConfigException;
-import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.Table;
+import org.nalby.yobatis.core.exception.InvalidSqlConfigException;
+import org.nalby.yobatis.core.exception.ProjectException;
+import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.util.Expect;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 	
@@ -123,11 +112,8 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 	}
 	
 	
-	private static Driver buildDriver(String driverClassName, String jarPath) throws MalformedURLException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		URL jarurl = new URL("file://" + jarPath);
-		URLClassLoader classLoader = new URLClassLoader(new URL[] { jarurl });
-		Driver driver = (Driver) Class.forName(driverClassName, true, classLoader).newInstance();
-		return new DriverWrapper(driver);
+	private static void loadSqlDriver(String driverClassName) throws ClassNotFoundException {
+		Class.forName(driverClassName);
 	}
 	
 	
@@ -165,8 +151,7 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 			Expect.notEmpty(connectorJarPath, "connectorJarPath must not be null.");
 			Expect.notEmpty(driverClassName, "driverClassName must not be null.");
 			try {
-				Driver driver = buildDriver(driverClassName, connectorJarPath);
-				DriverManager.registerDriver(driver);
+				loadSqlDriver(driverClassName);
 				return new MysqlDatabaseMetadataProvider(username, password, url, driverClassName, connectorJarPath);
 			} catch (Exception e) {
 				throw new InvalidSqlConfigException(e);
@@ -183,53 +168,5 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 		Pattern pattern = Pattern.compile("jdbc:mysql://[^/]+/([^?]+).*");
 		Matcher matcher = pattern.matcher(url);
 		return matcher.find() ? matcher.group(1) : null;
-	}
-	
-	// See http://www.kfu.com/~nsayer/Java/dyn-jdbc.html
-	private static class DriverWrapper implements Driver {
-		
-		private Driver driver;
-
-		public DriverWrapper(Driver driver) {
-			this.driver = driver;
-		}
-
-		@Override
-		public Connection connect(final String url, Properties info)
-				throws SQLException {
-			return driver.connect(url, info);
-		}
-
-		@Override
-		public boolean acceptsURL(String url) throws SQLException {
-			return driver.acceptsURL(url);
-		}
-
-		@Override
-		public DriverPropertyInfo[] getPropertyInfo(String url, Properties info)
-				throws SQLException {
-			return driver.getPropertyInfo(url, info);
-		}
-
-		@Override
-		public int getMajorVersion() {
-			return driver.getMajorVersion();
-		}
-
-		@Override
-		public int getMinorVersion() {
-			return driver.getMinorVersion();
-		}
-
-		@Override
-		public boolean jdbcCompliant() {
-			return driver.jdbcCompliant();
-		}
-
-		@Override
-		public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
-			return driver.getParentLogger();
-		}
-		
 	}
 }

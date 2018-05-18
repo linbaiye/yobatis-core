@@ -6,27 +6,22 @@
 	<version>0.2.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
-        <libpath>/Users/lintao/Work/idea-projects/yobatis-core/lib/mybatis-generator-core-1.3.6.jar</libpath>
+        <libpath>lib/mybatis-generator-core-1.3.6-SNAPSHOT.jar</libpath>
     </properties>
 	<dependencies>
         <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>2.0.1</version>
+			<scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mybatis.generator</groupId>
             <artifactId>mybatis-generator-core</artifactId>
             <version>1.3.6-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${libpath}</systemPath>
+            <systemPath>${project.basedir}/${libpath}</systemPath>
         </dependency>
-		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>6.0.6</version>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -72,6 +67,11 @@
 			<version>1.7.3</version>
 			<scope>test</scope>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.mybatis.generator</groupId>-->
+			<!--<artifactId>mybatis-generator-core</artifactId>-->
+			<!--<version>1.3.5</version>-->
+		<!--</dependency>-->
 	</dependencies>
 	<build>
 		<plugins>

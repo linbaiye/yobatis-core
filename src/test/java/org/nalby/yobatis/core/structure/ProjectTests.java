@@ -22,8 +22,13 @@ public class ProjectTests {
 		protected String findMavenRepositoryPath() {
 			return "maven";
 		}
+
+		@Override
+		public String getAbsPathOfSqlConnector() {
+			return null;
+		}
 		public TestedProject (Folder folder) {
-			root = folder;
+			super(folder);
 		}
 	}
 
