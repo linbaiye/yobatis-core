@@ -1,11 +1,11 @@
-package org.nalby.yobatis.core.mybatis;
+package org.nalby.yobatis.core.mybatis.factory;
 
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 
-public class DaoMethodImplFactory implements AbstractDaoMethodFactory, InternalMethodFactory {
+public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractDaoInternalMethodFactory {
 
     private static DaoMethodImplFactory publicMethodImplFactory = new DaoMethodImplFactory();
 
@@ -37,7 +37,6 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, InternalM
         method.setVisibility(JavaVisibility.PUBLIC);
         if (bodyLines.length != 0) {
             for (String bodyLine : bodyLines) {
-                method.addBodyLine(bodyLine);
                 method.addBodyLine(bodyLine);
             }
         }
