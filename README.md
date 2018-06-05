@@ -1,1 +1,1 @@
-# yobatis-core
+# func-core

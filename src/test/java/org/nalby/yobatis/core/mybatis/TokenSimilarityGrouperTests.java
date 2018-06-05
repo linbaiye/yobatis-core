@@ -20,7 +20,7 @@ public class TokenSimilarityGrouperTests {
 	
 	private List<Table> tables;
 	
-	private static final String DEFAULT_FOLDER_PATH = "/src/main/java/yobatis/model";
+	private static final String DEFAULT_FOLDER_PATH = "/src/main/java/func/model";
 	
 	private Folder defaultFolder;
 	

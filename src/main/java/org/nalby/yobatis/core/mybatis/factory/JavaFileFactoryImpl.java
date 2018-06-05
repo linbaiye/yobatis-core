@@ -57,13 +57,13 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
 
     private void addDoNotOverwriteComment(TopLevelClass domainClass) {
         domainClass.addJavaDocLine("/*");
-        domainClass.addJavaDocLine(" * Do NOT modify, it will be overwrote every time yobatis runs.");
+        domainClass.addJavaDocLine(" * Do NOT modify, it will be overwrote every time func runs.");
         domainClass.addJavaDocLine(" */");
     }
 
     private void addDoNotOverwriteComment(Interface interfaze) {
         interfaze.addJavaDocLine("/*");
-        interfaze.addJavaDocLine(" * Do NOT modify, it will be overwrote every time yobatis runs.");
+        interfaze.addJavaDocLine(" * Do NOT modify, it will be overwrote every time func runs.");
         interfaze.addJavaDocLine(" */");
     }
 
@@ -320,6 +320,7 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
     @Override
     public YobatisJavaFile domain(TopLevelClass originalDomain, IntrospectedTable introspectedTable, GeneratedJavaFile baseDomainJavaFile) {
         TopLevelClass domainClass = new TopLevelClass(originalDomain.getType());
+        domainClass.setVisibility(JavaVisibility.PUBLIC);
         TopLevelClass baseDomainClass = (TopLevelClass)baseDomainJavaFile.getCompilationUnit();
         domainClass.setSuperClass(baseDomainClass.getType());
         domainClass.addImportedType(baseDomainClass.getType());
@@ -477,22 +478,19 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
             }
         }
     }
-    private void letOrMethodReturnThis(TopLevelClass topLevelClass) {
-        for (Method method : topLevelClass.getMethods()) {
-            if (method.getName().equals("or") && method.getParameters().isEmpty()) {
-                method.setReturnType(topLevelClass.getType());
-                method.getBodyLines().clear();
-                method.addBodyLine("oredCriteria.add(createCriteriaInternal());");
-                method.addBodyLine("return this;");
-            }
-        }
+
+    private void addOrMethod(TopLevelClass topLevelClass) {
+        Method method = commonMethodFactory.publicMethod("or", topLevelClass.getType().getShortName());
+        method.addBodyLine("oredCriteria.add(createCriteriaInternal());");
+        method.addBodyLine("return this;");
+        topLevelClass.addMethod(method);
     }
 
     private void modifyInnerClasses(TopLevelClass topLevelClass, TopLevelClass base) {
         for (InnerClass innerClass : topLevelClass.getInnerClasses()) {
             innerClass.getJavaDocLines().clear();
             innerClass.getMethods().removeIf((Method method) ->
-                method.getName().startsWith("and") && method.getReturnType().getShortName().equals("Criteria"));
+                    method.getName().startsWith("and") && method.getReturnType().getShortName().equals("Criteria"));
             base.addInnerClass(innerClass);
         }
     }
@@ -604,6 +602,8 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
 
     private void addOrderByMethod(TopLevelClass topLevelClass) {
         Method method = commonMethodFactory.protectedMethod("orderBy", "void");
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "order"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "fields", true));
         method.addBodyLine("if ( fields == null || fields.length == 0) {");
         method.addBodyLine("throw new IllegalArgumentException(\"Empty fields passed.\");");
         method.addBodyLine("}");
@@ -688,6 +688,7 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
             newMethod.getJavaDocLines().clear();
             if ("setDistinct".equals(newMethod.getName())) {
                 newMethod.setReturnType(src.getType());
+                newMethod.addBodyLine("return this;");
             }
             dst.addMethod(newMethod);
         }
@@ -706,7 +707,7 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
     public YobatisJavaFile criteria(TopLevelClass originalExample, IntrospectedTable introspectedTable) {
         TopLevelClass criteriaClass = copyClassWithoutInnerClassesAndFields(originalExample);
         criteriaClass.setSuperClass("BaseCriteria");
-        letOrMethodReturnThis(criteriaClass);
+        addOrMethod(criteriaClass);
         addSetClauzeMethod(criteriaClass, "limit", "Long");
         addSetClauzeMethod(criteriaClass, "offset", "Long");
         addSetClauzeMethod(criteriaClass, "forUpdate", "Boolean");

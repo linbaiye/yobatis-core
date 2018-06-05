@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.mybatis.generator.api.LibraryRunner;
 import org.nalby.yobatis.core.mybatis.*;
 import org.nalby.yobatis.core.structure.PomTree;
 import org.nalby.yobatis.core.structure.SpringAntPathFileManager;

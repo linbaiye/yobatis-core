@@ -48,7 +48,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
     public Method insertAll() {
         Method method = signatureFactory.insertAll();
         return decorateMethod(method, "notNull(record, \"record must not be null.\");",
-                "\"return doInsert(INSERT_ALL, record);\")");
+                "return doInsert(INSERT_ALL, record);");
     }
 
     @Override
@@ -103,7 +103,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
     public Method update() {
         Method method = signatureFactory.update();
         return decorateMethod(method, "notNull(record, \"record must not be null.\");",
-            "validateCriteria(criteria);", "return doUpdate(UPDATE_BY_CRITERIA, makeParam(record, criteria));");
+             "return doUpdate(UPDATE, record);");
     }
 
     @Override
@@ -130,8 +130,8 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
     @Override
     public Method delete() {
         Method method = signatureFactory.delete();
-        return decorateMethod(method, "validateCriteria(criteria);",
-                "return doDelete(DELETE_BY_CRITERIA, criteria);");
+        return decorateMethod(method, "notNull(pk, \"Primary key must not be null.\");",
+                "return doDelete(DELETE_BY_PK, pk);");
     }
 
     @Override

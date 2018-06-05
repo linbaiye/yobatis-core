@@ -31,7 +31,7 @@ public class TokenSimilarityMatcherTests {
 	public void setup() {
 		tokens = new HashSet<>();
 		tokens.add("sys");
-		tokens.add("yobatis");
+		tokens.add("func");
 		tokens.add("model");
 		stringMatcher = new StringMatcher(tokens);
 	}
@@ -64,10 +64,10 @@ public class TokenSimilarityMatcherTests {
 	
 	@Test
 	public void mostMatchingTokens() {
-		stringMatcher.calculateSimilarity("yobatis.dao");
-		stringMatcher.calculateSimilarity("yobatis.sys.dao");
-		assertTrue("yobatis.sys.dao".equals(stringMatcher.findMostMatchingOne()));
-		assertTrue(stringMatcher.getScore("yobatis.dao") == 1);
-		assertTrue(stringMatcher.getScore("yobatis.sys.dao") == 2);
+		stringMatcher.calculateSimilarity("func.dao");
+		stringMatcher.calculateSimilarity("func.sys.dao");
+		assertTrue("func.sys.dao".equals(stringMatcher.findMostMatchingOne()));
+		assertTrue(stringMatcher.getScore("func.dao") == 1);
+		assertTrue(stringMatcher.getScore("func.sys.dao") == 2);
 	}
 }

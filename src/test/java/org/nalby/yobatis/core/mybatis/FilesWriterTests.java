@@ -11,8 +11,6 @@ import org.junit.Test;
 import org.mybatis.generator.api.GeneratedFile;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.GeneratedXmlFile;
-import org.mybatis.generator.api.LibraryRunner;
-import org.mybatis.generator.api.YobatisJavaFile;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Project;
@@ -57,7 +55,7 @@ public class FilesWriterTests {
 		when(javaFile.getTargetPackage()).thenReturn("model.criteria");
 		when(javaFile.getTargetProject()).thenReturn(DEFAULT_JAVA_PATH);
 		when(javaFile.getFileName()).thenReturn(className + ".java");
-		when(javaFile.isOverwrite()).thenReturn(overwrite);
+		when(javaFile.isOverWritable()).thenReturn(overwrite);
 		javaFiles.add(javaFile);
 		return javaFile;
 	}
