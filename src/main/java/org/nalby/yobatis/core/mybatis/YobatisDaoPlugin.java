@@ -79,6 +79,10 @@ public class YobatisDaoPlugin extends PluginAdapter {
         return true;
     }
 
+    /**
+     * Make the model class flat, merging blob class into the base model class.
+     * @param introspectedTable
+     */
     private void mergeBlobColumns(IntrospectedTable introspectedTable) {
         if (introspectedTable.hasBLOBColumns()) {
             introspectedTable.getBaseColumns().addAll(introspectedTable.getBLOBColumns());
@@ -86,6 +90,10 @@ public class YobatisDaoPlugin extends PluginAdapter {
         }
     }
 
+    /**
+     * Rename XXXExample to XXXCriteria.
+     * @param introspectedTable the table.
+     */
     private void renameExample(IntrospectedTable introspectedTable) {
         String oldType = introspectedTable.getExampleType();
         Pattern pattern = Pattern.compile("([^.]+)Example$");
