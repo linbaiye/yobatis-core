@@ -16,18 +16,22 @@ package org.nalby.yobatis.core.mybatis;
  *    limitations under the License.
  */
 
-import org.mybatis.generator.api.*;
+import org.mybatis.generator.api.GeneratedJavaFile;
+import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.mybatis.generator.api.dom.xml.*;
+import org.mybatis.generator.api.dom.xml.Attribute;
+import org.mybatis.generator.api.dom.xml.Document;
+import org.mybatis.generator.api.dom.xml.Element;
+import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.mybatis.factory.JavaFileFactory;
 import org.nalby.yobatis.core.mybatis.factory.JavaFileFactoryImpl;
 import org.nalby.yobatis.core.mybatis.factory.MapperXmlElementFactory;
 import org.nalby.yobatis.core.mybatis.factory.MapperXmlElementFactoryImpl;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,9 +49,6 @@ public class YobatisDaoPlugin extends PluginAdapter {
 
     private List<GeneratedJavaFile> additionalFiles = new LinkedList<>();
 
-    private GeneratedJavaFile generateBaseDao(IntrospectedTable introspectedTable) {
-        return JavaFileFactoryImpl.getInstance().baseDaoInterface(introspectedTable);
-    }
 
     private Interface addSpecificDaoFile(Interface interfaze, IntrospectedTable introspectedTable) {
         JavaFileFactory javaFileFactory = JavaFileFactoryImpl.getInstance();
@@ -59,7 +60,7 @@ public class YobatisDaoPlugin extends PluginAdapter {
 
     private void generatedBaseDao(IntrospectedTable introspectedTable) {
         if (!isBaseDaoGenerated && introspectedTable.hasPrimaryKeyColumns()) {
-            baseDao = generateBaseDao(introspectedTable);
+            baseDao = JavaFileFactoryImpl.getInstance().baseDaoInterface(introspectedTable);
             additionalFiles.add(baseDao);
             baseDaoImpl = JavaFileFactoryImpl.getInstance().baseDaoImpl(introspectedTable);
             additionalFiles.add(baseDaoImpl);
@@ -272,6 +273,10 @@ public class YobatisDaoPlugin extends PluginAdapter {
 
     @Override
     public void initialized(IntrospectedTable introspectedTable) {
+        if (introspectedTable.getPrimaryKeyColumns().isEmpty()) {
+            throw new InvalidMybatisGeneratorConfigException("Table " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime() +  "" +
+                    "does not have primary key.");
+        }
         renameXmlElements(introspectedTable);
         renameExample(introspectedTable);
         mergeBlobColumns(introspectedTable);
@@ -325,69 +330,5 @@ public class YobatisDaoPlugin extends PluginAdapter {
         }
         return true;
     }
-
-    private final static String fileContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<!DOCTYPE generatorConfiguration PUBLIC \"-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN\" \"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd\">\n" +
-            "\n" +
-            "<generatorConfiguration>\n" +
-            "  <classPathEntry location=\"/Users/lintao/.m2/repository/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar\"/>\n" +
-            "  <context id=\"func\" targetRuntime=\"MyBatis3\">\n" +
-            "    <plugin type=\"org.nalby.func.core.mybatis.YobatisDaoPlugin\"/>\n" +
-            "    <jdbcConnection driverClass=\"com.mysql.jdbc.Driver\" connectionURL=\"jdbc:mysql://localhost:3306/mybatis?characterEncoding=utf-8\" userId=\"mybatis\" password=\"mybatis\"/>\n" +
-            "    <!--jdbcConnection driverClass=\"com.mysql.jdbc.Driver\" connectionURL=\"jdbc:mysql://localhost:3306/book_store?characterEncoding=utf-8\" userId=\"root\" password=\"root\"/-->\n" +
-            "    <javaTypeResolver>\n" +
-            "      <property name=\"forceBigDecimals\" value=\"false\"/>\n" +
-            "    </javaTypeResolver>\n" +
-            "    <javaModelGenerator targetPackage=\"model\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
-            "    <sqlMapGenerator targetPackage=\"mybatis-mappers/autogen\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
-            "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"dao\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
-            "    <!--table tableName=\"customer\" schema=\"mybatis\" modelType=\"flat\">\n" +
-            " 		<generatedKey column=\"id\" sqlStatement=\"mysql\" identity=\"true\"/>" +
-            "    </table>\n" +
-            "    <table tableName=\"compound_key_table\" schema=\"mybatis\" modelType=\"flat\"/>\n" +
-            "    <table tableName=\"string_key_table\" schema=\"mybatis\" modelType=\"flat\"/-->\n" +
-            "    <table tableName=\"book\" schema=\"mybatis\" modelType=\"flat\"/>\n" +
-            "  </context>\n" +
-            "</generatorConfiguration>\n";
-
-    public static void main(String[] args) throws Exception {
-        InputStream inputStream = new ByteArrayInputStream(fileContent.getBytes());
-        MybatisGeneratorRunner runner = new MybatisGeneratorRunner();
-        runner.parse(inputStream);
-        List<GeneratedJavaFile> javaFiles = runner.getGeneratedJavaFiles();
-        for (GeneratedJavaFile javaFile : javaFiles) {
-            if (
-				/*!javaFile.getFileName().endsWith("Criteria.java") &&
-				!javaFile.getFileName().endsWith("DaoImpl.java") &&
-				!javaFile.getFileName().endsWith("Dao.java") &&
-				!javaFile.getFileName().endsWith("Mapper.java")*/
-                //javaFile.getFileName().endsWith("Criteria.java") &&
-                    javaFile instanceof YobatisJavaFile
-                            //&& !javaFile.getFileName().contains("BaseDao")
-                    && javaFile.getFileName().contains("BaseCriteria")
-                //&& (javaFile.getFileName().endsWith("DaoImpl.java") ||
-                //javaFile.getFileName().endsWith("Dao.java"))
-				/*&& javaFile.getFileName().endsWith("Dao.java")
-				 && javaFile.getFileName().endsWith("Criteria.java")*/
-                    ) {
-                //System.out.println(javaFile.getFormattedContent());
-                YobatisJavaFile file = (YobatisJavaFile) javaFile;
-                //System.out.println(javaFile.getFormattedContent());
-            }
-        }
-
-        for (GeneratedJavaFile javaFile : runner.getGeneratedJavaFiles()) {
-            if (javaFile.getFileName().contains("Example")) {
-                System.out.println(javaFile.getFormattedContent());
-            }
-        }
-
-        for (GeneratedXmlFile xmlFile: runner.getGeneratedXmlFiles()) {
-            //System.out.println(xmlFile.getFormattedContent());
-            if (xmlFile.getFileName().contains("Example")) {
-            }
-        }
-    }
-
 }
 

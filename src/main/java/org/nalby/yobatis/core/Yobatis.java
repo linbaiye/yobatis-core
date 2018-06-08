@@ -52,8 +52,6 @@ public class Yobatis {
 		SpringParser springParser = new SpringParser(fileManager, 
 				webContainerParser.searchInitParamValues());
 
-		String driverClassName = springParser.getDatabaseDriverClassName();
-
 		Builder builder = MysqlDatabaseMetadataProvider.builder();
 		builder.setConnectorJarPath(project.getAbsPathOfSqlConnector())
 		.setDriverClassName(springParser.getDatabaseDriverClassName())
@@ -114,7 +112,7 @@ public class Yobatis {
 	public static void onClickFile(Project project) {
 		logger.info("Using existent config file.");
 		MybatisGeneratorRunner runner = buildMyBatisRunner(project);
-		new MybatisFilesWriter(project, runner).writeAll();;
+		new MybatisFilesWriter(project, runner).writeAll();
 	}
 
 }
