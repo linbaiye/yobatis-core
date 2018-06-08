@@ -1,4 +1,4 @@
-package org.nalby.yobatis.core.mybatis;
+package org.nalby.yobatis.core.mybatis.factory;
 
 import org.mybatis.generator.api.dom.java.Method;
 

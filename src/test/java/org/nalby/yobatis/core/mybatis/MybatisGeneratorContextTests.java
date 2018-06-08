@@ -52,8 +52,8 @@ public class MybatisGeneratorContextTests {
 		when(mockedSql.getUrl()).thenReturn("url");
 		when(mockedSql.getConnectorJarPath()).thenReturn("mysql.jar");
 		context = new MybatisGeneratorContext("id", mockedSql);
-		dao = TestUtil.mockFolder("/src/main/java/yobatis/dao");
-		model = TestUtil.mockFolder("/src/main/java/yobatis/model");
+		dao = TestUtil.mockFolder("/src/main/java/func/dao");
+		model = TestUtil.mockFolder("/src/main/java/func/model");
 		resource = TestUtil.mockFolder("/src/main/resource");
 	}
 	
@@ -166,11 +166,11 @@ public class MybatisGeneratorContextTests {
 
 		Element client = element.element(MybatisGeneratorContext.CLIENT_GENERATOR_TAG);
 		assertTrue(client.attributeValue("targetProject").equals("/src/main/java"));
-		assertTrue(client.attributeValue("targetPackage").equals("yobatis.dao"));
+		assertTrue(client.attributeValue("targetPackage").equals("func.dao"));
 
 		Element model = element.element(MybatisGeneratorContext.MODEL_GENERATOR_TAG);
 		assertTrue(model.attributeValue("targetProject").equals("/src/main/java"));
-		assertTrue(model.attributeValue("targetPackage").equals("yobatis.model"));
+		assertTrue(model.attributeValue("targetPackage").equals("func.model"));
 
 		Element resource = element.element(MybatisGeneratorContext.SQLMAP_GENERATOR_TAG);
 		assertTrue(resource.attributeValue("targetProject").equals("/src/main/resource"));

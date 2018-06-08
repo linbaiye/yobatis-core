@@ -1,11 +1,11 @@
-package org.nalby.yobatis.core.mybatis;
+package org.nalby.yobatis.core.mybatis.factory;
 
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 
-public class DaoMethodImplFactory implements AbstractDaoMethodFactory, InternalMethodFactory {
+public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractDaoInternalMethodFactory {
 
     private static DaoMethodImplFactory publicMethodImplFactory = new DaoMethodImplFactory();
 
@@ -38,7 +38,6 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, InternalM
         if (bodyLines.length != 0) {
             for (String bodyLine : bodyLines) {
                 method.addBodyLine(bodyLine);
-                method.addBodyLine(bodyLine);
             }
         }
         method.getJavaDocLines().clear();
@@ -49,7 +48,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, InternalM
     public Method insertAll() {
         Method method = signatureFactory.insertAll();
         return decorateMethod(method, "notNull(record, \"record must not be null.\");",
-                "\"return doInsert(INSERT_ALL, record);\")");
+                "return doInsert(INSERT_ALL, record);");
     }
 
     @Override
@@ -104,7 +103,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, InternalM
     public Method update() {
         Method method = signatureFactory.update();
         return decorateMethod(method, "notNull(record, \"record must not be null.\");",
-            "validateCriteria(criteria);", "return doUpdate(UPDATE_BY_CRITERIA, makeParam(record, criteria));");
+             "return doUpdate(UPDATE, record);");
     }
 
     @Override
@@ -131,8 +130,8 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, InternalM
     @Override
     public Method delete() {
         Method method = signatureFactory.delete();
-        return decorateMethod(method, "validateCriteria(criteria);",
-                "return doDelete(DELETE_BY_CRITERIA, criteria);");
+        return decorateMethod(method, "notNull(pk, \"Primary key must not be null.\");",
+                "return doDelete(DELETE_BY_PK, pk);");
     }
 
     @Override

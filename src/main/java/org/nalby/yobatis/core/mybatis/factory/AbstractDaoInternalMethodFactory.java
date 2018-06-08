@@ -1,8 +1,8 @@
-package org.nalby.yobatis.core.mybatis;
+package org.nalby.yobatis.core.mybatis.factory;
 
 import org.mybatis.generator.api.dom.java.Method;
 
-public interface InternalMethodFactory {
+public interface AbstractDaoInternalMethodFactory {
     Method doSelectOne();
     Method doSelectList();
     Method doUpdate();
