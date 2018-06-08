@@ -1,4 +1,4 @@
-package org.nalby.yobatis.core.mybatis;
+package org.nalby.yobatis.core.mybatis.factory;
 
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Method;
@@ -10,7 +10,7 @@ public class DaoMethodSignatureFactory implements AbstractDaoMethodFactory {
 
     private DaoMethodSignatureFactory() {}
 
-    static DaoMethodSignatureFactory getInstance() {
+    public static DaoMethodSignatureFactory getInstance() {
         return factory;
     }
 
