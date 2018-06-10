@@ -73,6 +73,9 @@ public class MapperXmlElementFactoryImpl implements MapperXmlElementFactory {
             stringBuilder.append(column.getActualColumnName());
             stringBuilder.append(i == table.getAllColumns().size() - 1? ")" : ", ");
             if (i != table.getAllColumns().size() - 1 && (i + 1) % 4 == 0) {
+                if (stringBuilder.charAt(stringBuilder.length() - 1) == ' ') {
+                    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                }
                 xmlElement.addElement(new TextElement(stringBuilder.toString()));
                 stringBuilder = new StringBuilder();
                 stringBuilder.append("  ");
@@ -91,6 +94,9 @@ public class MapperXmlElementFactoryImpl implements MapperXmlElementFactory {
             stringBuilder.append("}");
             stringBuilder.append(i == table.getAllColumns().size() - 1? ")" : ", ");
             if (i != table.getAllColumns().size() - 1 &&  (i + 1) % 4 == 0) {
+                if (stringBuilder.charAt(stringBuilder.length() - 1) == ' ') {
+                    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                }
                 xmlElement.addElement(new TextElement(stringBuilder.toString()));
                 stringBuilder = new StringBuilder();
                 stringBuilder.append("  ");

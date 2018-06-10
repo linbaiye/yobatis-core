@@ -4,7 +4,7 @@ import func.compoundkey.model.criteria.BaseCriteria;
 import java.util.List;
 
 /*
- * Do NOT modify, it will be overwrote every time func runs.
+ * Do NOT modify, it will be overwrote every time yobatis runs.
  */
 public interface BaseDao<T extends B, B, PK> {
     /**

@@ -1,10 +1,12 @@
 package func.autoinckey.model.criteria;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
- * Do NOT modify, it will be overwrote every time func runs.
+ * Do NOT modify, it will be overwrote every time yobatis runs.
  */
 public class CustomerCriteria extends BaseCriteria {
     private static final Map<String, String> PROPERTY_TO_COLUMN;
@@ -22,21 +24,62 @@ public class CustomerCriteria extends BaseCriteria {
         return this;
     }
 
-    public void or(Criteria criteria) {
-        oredCriteria.add(criteria);
-    }
-
-    public Criteria createCriteria() {
-        Criteria criteria = createCriteriaInternal();
-        if (oredCriteria.size() == 0) {
-            oredCriteria.add(criteria);
+    private void orderBy(String order, String ... fields) {
+        if ( fields == null || fields.length == 0) {
+            throw new IllegalArgumentException("Empty fields passed.");
         }
-        return criteria;
+        StringBuilder stringBuilder = new StringBuilder();
+        if (orderByClause != null) {
+            stringBuilder.append(orderByClause);
+            stringBuilder.append(',');
+        }
+        for (String field : fields) {
+            if (!PROPERTY_TO_COLUMN.containsKey(field)) {
+                throw new IllegalArgumentException("Unrecognizable field:" + field);
+            }
+            stringBuilder.append(PROPERTY_TO_COLUMN.get(field));
+            stringBuilder.append(" ");
+            stringBuilder.append(order);
+            stringBuilder.append(',');
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        orderByClause = stringBuilder.toString();
     }
 
-    protected Criteria createCriteriaInternal() {
-        Criteria criteria = new Criteria();
-        return criteria;
+    /**
+     * Add the 'order by field1 asc, field2 asc, ...' clause to query, only fields in {@code Customer}(not column names) are allowed.
+     * By invoking this method and {@link #descOrderBy(String...) descOrderBy} alternately, a more complex 'order by' clause
+     * can be constructed, shown as below.
+     * <pre>
+     * criteria.ascOrderBy('field1');
+     * criteria.descOrderBy('field2');
+     * -> 'order by field1 asc, field2 desc'
+     * </pre>
+     * @param fields the fields to sort.
+     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
+     * @return this criteria.
+     */
+    public CustomerCriteria ascOrderBy(String  ... fields) {
+        orderBy("asc", fields);
+        return this;
+    }
+
+    /**
+     * Add the 'order by field1 desc, field2 desc, ...' clause to query, only fields in {@code Customer}(not column names) are allowed.
+     * By invoking this method and {@link #ascOrderBy(String...) ascOrderBy} alternately, a more complex 'order by' clause
+     * can be constructed, shown as below.
+     * <pre>
+     * criteria.ascOrderBy('field1');
+     * criteria.descOrderBy('field2');
+     * -> 'order by field1 asc, field2 desc'
+     * </pre>
+     * @param fields the fields to sort.
+     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
+     * @return this criteria.
+     */
+    public CustomerCriteria descOrderBy(String  ... fields) {
+        orderBy("desc", fields);
+        return this;
     }
 
     public CustomerCriteria or() {
@@ -99,12 +142,12 @@ public class CustomerCriteria extends BaseCriteria {
         return this;
     }
 
-    public CustomerCriteria andIdIn(java.util.List<Long> values) {
+    public CustomerCriteria andIdIn(List<Long> values) {
         lastCriteria().addCriterion("id in", values, "id");
         return this;
     }
 
-    public CustomerCriteria andIdNotIn(java.util.List<Long> values) {
+    public CustomerCriteria andIdNotIn(List<Long> values) {
         lastCriteria().addCriterion("id not in", values, "id");
         return this;
     }
@@ -169,12 +212,12 @@ public class CustomerCriteria extends BaseCriteria {
         return this;
     }
 
-    public CustomerCriteria andF1In(java.util.List<String> values) {
+    public CustomerCriteria andF1In(List<String> values) {
         lastCriteria().addCriterion("f1 in", values, "f1");
         return this;
     }
 
-    public CustomerCriteria andF1NotIn(java.util.List<String> values) {
+    public CustomerCriteria andF1NotIn(List<String> values) {
         lastCriteria().addCriterion("f1 not in", values, "f1");
         return this;
     }
@@ -199,52 +242,52 @@ public class CustomerCriteria extends BaseCriteria {
         return this;
     }
 
-    public CustomerCriteria andF3EqualTo(java.math.BigDecimal value) {
+    public CustomerCriteria andF3EqualTo(BigDecimal value) {
         lastCriteria().addCriterion("f3 =", value, "f3");
         return this;
     }
 
-    public CustomerCriteria andF3NotEqualTo(java.math.BigDecimal value) {
+    public CustomerCriteria andF3NotEqualTo(BigDecimal value) {
         lastCriteria().addCriterion("f3 <>", value, "f3");
         return this;
     }
 
-    public CustomerCriteria andF3GreaterThan(java.math.BigDecimal value) {
+    public CustomerCriteria andF3GreaterThan(BigDecimal value) {
         lastCriteria().addCriterion("f3 >", value, "f3");
         return this;
     }
 
-    public CustomerCriteria andF3GreaterThanOrEqualTo(java.math.BigDecimal value) {
+    public CustomerCriteria andF3GreaterThanOrEqualTo(BigDecimal value) {
         lastCriteria().addCriterion("f3 >=", value, "f3");
         return this;
     }
 
-    public CustomerCriteria andF3LessThan(java.math.BigDecimal value) {
+    public CustomerCriteria andF3LessThan(BigDecimal value) {
         lastCriteria().addCriterion("f3 <", value, "f3");
         return this;
     }
 
-    public CustomerCriteria andF3LessThanOrEqualTo(java.math.BigDecimal value) {
+    public CustomerCriteria andF3LessThanOrEqualTo(BigDecimal value) {
         lastCriteria().addCriterion("f3 <=", value, "f3");
         return this;
     }
 
-    public CustomerCriteria andF3In(java.util.List<java.math.BigDecimal> values) {
+    public CustomerCriteria andF3In(List<BigDecimal> values) {
         lastCriteria().addCriterion("f3 in", values, "f3");
         return this;
     }
 
-    public CustomerCriteria andF3NotIn(java.util.List<java.math.BigDecimal> values) {
+    public CustomerCriteria andF3NotIn(List<BigDecimal> values) {
         lastCriteria().addCriterion("f3 not in", values, "f3");
         return this;
     }
 
-    public CustomerCriteria andF3Between(java.math.BigDecimal value1, java.math.BigDecimal value2) {
+    public CustomerCriteria andF3Between(BigDecimal value1, BigDecimal value2) {
         lastCriteria().addCriterion("f3 between", value1, value2, "f3");
         return this;
     }
 
-    public CustomerCriteria andF3NotBetween(java.math.BigDecimal value1, java.math.BigDecimal value2) {
+    public CustomerCriteria andF3NotBetween(BigDecimal value1, BigDecimal value2) {
         lastCriteria().addCriterion("f3 not between", value1, value2, "f3");
         return this;
     }
@@ -299,12 +342,12 @@ public class CustomerCriteria extends BaseCriteria {
         return this;
     }
 
-    public CustomerCriteria andF2In(java.util.List<String> values) {
+    public CustomerCriteria andF2In(List<String> values) {
         lastCriteria().addCriterion("f2 in", values, "f2");
         return this;
     }
 
-    public CustomerCriteria andF2NotIn(java.util.List<String> values) {
+    public CustomerCriteria andF2NotIn(List<String> values) {
         lastCriteria().addCriterion("f2 not in", values, "f2");
         return this;
     }
@@ -351,11 +394,11 @@ public class CustomerCriteria extends BaseCriteria {
         return new CustomerCriteria().andIdLessThanOrEqualTo(value);
     }
 
-    public static CustomerCriteria idIn(java.util.List<Long> values) {
+    public static CustomerCriteria idIn(List<Long> values) {
         return new CustomerCriteria().andIdIn(values);
     }
 
-    public static CustomerCriteria idNotIn(java.util.List<Long> values) {
+    public static CustomerCriteria idNotIn(List<Long> values) {
         return new CustomerCriteria().andIdNotIn(values);
     }
 
@@ -407,11 +450,11 @@ public class CustomerCriteria extends BaseCriteria {
         return new CustomerCriteria().andF1NotLike(value);
     }
 
-    public static CustomerCriteria f1In(java.util.List<String> values) {
+    public static CustomerCriteria f1In(List<String> values) {
         return new CustomerCriteria().andF1In(values);
     }
 
-    public static CustomerCriteria f1NotIn(java.util.List<String> values) {
+    public static CustomerCriteria f1NotIn(List<String> values) {
         return new CustomerCriteria().andF1NotIn(values);
     }
 
@@ -431,43 +474,43 @@ public class CustomerCriteria extends BaseCriteria {
         return new CustomerCriteria().andF3IsNotNull();
     }
 
-    public static CustomerCriteria f3EqualTo(java.math.BigDecimal value) {
+    public static CustomerCriteria f3EqualTo(BigDecimal value) {
         return new CustomerCriteria().andF3EqualTo(value);
     }
 
-    public static CustomerCriteria f3NotEqualTo(java.math.BigDecimal value) {
+    public static CustomerCriteria f3NotEqualTo(BigDecimal value) {
         return new CustomerCriteria().andF3NotEqualTo(value);
     }
 
-    public static CustomerCriteria f3GreaterThan(java.math.BigDecimal value) {
+    public static CustomerCriteria f3GreaterThan(BigDecimal value) {
         return new CustomerCriteria().andF3GreaterThan(value);
     }
 
-    public static CustomerCriteria f3GreaterThanOrEqualTo(java.math.BigDecimal value) {
+    public static CustomerCriteria f3GreaterThanOrEqualTo(BigDecimal value) {
         return new CustomerCriteria().andF3GreaterThanOrEqualTo(value);
     }
 
-    public static CustomerCriteria f3LessThan(java.math.BigDecimal value) {
+    public static CustomerCriteria f3LessThan(BigDecimal value) {
         return new CustomerCriteria().andF3LessThan(value);
     }
 
-    public static CustomerCriteria f3LessThanOrEqualTo(java.math.BigDecimal value) {
+    public static CustomerCriteria f3LessThanOrEqualTo(BigDecimal value) {
         return new CustomerCriteria().andF3LessThanOrEqualTo(value);
     }
 
-    public static CustomerCriteria f3In(java.util.List<java.math.BigDecimal> values) {
+    public static CustomerCriteria f3In(List<BigDecimal> values) {
         return new CustomerCriteria().andF3In(values);
     }
 
-    public static CustomerCriteria f3NotIn(java.util.List<java.math.BigDecimal> values) {
+    public static CustomerCriteria f3NotIn(List<BigDecimal> values) {
         return new CustomerCriteria().andF3NotIn(values);
     }
 
-    public static CustomerCriteria f3Between(java.math.BigDecimal value1, java.math.BigDecimal value2) {
+    public static CustomerCriteria f3Between(BigDecimal value1, BigDecimal value2) {
         return new CustomerCriteria().andF3Between(value1, value2);
     }
 
-    public static CustomerCriteria f3NotBetween(java.math.BigDecimal value1, java.math.BigDecimal value2) {
+    public static CustomerCriteria f3NotBetween(BigDecimal value1, BigDecimal value2) {
         return new CustomerCriteria().andF3NotBetween(value1, value2);
     }
 
@@ -511,11 +554,11 @@ public class CustomerCriteria extends BaseCriteria {
         return new CustomerCriteria().andF2NotLike(value);
     }
 
-    public static CustomerCriteria f2In(java.util.List<String> values) {
+    public static CustomerCriteria f2In(List<String> values) {
         return new CustomerCriteria().andF2In(values);
     }
 
-    public static CustomerCriteria f2NotIn(java.util.List<String> values) {
+    public static CustomerCriteria f2NotIn(List<String> values) {
         return new CustomerCriteria().andF2NotIn(values);
     }
 
@@ -525,63 +568,5 @@ public class CustomerCriteria extends BaseCriteria {
 
     public static CustomerCriteria f2NotBetween(String value1, String value2) {
         return new CustomerCriteria().andF2NotBetween(value1, value2);
-    }
-
-    protected void orderBy(String order, String ... fields) {
-        if ( fields == null || fields.length == 0) {
-            throw new IllegalArgumentException("Empty fields passed.");
-        }
-        StringBuilder stringBuilder = new StringBuilder();
-        if (orderByClause != null) {
-            stringBuilder.append(orderByClause);
-            stringBuilder.append(',');
-        }
-        for (String field : fields) {
-            if (!PROPERTY_TO_COLUMN.containsKey(field)) {
-                throw new IllegalArgumentException("Unrecognizable field:" + field);
-            }
-            stringBuilder.append(PROPERTY_TO_COLUMN.get(field));
-            stringBuilder.append(" ");
-            stringBuilder.append(order);
-            stringBuilder.append(',');
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        orderByClause = stringBuilder.toString();
-    }
-
-    /**
-     * Add the 'order by field1 asc, field2 asc, ...' clause to query, only fields in {@code Customer}(not column names) are allowed.
-     * By invoking this method and {@link #descOrderBy(String...) descOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public CustomerCriteria ascOrderBy(String  ... fields) {
-        orderBy("asc", fields);
-        return this;
-    }
-
-    /**
-     * Add the 'order by field1 desc, field2 desc, ...' clause to query, only fields in {@code Customer}(not column names) are allowed.
-     * By invoking this method and {@link #ascOrderBy(String...) ascOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public CustomerCriteria descOrderBy(String  ... fields) {
-        orderBy("desc", fields);
-        return this;
     }
 }

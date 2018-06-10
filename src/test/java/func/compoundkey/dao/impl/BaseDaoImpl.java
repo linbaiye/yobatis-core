@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 import org.mybatis.spring.SqlSessionTemplate;
 
 /*
- * Do NOT modify, it will be overwrote every time func runs.
+ * Do NOT modify, it will be overwrote every time yobatis runs.
  */
 public abstract class BaseDaoImpl<T extends B, B, PK> implements BaseDao<T, B, PK> {
     private static final String SELECT_BY_PK = "selectByPk";
@@ -158,7 +158,7 @@ public abstract class BaseDaoImpl<T extends B, B, PK> implements BaseDao<T, B, P
 
     @Override
     public final int delete(PK pk) {
-        notNull(pk, "Primary key must not be null.");
+        notNull(pk, "pk must not be null.");
         return doDelete(DELETE_BY_PK, pk);
     }
 

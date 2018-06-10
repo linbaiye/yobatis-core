@@ -1,10 +1,11 @@
 package func.allkey.model.criteria;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
- * Do NOT modify, it will be overwrote every time func runs.
+ * Do NOT modify, it will be overwrote every time yobatis runs.
  */
 public class AllKeyTableCriteria extends BaseCriteria {
     private static final Map<String, String> PROPERTY_TO_COLUMN;
@@ -20,21 +21,62 @@ public class AllKeyTableCriteria extends BaseCriteria {
         return this;
     }
 
-    public void or(Criteria criteria) {
-        oredCriteria.add(criteria);
-    }
-
-    public Criteria createCriteria() {
-        Criteria criteria = createCriteriaInternal();
-        if (oredCriteria.size() == 0) {
-            oredCriteria.add(criteria);
+    private void orderBy(String order, String ... fields) {
+        if ( fields == null || fields.length == 0) {
+            throw new IllegalArgumentException("Empty fields passed.");
         }
-        return criteria;
+        StringBuilder stringBuilder = new StringBuilder();
+        if (orderByClause != null) {
+            stringBuilder.append(orderByClause);
+            stringBuilder.append(',');
+        }
+        for (String field : fields) {
+            if (!PROPERTY_TO_COLUMN.containsKey(field)) {
+                throw new IllegalArgumentException("Unrecognizable field:" + field);
+            }
+            stringBuilder.append(PROPERTY_TO_COLUMN.get(field));
+            stringBuilder.append(" ");
+            stringBuilder.append(order);
+            stringBuilder.append(',');
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        orderByClause = stringBuilder.toString();
     }
 
-    protected Criteria createCriteriaInternal() {
-        Criteria criteria = new Criteria();
-        return criteria;
+    /**
+     * Add the 'order by field1 asc, field2 asc, ...' clause to query, only fields in {@code AllKeyTable}(not column names) are allowed.
+     * By invoking this method and {@link #descOrderBy(String...) descOrderBy} alternately, a more complex 'order by' clause
+     * can be constructed, shown as below.
+     * <pre>
+     * criteria.ascOrderBy('field1');
+     * criteria.descOrderBy('field2');
+     * -> 'order by field1 asc, field2 desc'
+     * </pre>
+     * @param fields the fields to sort.
+     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
+     * @return this criteria.
+     */
+    public AllKeyTableCriteria ascOrderBy(String  ... fields) {
+        orderBy("asc", fields);
+        return this;
+    }
+
+    /**
+     * Add the 'order by field1 desc, field2 desc, ...' clause to query, only fields in {@code AllKeyTable}(not column names) are allowed.
+     * By invoking this method and {@link #ascOrderBy(String...) ascOrderBy} alternately, a more complex 'order by' clause
+     * can be constructed, shown as below.
+     * <pre>
+     * criteria.ascOrderBy('field1');
+     * criteria.descOrderBy('field2');
+     * -> 'order by field1 asc, field2 desc'
+     * </pre>
+     * @param fields the fields to sort.
+     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
+     * @return this criteria.
+     */
+    public AllKeyTableCriteria descOrderBy(String  ... fields) {
+        orderBy("desc", fields);
+        return this;
     }
 
     public AllKeyTableCriteria or() {
@@ -97,12 +139,12 @@ public class AllKeyTableCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllKeyTableCriteria andPk1In(java.util.List<Long> values) {
+    public AllKeyTableCriteria andPk1In(List<Long> values) {
         lastCriteria().addCriterion("pk1 in", values, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1NotIn(java.util.List<Long> values) {
+    public AllKeyTableCriteria andPk1NotIn(List<Long> values) {
         lastCriteria().addCriterion("pk1 not in", values, "pk1");
         return this;
     }
@@ -167,12 +209,12 @@ public class AllKeyTableCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllKeyTableCriteria andPk2In(java.util.List<String> values) {
+    public AllKeyTableCriteria andPk2In(List<String> values) {
         lastCriteria().addCriterion("pk2 in", values, "pk2");
         return this;
     }
 
-    public AllKeyTableCriteria andPk2NotIn(java.util.List<String> values) {
+    public AllKeyTableCriteria andPk2NotIn(List<String> values) {
         lastCriteria().addCriterion("pk2 not in", values, "pk2");
         return this;
     }
@@ -219,11 +261,11 @@ public class AllKeyTableCriteria extends BaseCriteria {
         return new AllKeyTableCriteria().andPk1LessThanOrEqualTo(value);
     }
 
-    public static AllKeyTableCriteria pk1In(java.util.List<Long> values) {
+    public static AllKeyTableCriteria pk1In(List<Long> values) {
         return new AllKeyTableCriteria().andPk1In(values);
     }
 
-    public static AllKeyTableCriteria pk1NotIn(java.util.List<Long> values) {
+    public static AllKeyTableCriteria pk1NotIn(List<Long> values) {
         return new AllKeyTableCriteria().andPk1NotIn(values);
     }
 
@@ -275,11 +317,11 @@ public class AllKeyTableCriteria extends BaseCriteria {
         return new AllKeyTableCriteria().andPk2NotLike(value);
     }
 
-    public static AllKeyTableCriteria pk2In(java.util.List<String> values) {
+    public static AllKeyTableCriteria pk2In(List<String> values) {
         return new AllKeyTableCriteria().andPk2In(values);
     }
 
-    public static AllKeyTableCriteria pk2NotIn(java.util.List<String> values) {
+    public static AllKeyTableCriteria pk2NotIn(List<String> values) {
         return new AllKeyTableCriteria().andPk2NotIn(values);
     }
 
@@ -289,63 +331,5 @@ public class AllKeyTableCriteria extends BaseCriteria {
 
     public static AllKeyTableCriteria pk2NotBetween(String value1, String value2) {
         return new AllKeyTableCriteria().andPk2NotBetween(value1, value2);
-    }
-
-    protected void orderBy(String order, String ... fields) {
-        if ( fields == null || fields.length == 0) {
-            throw new IllegalArgumentException("Empty fields passed.");
-        }
-        StringBuilder stringBuilder = new StringBuilder();
-        if (orderByClause != null) {
-            stringBuilder.append(orderByClause);
-            stringBuilder.append(',');
-        }
-        for (String field : fields) {
-            if (!PROPERTY_TO_COLUMN.containsKey(field)) {
-                throw new IllegalArgumentException("Unrecognizable field:" + field);
-            }
-            stringBuilder.append(PROPERTY_TO_COLUMN.get(field));
-            stringBuilder.append(" ");
-            stringBuilder.append(order);
-            stringBuilder.append(',');
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        orderByClause = stringBuilder.toString();
-    }
-
-    /**
-     * Add the 'order by field1 asc, field2 asc, ...' clause to query, only fields in {@code AllKeyTable}(not column names) are allowed.
-     * By invoking this method and {@link #descOrderBy(String...) descOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public AllKeyTableCriteria ascOrderBy(String  ... fields) {
-        orderBy("asc", fields);
-        return this;
-    }
-
-    /**
-     * Add the 'order by field1 desc, field2 desc, ...' clause to query, only fields in {@code AllKeyTable}(not column names) are allowed.
-     * By invoking this method and {@link #ascOrderBy(String...) ascOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public AllKeyTableCriteria descOrderBy(String  ... fields) {
-        orderBy("desc", fields);
-        return this;
     }
 }

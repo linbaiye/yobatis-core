@@ -130,7 +130,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
     @Override
     public Method delete() {
         Method method = signatureFactory.delete();
-        return decorateMethod(method, "notNull(pk, \"Primary key must not be null.\");",
+        return decorateMethod(method, "notNull(pk, \"pk must not be null.\");",
                 "return doDelete(DELETE_BY_PK, pk);");
     }
 

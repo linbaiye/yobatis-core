@@ -34,6 +34,18 @@ public abstract class BaseCriteria {
         return oredCriteria;
     }
 
+    public void or(Criteria criteria) {
+        oredCriteria.add(criteria);
+    }
+
+    public Criteria createCriteria() {
+        Criteria criteria = createCriteriaInternal();
+        if (oredCriteria.size() == 0) {
+            oredCriteria.add(criteria);
+        }
+        return criteria;
+    }
+
     protected Criteria createCriteriaInternal() {
         return new Criteria();
     }
@@ -150,6 +162,14 @@ public abstract class BaseCriteria {
                     dateList.add(new java.sql.Time(iter.next().getTime()));
             }
             addCriterion(condition, dateList, property);
+        }
+
+        public void addCriterionForJDBCTime(String condition, Date value1, Date value2, String property) {
+            if (value1 == null || value2 == null) {
+                throw new IllegalArgumentException("Between values for " + property + " cannot be null");
+
+            }
+            addCriterion(condition, new java.sql.Time(value1.getTime()), new java.sql.Time(value2.getTime()), property);
         }
     }
 

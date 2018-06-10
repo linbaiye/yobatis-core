@@ -57,13 +57,13 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
 
     private void addDoNotOverwriteComment(TopLevelClass domainClass) {
         domainClass.addJavaDocLine("/*");
-        domainClass.addJavaDocLine(" * Do NOT modify, it will be overwrote every time func runs.");
+        domainClass.addJavaDocLine(" * Do NOT modify, it will be overwrote every time yobatis runs.");
         domainClass.addJavaDocLine(" */");
     }
 
     private void addDoNotOverwriteComment(Interface interfaze) {
         interfaze.addJavaDocLine("/*");
-        interfaze.addJavaDocLine(" * Do NOT modify, it will be overwrote every time func runs.");
+        interfaze.addJavaDocLine(" * Do NOT modify, it will be overwrote every time yobatis runs.");
         interfaze.addJavaDocLine(" */");
     }
 
@@ -341,11 +341,10 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
         }
     }
 
-    private void copyMethods(TopLevelClass sub, TopLevelClass base) {
+    private void copyExampleClassMethods(TopLevelClass sub, TopLevelClass base) {
         for (Method method : sub.getMethods()) {
             if (method.getName().startsWith("set") ||
-               ("or".equals(method.getName())) ||
-               (method.getName().equals("createCriteria") && method.getParameters().isEmpty())) {
+               ("or".equals(method.getName()) && method.getParameters().isEmpty())) {
                 continue;
             }
             if (method.isConstructor()) {
@@ -463,6 +462,17 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
         method.addBodyLine("}");
         method.addBodyLine("addCriterion(condition, dateList, property);");
         innerClass.addMethod(method);
+
+        method = commonMethodFactory.publicMethod("addCriterionForJDBCTime", "void");
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "condition"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("Date"), "value1"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("Date"), "value2"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "property"));
+        method.addBodyLine("if (value1 == null || value2 == null) {");
+        method.addBodyLine("throw new IllegalArgumentException(\"Between values for \" + property + \" cannot be null\");");
+        method.addBodyLine("}");
+        method.addBodyLine("addCriterion(condition, new java.sql.Time(value1.getTime()), new java.sql.Time(value2.getTime()), property);");
+        innerClass.addMethod(method);
     }
 
     private void replaceRuntimeException(TopLevelClass topLevelClass) {
@@ -508,16 +518,17 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
         base.addImportedType("java.util.ArrayList");
         modifyInnerClasses(topLevelClass, base);
         copyFields(topLevelClass, base);
-        copyMethods(topLevelClass, base);
+        copyExampleClassMethods(topLevelClass, base);
         addKeyword(base, "limit", "java.lang.Long");
         addKeyword(base, "offset", "java.lang.Long");
         addKeyword(base, "forUpdate", "java.lang.Boolean");
         addLastCriteriaMethod(base);
         replaceRuntimeException(base);
         addTemporalMethods(base);
-
-        return new YobatisJavaFile(base, getDomainProjectName(introspectedTable),
+        YobatisJavaFile javaFile = new YobatisJavaFile(base, getDomainProjectName(introspectedTable),
                 introspectedTable.getContext().getJavaFormatter());
+        javaFile.setOverWritable(true);
+        return javaFile;
     }
 
 
@@ -601,7 +612,7 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
     }
 
     private void addOrderByMethod(TopLevelClass topLevelClass) {
-        Method method = commonMethodFactory.protectedMethod("orderBy", "void");
+        Method method = commonMethodFactory.privateMethod("orderBy", "void");
         method.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "order"));
         method.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "fields", true));
         method.addBodyLine("if ( fields == null || fields.length == 0) {");
@@ -680,7 +691,9 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
                     method.getName().equals("isDistinct") ||
                     method.getName().equals("getOrderByClause") ||
                     method.getName().equals("clear") ||
-                    (method.getName().equals("or") && method.getParameters().isEmpty()) ||
+                    method.getName().equals("createCriteriaInternal") ||
+                    method.getName().equals("createCriteria") ||
+                    method.getName().equals("or") ||
                     method.isConstructor()) {
                 continue;
             }
@@ -707,6 +720,9 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
     public YobatisJavaFile criteria(TopLevelClass originalExample, IntrospectedTable introspectedTable) {
         TopLevelClass criteriaClass = copyClassWithoutInnerClassesAndFields(originalExample);
         criteriaClass.setSuperClass("BaseCriteria");
+        addOrderByMethod(criteriaClass);
+        addAscOrderBy(criteriaClass);
+        addDescOrderBy(criteriaClass);
         addOrMethod(criteriaClass);
         addSetClauzeMethod(criteriaClass, "limit", "Long");
         addSetClauzeMethod(criteriaClass, "offset", "Long");
@@ -715,10 +731,12 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
         copyClauseMethodsToContainingClass(originalExample, criteriaClass);
         addConstructorMethods(criteriaClass);
         deleteFirstMethodByName(criteriaClass, "setOrderByClause");
-        addOrderByMethod(criteriaClass);
-        addAscOrderBy(criteriaClass);
-        addDescOrderBy(criteriaClass);
         addDoNotOverwriteComment(criteriaClass);
+        for (FullyQualifiedJavaType type: originalExample.getImportedTypes()) {
+            if (!"ArrayList".equals(type.getShortName())) {
+                criteriaClass.addImportedType(type);
+            }
+        }
         YobatisJavaFile yobatisJavaFile = new YobatisJavaFile(criteriaClass, getDomainProjectName(introspectedTable),
                 introspectedTable.getContext().getJavaFormatter());
         yobatisJavaFile.setOverWritable(true);
