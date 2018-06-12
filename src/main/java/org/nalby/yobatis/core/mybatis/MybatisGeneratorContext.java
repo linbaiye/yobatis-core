@@ -27,6 +27,7 @@ import org.nalby.yobatis.core.util.Expect;
 import org.nalby.yobatis.core.util.FolderUtil;
 import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.Table;
+import org.nalby.yobatis.core.util.XmlUtil;
 import org.nalby.yobatis.core.xml.AbstractXmlParser;
 
 /**
@@ -105,7 +106,7 @@ public class MybatisGeneratorContext {
 		this.javaModel = context.element(MODEL_GENERATOR_TAG);
 		this.xmlMapper = context.element(SQLMAP_GENERATOR_TAG);
 		loadPlugins(context);
-		this.commentedElements = AbstractXmlParser.loadCommentedElements(context);
+		this.commentedElements = XmlUtil.loadCommentedElements(context);
 		tableElements = context.elements(TABLE_TAG);
 	}
 	
@@ -194,7 +195,7 @@ public class MybatisGeneratorContext {
 	/**
 	 * Test if this table element is contained in this context by comparing
 	 * the tableName and schema attributes.
-	 * @param table the table element to test.
+	 * @param thatTable the table element to test.
 	 * @return true if so, false otherwise.
 	 */
 	private boolean hasTable(Element thatTable) {
@@ -324,7 +325,7 @@ public class MybatisGeneratorContext {
 		}
 		for (Element e : commentedElements) {
 			if ("table".equals(e.getName())) {
-				context.add(AbstractXmlParser.commentElement(e));
+				context.add(XmlUtil.commentElement(e));
 			}
 		}
 		return context;

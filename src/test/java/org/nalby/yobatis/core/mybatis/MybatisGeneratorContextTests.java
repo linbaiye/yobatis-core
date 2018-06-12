@@ -19,6 +19,7 @@ import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.Table;
 import org.nalby.yobatis.core.structure.Folder;
 import org.nalby.yobatis.core.util.TestUtil;
+import org.nalby.yobatis.core.util.XmlUtil;
 import org.nalby.yobatis.core.xml.AbstractXmlParser;
 
 public class MybatisGeneratorContextTests {
@@ -290,7 +291,7 @@ public class MybatisGeneratorContextTests {
 				"    <!--able 		tableName=\"table5\" schema=\"schema\" /-->" +
 				"  </context>\n";
 		MybatisGeneratorContext thatContext = build(xml);
-		List<Element> commentd = AbstractXmlParser.loadCommentedElements(thatContext.getContext());
+		List<Element> commentd = XmlUtil.loadCommentedElements(thatContext.getContext());
 		assertTables(commentd, "table3", "table4", "table5", "table2");
 	}
 	

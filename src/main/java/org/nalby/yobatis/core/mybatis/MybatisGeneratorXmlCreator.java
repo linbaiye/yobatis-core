@@ -31,6 +31,7 @@ import org.nalby.yobatis.core.structure.Folder;
 import org.nalby.yobatis.core.structure.PomTree;
 import org.nalby.yobatis.core.util.Expect;
 import org.nalby.yobatis.core.util.FolderUtil;
+import org.nalby.yobatis.core.util.XmlUtil;
 import org.nalby.yobatis.core.xml.AbstractXmlParser;
 
 /**
@@ -109,22 +110,18 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 				"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd");
 		document.setDocType(type);
 	}
-	
+
 	@Override
 	public String asXmlText() {
-		try {
-			if (document == null) {
-				createDocument();
-				root = factory.createElement(ROOT_TAG);
-				document.setRootElement(root);
-				root.add(classPathEntry);
-				for (MybatisGeneratorContext thisContext : contexts) {
-					root.add(thisContext.getContext().createCopy());
-				}
+		if (document == null) {
+			createDocument();
+			root = factory.createElement(ROOT_TAG);
+			document.setRootElement(root);
+			root.add(classPathEntry);
+			for (MybatisGeneratorContext thisContext : contexts) {
+				root.add(thisContext.getContext().createCopy());
 			}
-			return AbstractXmlParser.toXmlString(document);
-		} catch (IOException e) {
-			throw new InvalidMybatisGeneratorConfigException(e);
 		}
+		return XmlUtil.toXmlString(document);
 	}
 }
