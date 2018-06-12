@@ -121,7 +121,17 @@ public class PomNode extends AbstractXmlParser {
      * @return the property if found, null else.
      */
     public String getProperty(String name) {
-        return properties.get(name);
+        String val = properties.get(name);
+        if (val != null) {
+            return val;
+        }
+        for (PomNode child : children) {
+            String v = child.getProperty(name);
+            if (v != null) {
+                return v;
+            }
+        }
+        return null;
     }
 
     public Set<String> getModuleNames() {
