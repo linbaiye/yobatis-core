@@ -98,21 +98,21 @@ public abstract class BaseCriteria {
             return criteria;
         }
 
-        protected void addCriterion(String condition) {
+        public void addCriterion(String condition) {
             if (condition == null) {
                 throw new IllegalArgumentException("Value for condition cannot be null");
             }
             criteria.add(new Criterion(condition));
         }
 
-        protected void addCriterion(String condition, Object value, String property) {
+        public void addCriterion(String condition, Object value, String property) {
             if (value == null) {
                 throw new IllegalArgumentException("Value for " + property + " cannot be null");
             }
             criteria.add(new Criterion(condition, value));
         }
 
-        protected void addCriterion(String condition, Object value1, Object value2, String property) {
+        public void addCriterion(String condition, Object value1, Object value2, String property) {
             if (value1 == null || value2 == null) {
                 throw new IllegalArgumentException("Between values for " + property + " cannot be null");
             }
@@ -167,7 +167,6 @@ public abstract class BaseCriteria {
         public void addCriterionForJDBCTime(String condition, Date value1, Date value2, String property) {
             if (value1 == null || value2 == null) {
                 throw new IllegalArgumentException("Between values for " + property + " cannot be null");
-
             }
             addCriterion(condition, new java.sql.Time(value1.getTime()), new java.sql.Time(value2.getTime()), property);
         }

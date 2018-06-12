@@ -8,6 +8,7 @@ import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.nalby.yobatis.core.mybatis.YobatisJavaFile;
 
+import java.awt.image.ImagingOpException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -501,6 +502,11 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
             innerClass.getJavaDocLines().clear();
             innerClass.getMethods().removeIf((Method method) ->
                     method.getName().startsWith("and") && method.getReturnType().getShortName().equals("Criteria"));
+            for (Method method : innerClass.getMethods()) {
+                if ("addCriterion".equals(method.getName())) {
+                    method.setVisibility(JavaVisibility.PUBLIC);
+                }
+            }
             base.addInnerClass(innerClass);
         }
     }

@@ -17,9 +17,9 @@ package org.nalby.yobatis.core.log;
 
 public interface Logger {
 
-	public void info(String fomart, Object ... args);
+	void info(String fomart, Object ... args);
 
-	public void error(String fomart, Object ... args);
+	void error(String fomart, Object ... args);
 
-	public void debug(String fomart, Object ... args);
+	void debug(String fomart, Object ... args);
 }
