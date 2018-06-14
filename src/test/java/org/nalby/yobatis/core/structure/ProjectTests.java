@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.nalby.yobatis.core.util.FolderUtil;
 import org.nalby.yobatis.core.util.TestUtil;
 
 public class ProjectTests {
@@ -92,7 +93,7 @@ public class ProjectTests {
 	@SuppressWarnings("unchecked")
 	public void listEmptyFolders() {
 		when(mockedFolder.listFolders()).thenReturn(Collections.EMPTY_LIST);
-		assertTrue(Project.listAllFolders(mockedFolder).isEmpty());
+		assertTrue(FolderUtil.listAllFolders(mockedFolder).isEmpty());
 	}
 	
 	@Test
@@ -106,7 +107,7 @@ public class ProjectTests {
 
 		when(depth2.listFolders()).thenReturn(Collections.EMPTY_LIST);
 
-		Set<Folder> ret = Project.listAllFolders(mockedFolder);
+		Set<Folder> ret = FolderUtil.listAllFolders(mockedFolder);
 		TestUtil.assertCollectionSizeAndContains(ret, 2, depth1, depth2);
 	}
 	
@@ -122,7 +123,7 @@ public class ProjectTests {
 		when(depth1.listFolders()).thenReturn(Collections.EMPTY_LIST);
 		when(depth1.listFiles()).thenReturn(Arrays.asList(file2));
 
-		Set<File> ret = Project.listAllFiles(mockedFolder);
+		Set<File> ret = FolderUtil.listAllFiles(mockedFolder);
 		TestUtil.assertCollectionSizeAndContains(ret, 2, file, file2);
 	}
 	

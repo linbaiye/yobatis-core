@@ -268,7 +268,7 @@ public class PomTree {
 		List<Folder> sourceCodeFolders = lookupSourceCodeFolders();
 		List<Folder> folders = new LinkedList<Folder>();
 		for (Folder sourceCodeFolder: sourceCodeFolders) {
-			for (Folder folder: Project.listAllFolders(sourceCodeFolder)) {
+			for (Folder folder: FolderUtil.listAllFolders(sourceCodeFolder)) {
 				if (selector.isSelected(folder)) {
 					folders.add(folder);
 				}
@@ -355,7 +355,7 @@ public class PomTree {
 			if (sourceCodeFolder == null) {
 				continue;
 			}
-			for (Folder folder : Project.listAllFolders(pom.getSourceCodeFolder())) {
+			for (Folder folder : FolderUtil.listAllFolders(pom.getSourceCodeFolder())) {
 				if (modelFolder != folder) {
 					continue;
 				}
@@ -386,7 +386,7 @@ public class PomTree {
 			boolean found = false;
 			// There might be more than one dao folders under this pom.
 			daoFolders.clear();
-			for (Folder folder : Project.listAllFolders(sourceCodeFolder)) {
+			for (Folder folder : FolderUtil.listAllFolders(sourceCodeFolder)) {
 				if (isDaoPath(folder.path())) {
 					daoFolders.add(folder);
 				} else if (modelFolder == folder) {

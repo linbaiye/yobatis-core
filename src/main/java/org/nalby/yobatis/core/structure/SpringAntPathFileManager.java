@@ -82,7 +82,7 @@ public class SpringAntPathFileManager {
 	 */
 	private void matchFilesInFolder(Pom pom, Folder folder, String antPattern, Set<File> result) {
 		String antpath = FolderUtil.concatPath(folder.path(), antPattern);
-		for (File file: Project.listAllFiles(folder)) {
+		for (File file: FolderUtil.listAllFiles(folder)) {
 			if (antpath.equals(file.path()) || antPathMatcher.match(antpath, file.path())) {
 				fileToPom.put(file, pom);
 				result.add(file);
