@@ -17,11 +17,11 @@ package org.nalby.yobatis.core.mybatis;
 
 public interface MybatisGenerator {
 
-	public final static String CONFIG_FILENAME = "mybatisGeneratorConfig.xml";
+	String CONFIG_FILENAME = "mybatisGeneratorConfig.xml";
 
-	public final static String ROOT_TAG = "generatorConfiguration";
+	String ROOT_TAG = "generatorConfiguration";
 	
-	public final static String CLASS_PATH_ENTRY_TAG = "classPathEntry";
+	String CLASS_PATH_ENTRY_TAG = "classPathEntry";
 
 	String asXmlText();
 }

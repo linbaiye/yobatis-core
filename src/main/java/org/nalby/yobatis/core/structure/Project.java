@@ -31,11 +31,6 @@ public abstract class Project implements Folder {
 	public Project(Folder root) {
 		this.root = root;
 	}
-	/**
-	 * It is left to the platform to find out where the maven repository is.
-	 * @return the maven path, null if failed to find.
-	 */
-	abstract protected String findMavenRepositoryPath();
 
 	private String wipeRootFolderPath(String path) {
 		Expect.notEmpty(path, "path must not be empty.");
@@ -48,12 +43,11 @@ public abstract class Project implements Folder {
 		return path;
 	}
 
+	/**
+	 * It is left to the platform to find out where the maven repository is.
+	 * @return the maven path, null if failed to find.
+	 */
 	abstract public String getAbsPathOfSqlConnector();
-
-	public String concatMavenRepositoryPath(String path) {
-		Expect.notEmpty(path, "path must not be null.");
-		return FolderUtil.concatPath(findMavenRepositoryPath(), path);
-	}
 
 	@Override
 	public String path() {

@@ -31,8 +31,8 @@ import org.nalby.yobatis.core.database.mysql.MysqlDatabaseMetadataProvider.Build
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Folder;
 import org.nalby.yobatis.core.structure.Project;
-import org.nalby.yobatis.core.structure.SpringParser;
-import org.nalby.yobatis.core.structure.WebContainerParser;
+import org.nalby.yobatis.core.structure.pom.ProjectPom;
+import org.nalby.yobatis.core.structure.spring.SpringParser;
 
 public class Yobatis {
 
@@ -43,29 +43,22 @@ public class Yobatis {
 	 */
 	private static MybatisGeneratorXmlCreator buildMybatisGeneratorXmlCreator(Project project) {
 
-		PomTree pomTree = new PomTree(project);
 
-		WebContainerParser webContainerParser = new WebContainerParser(pomTree.getWarPom());
-
-		SpringAntPathFileManager fileManager = new SpringAntPathFileManager(pomTree);
-
-		SpringParser springParser = new SpringParser(fileManager, 
-				webContainerParser.searchInitParamValues());
+		SpringParser springParser = SpringParser.parse(project);
 
 		Builder builder = MysqlDatabaseMetadataProvider.builder();
 		builder.setConnectorJarPath(project.getAbsPathOfSqlConnector())
-		.setDriverClassName(springParser.getDatabaseDriverClassName())
-		.setUsername(springParser.getDatabaseUsername())
-		.setPassword(springParser.getDatabasePassword())
-		.setUrl(springParser.getDatabaseUrl());
+		.setUsername(springParser.lookupDbUser())
+		.setPassword(springParser.lookupDbPassword())
+		.setUrl(springParser.lookupDbUrl())
+		.setDriverClassName(springParser.lookupDbDriver());
 
 		DatabaseMetadataProvider provider = builder.build();
 
-		List<Folder> modelFolders = pomTree.lookupModelFolders();
-		TokenSimilarityTableGrouper grouper = new TokenSimilarityTableGrouper(modelFolders);
-		List<TableGroup> groups = grouper.group(provider.getTables());
+		ProjectPom projectPom = ProjectPom.parse(project);
+		return null;
 
-		return new MybatisGeneratorXmlCreator(pomTree, provider, groups);
+		//return new MybatisGeneratorXmlCreator(pomTree, provider, groups);
 	}
 	
 

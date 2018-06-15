@@ -49,6 +49,11 @@ public class SpringParser implements Spring {
         return selectDbProperty(SpringNode::getDbUrl);
     }
 
+    @Override
+    public String lookupDbDriver() {
+        return "com.mysql.jdbc.Driver";
+    }
+
 
     public static SpringParser parse(Folder projectFolder) {
         Set<File> fileSet = FolderUtil.listAllFiles(projectFolder);

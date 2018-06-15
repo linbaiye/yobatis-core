@@ -8,4 +8,6 @@ public interface Spring {
 
     String lookupDbUrl();
 
+    String lookupDbDriver();
+
 }

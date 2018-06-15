@@ -15,24 +15,25 @@
  */
 package org.nalby.yobatis.core.mybatis;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
 import org.dom4j.DocumentType;
 import org.dom4j.Element;
-import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
+import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.log.LogFactory;
 import org.nalby.yobatis.core.log.Logger;
-import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.structure.Folder;
+import org.nalby.yobatis.core.structure.MavenProject;
 import org.nalby.yobatis.core.structure.PomTree;
+import org.nalby.yobatis.core.structure.Project;
 import org.nalby.yobatis.core.util.Expect;
 import org.nalby.yobatis.core.util.FolderUtil;
 import org.nalby.yobatis.core.util.XmlUtil;
-import org.nalby.yobatis.core.xml.AbstractXmlParser;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Generate MyBaits Generator's configuration file according to current project structure.
@@ -51,7 +52,7 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 	
 	private DocumentFactory factory = DocumentFactory.getInstance();
 
-	private Logger logger = LogFactory.getLogger(MybatisGeneratorXmlCreator.class);
+	private final static Logger logger = LogFactory.getLogger(MybatisGeneratorXmlCreator.class);
 	
 	private List<MybatisGeneratorContext> contexts;
 
@@ -124,4 +125,19 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 		}
 		return XmlUtil.toXmlString(document);
 	}
+
+	private static Set<Folder> findFoldersContainingSubPath(Folder folder, final String subPath) {
+		Set<Folder> folders = FolderUtil.listAllFolders(folder);
+		folders.removeIf(next -> !next.path().contains(subPath));
+		return folders;
+	}
+
+	public static MybatisGeneratorXmlCreator create(Project project) {
+	    Set<Folder> sourceCodeFolders = findFoldersContainingSubPath(project, "src/main/java");
+		Set<Folder> resourceFolders = findFoldersContainingSubPath(project, "src/main/resources");
+		MybatisGeneratorXmlCreator mybatisGeneratorXmlCreator = new MybatisGeneratorXmlCreator();
+	    return mybatisGeneratorXmlCreator;
+	}
+
+
 }

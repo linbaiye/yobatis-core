@@ -107,16 +107,6 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 		}
 	}
 	
-	public Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(timedoutUrl);
-	}
-	
-	
-	private static void loadSqlDriver(String driverClassName) throws ClassNotFoundException {
-		Class.forName(driverClassName);
-	}
-	
-	
 	public static class Builder {
 		private String username;
 		private String password;
@@ -151,7 +141,7 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 			Expect.notEmpty(connectorJarPath, "connectorJarPath must not be null.");
 			Expect.notEmpty(driverClassName, "driverClassName must not be null.");
 			try {
-				loadSqlDriver(driverClassName);
+				Class.forName(driverClassName);
 				return new MysqlDatabaseMetadataProvider(username, password, url, driverClassName, connectorJarPath);
 			} catch (Exception e) {
 				throw new InvalidSqlConfigException(e);

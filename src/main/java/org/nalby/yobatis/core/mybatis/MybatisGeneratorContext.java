@@ -35,8 +35,6 @@ import org.nalby.yobatis.core.xml.AbstractXmlParser;
  */
 public class MybatisGeneratorContext {
 	
-	public final static String DEFAULT_CONTEXT_ID = "yobatis";
-
 	public final static String TARGET_RUNTIME = "MyBatis3";
 
 	public final static String MODEL_GENERATOR_TAG = "javaModelGenerator";
@@ -170,7 +168,7 @@ public class MybatisGeneratorContext {
 	
 	private Element createYobatisDaoPlugin() {
 		Element yobatisPluginElement = factory.createElement(PLUGIN_TAG);
-		yobatisPluginElement.addAttribute("type",   YOBATIS_DAO_PLUGIN);
+		yobatisPluginElement.addAttribute("type", YOBATIS_DAO_PLUGIN);
 		return yobatisPluginElement;
 	}
 	
