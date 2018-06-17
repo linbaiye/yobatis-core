@@ -38,6 +38,7 @@ public abstract class BaseCriteria {
         oredCriteria.add(criteria);
     }
 
+    @Deprecated
     public Criteria createCriteria() {
         Criteria criteria = createCriteriaInternal();
         if (oredCriteria.size() == 0) {

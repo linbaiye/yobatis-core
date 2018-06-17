@@ -19,11 +19,6 @@ public class CustomerCriteria extends BaseCriteria {
         PROPERTY_TO_COLUMN.put("f2", "f2");
     }
 
-    public CustomerCriteria setDistinct(boolean distinct) {
-        this.distinct = distinct;
-        return this;
-    }
-
     private void orderBy(String order, String ... fields) {
         if ( fields == null || fields.length == 0) {
             throw new IllegalArgumentException("Empty fields passed.");

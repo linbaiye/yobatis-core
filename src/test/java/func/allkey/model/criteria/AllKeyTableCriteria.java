@@ -16,11 +16,6 @@ public class AllKeyTableCriteria extends BaseCriteria {
         PROPERTY_TO_COLUMN.put("pk2", "pk2");
     }
 
-    public AllKeyTableCriteria setDistinct(boolean distinct) {
-        this.distinct = distinct;
-        return this;
-    }
-
     private void orderBy(String order, String ... fields) {
         if ( fields == null || fields.length == 0) {
             throw new IllegalArgumentException("Empty fields passed.");

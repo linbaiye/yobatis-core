@@ -9,6 +9,8 @@ public interface AbstractCommonMethodFactory {
 
     Method protectedMethod(String name, String returnType);
 
+    Method finalProtectedMethod(String name, String returnType);
+
     Method privateMethod(String name, String returnType);
 
     Method getter(String name, String type);

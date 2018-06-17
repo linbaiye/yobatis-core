@@ -67,14 +67,14 @@ public abstract class BaseDaoImpl<T extends B, B, PK> implements BaseDao<T, B, P
         }
     }
 
-    protected final void validateCriteria(BaseCriteria criteria) {
+    protected void validateCriteria(BaseCriteria criteria) {
         notNull(criteria, "criteria must not be null.");
         if (criteria.getOredCriteria().isEmpty()) {
             throw new IllegalArgumentException("criteria must not be empty.");
         }
     }
 
-    protected final Map<String, Object> makeParam(B record, BaseCriteria criteria) {
+    protected Map<String, Object> makeParam(B record, BaseCriteria criteria) {
         notNull(record, "record must not be null.");
         validateCriteria(criteria);
         Map<String, Object> param = new HashMap<>();
