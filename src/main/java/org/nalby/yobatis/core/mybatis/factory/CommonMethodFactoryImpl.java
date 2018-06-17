@@ -33,6 +33,13 @@ public class CommonMethodFactoryImpl implements AbstractCommonMethodFactory {
     }
 
     @Override
+    public Method finalProtectedMethod(String name, String returnType) {
+        Method method = protectedMethod(name, returnType);
+        method.setFinal(true);
+        return method;
+    }
+
+    @Override
     public Method privateMethod(String name, String returnType) {
         return createMethod(name, returnType, JavaVisibility.PRIVATE);
     }

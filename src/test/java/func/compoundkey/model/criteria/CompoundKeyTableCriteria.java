@@ -17,11 +17,6 @@ public class CompoundKeyTableCriteria extends BaseCriteria {
         PROPERTY_TO_COLUMN.put("f3", "f3");
     }
 
-    public CompoundKeyTableCriteria setDistinct(boolean distinct) {
-        this.distinct = distinct;
-        return this;
-    }
-
     private void orderBy(String order, String ... fields) {
         if ( fields == null || fields.length == 0) {
             throw new IllegalArgumentException("Empty fields passed.");

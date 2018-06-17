@@ -13,23 +13,17 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
 
     private AbstractDaoMethodFactory signatureFactory;
 
+    private AbstractCommonMethodFactory commonMethodFactory;
+
     private DaoMethodImplFactory() {
         signatureFactory = DaoMethodSignatureFactory.getInstance();
+        commonMethodFactory = CommonMethodFactoryImpl.getInstance();
     }
 
     public static DaoMethodImplFactory getInstance() {
         return publicMethodImplFactory;
     }
 
-    private Method createProtectedMethod(String name, String returnType) {
-        Method method = new Method(name);
-        if (returnType != null) {
-            method.setReturnType(new FullyQualifiedJavaType(returnType));
-        }
-        method.setVisibility(JavaVisibility.PROTECTED);
-        method.setFinal(true);
-        return method;
-    }
 
     private Method decorateMethod(Method method, String ... bodyLines) {
         method.addAnnotation(OVERRIDE_ANNOTATION);
@@ -143,7 +137,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
 
     @Override
     public Method doSelectOne() {
-        Method method = createProtectedMethod("doSelectOne","T");
+        Method method = commonMethodFactory.finalProtectedMethod("doSelectOne","T");
         Parameter parameter = new Parameter(new FullyQualifiedJavaType("String"), "statement");
         method.addParameter(parameter);
         parameter = new Parameter(new FullyQualifiedJavaType("Object"), "parameter");
@@ -154,7 +148,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
 
     @Override
     public Method doSelectList() {
-        Method method = createProtectedMethod("doSelectList", "List<T>");
+        Method method = commonMethodFactory.finalProtectedMethod("doSelectList", "List<T>");
         Parameter parameter = new Parameter(new FullyQualifiedJavaType("String"), "statement");
         method.addParameter(parameter);
         parameter = new Parameter(new FullyQualifiedJavaType("Object"), "parameter");
@@ -165,7 +159,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
 
     @Override
     public Method doUpdate() {
-        Method method = createProtectedMethod("doUpdate", "int");
+        Method method = commonMethodFactory.finalProtectedMethod("doUpdate", "int");
         Parameter parameter = new Parameter(new FullyQualifiedJavaType("String"), "statement");
         method.addParameter(parameter);
         parameter = new Parameter(new FullyQualifiedJavaType("Object"), "parameter");
@@ -176,7 +170,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
 
     @Override
     public Method doInsert() {
-        Method method = createProtectedMethod("doInsert", "int");
+        Method method = commonMethodFactory.finalProtectedMethod("doInsert", "int");
         Parameter parameter = new Parameter(new FullyQualifiedJavaType("String"), "statement");
         method.addParameter(parameter);
         parameter = new Parameter(new FullyQualifiedJavaType("Object"), "parameter");
@@ -187,7 +181,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
 
     @Override
     public Method doDelete() {
-        Method method = createProtectedMethod("doDelete", "int");
+        Method method = commonMethodFactory.finalProtectedMethod("doDelete", "int");
         Parameter parameter = new Parameter(new FullyQualifiedJavaType("String"), "statement");
         method.addParameter(parameter);
         parameter = new Parameter(new FullyQualifiedJavaType("Object"), "parameter");
@@ -198,7 +192,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
 
     @Override
     public Method notNull() {
-        Method method = createProtectedMethod("notNull", null);
+        Method method = commonMethodFactory.finalProtectedMethod("notNull", "void");
         Parameter parameter = new Parameter(new FullyQualifiedJavaType("Object"), "object");
         method.addParameter(parameter);
         parameter = new Parameter(new FullyQualifiedJavaType("String"), "errMsg");
@@ -211,7 +205,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
 
     @Override
     public Method validateCriteria() {
-        Method method = createProtectedMethod("validateCriteria", null);
+        Method method = commonMethodFactory.protectedMethod("validateCriteria", "void");
         Parameter parameter = new Parameter(
                 new FullyQualifiedJavaType("BaseCriteria"), "criteria");
         method.addParameter(parameter);
@@ -224,7 +218,7 @@ public class DaoMethodImplFactory implements AbstractDaoMethodFactory, AbstractD
 
     @Override
     public Method makeParam() {
-        Method method = createProtectedMethod("makeParam", "Map<String, Object>");
+        Method method = commonMethodFactory.protectedMethod("makeParam", "Map<String, Object>");
         Parameter parameter = new Parameter(new FullyQualifiedJavaType("B"), "record");
         method.addParameter(parameter);
         parameter = new Parameter(new FullyQualifiedJavaType("BaseCriteria"), "criteria");

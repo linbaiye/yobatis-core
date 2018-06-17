@@ -353,6 +353,8 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
             } else if (method.getName().equals("createCriteriaInternal")) {
                 method.getBodyLines().clear();
                 method.addBodyLine("return new Criteria();");
+            } else if (method.getName().endsWith("createCriteria") && method.getParameters().isEmpty()) {
+                method.addAnnotation("@Deprecated");
             }
             method.getJavaDocLines().clear();
             base.addMethod(method);
@@ -547,7 +549,7 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
         field.setVisibility(JavaVisibility.PRIVATE);
         topLevelClass.addField(field);
         InitializationBlock initializationBlock = new InitializationBlock(true);
-        initializationBlock.addBodyLine("PROPERTY_TO_COLUMN = new HashMap<String, String>();");
+        initializationBlock.addBodyLine("PROPERTY_TO_COLUMN = new HashMap<>();");
         List<IntrospectedColumn> introspectedColumns =  table.getAllColumns();
         for (IntrospectedColumn column : introspectedColumns) {
             initializationBlock.addBodyLine(String.format("PROPERTY_TO_COLUMN.put(\"%s\", \"%s\");", column.getJavaProperty(), column.getActualColumnName()));
@@ -700,15 +702,12 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
                     method.getName().equals("createCriteriaInternal") ||
                     method.getName().equals("createCriteria") ||
                     method.getName().equals("or") ||
+                    method.getName().equals("setDistinct") ||
                     method.isConstructor()) {
                 continue;
             }
             Method newMethod = new Method(method);
             newMethod.getJavaDocLines().clear();
-            if ("setDistinct".equals(newMethod.getName())) {
-                newMethod.setReturnType(src.getType());
-                newMethod.addBodyLine("return this;");
-            }
             dst.addMethod(newMethod);
         }
         return dst;
