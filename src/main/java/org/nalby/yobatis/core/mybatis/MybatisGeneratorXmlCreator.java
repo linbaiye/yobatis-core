@@ -28,12 +28,10 @@ import org.nalby.yobatis.core.structure.PomTree;
 import org.nalby.yobatis.core.structure.Project;
 import org.nalby.yobatis.core.util.Expect;
 import org.nalby.yobatis.core.util.FolderUtil;
+import org.nalby.yobatis.core.util.TextUtil;
 import org.nalby.yobatis.core.util.XmlUtil;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Generate MyBaits Generator's configuration file according to current project structure.
@@ -55,6 +53,11 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 	private final static Logger logger = LogFactory.getLogger(MybatisGeneratorXmlCreator.class);
 	
 	private List<MybatisGeneratorContext> contexts;
+
+	private MybatisGeneratorXmlCreator() {
+	    contexts = new LinkedList<>();
+	}
+
 
 	public MybatisGeneratorXmlCreator(PomTree pomTree, 
 			DatabaseMetadataProvider sql,
@@ -132,11 +135,85 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 		return folders;
 	}
 
-	public static MybatisGeneratorXmlCreator create(Project project) {
-	    Set<Folder> sourceCodeFolders = findFoldersContainingSubPath(project, "src/main/java");
-		Set<Folder> resourceFolders = findFoldersContainingSubPath(project, "src/main/resources");
+	private final static List<String> DAO_FOLDER_KEYWORDS = Arrays.asList("dao", "repository", "mapper");
+
+	private final static List<String> MODEL_FOLDER_KEYWORDS = Arrays.asList("model", "domain","entity");
+
+	private final static String SOURCE_CODE_FOLDER_SUBSTR = "src/main/java";
+
+	private final static String RESOURCE_FOLDER_SUBSTR = "src/main/resources";
+
+	private static Folder findModelFolder(Set<Folder> sourceCodeFolders) {
+		for (Folder folder : sourceCodeFolders) {
+			for (String tmp : MODEL_FOLDER_KEYWORDS) {
+				if (folder.name().contains(tmp)) {
+				    return folder;
+				}
+			}
+		}
+		return null;
+	}
+
+	private static int calCommonTokenNumber(String str1, String str2) {
+		int count = 0;
+		String[] tokens1 = str1.split("/");
+		String[] tokens2 = str2.split("/");
+		for (String s : tokens1) {
+			for (String s1 : tokens2) {
+			    if (s.equals(s1)) {
+			    	++count;
+				}
+			}
+		}
+		return count;
+	}
+
+
+	private static Folder findMostRelevantFolder(String targetPath, Set<Folder> folderSet) {
+	    int amountOfCommonToken = 0;
+	    Folder target = null;
+	    if (TextUtil.isEmpty(targetPath)) {
+			for (Folder folder : folderSet) {
+			    return folder;
+            }
+            return null;
+		}
+		for (Folder folder : folderSet) {
+			int nr = calCommonTokenNumber(targetPath, folder.path());
+			if (amountOfCommonToken == 0 || amountOfCommonToken < nr) {
+				amountOfCommonToken = nr;
+				target = folder;
+			}
+		}
+		return target;
+	}
+
+	public static MybatisGeneratorXmlCreator create(Project project, DatabaseMetadataProvider databaseMetadataProvider) {
+		Set<Folder> sourceCodeFolders = findFoldersContainingSubPath(project, SOURCE_CODE_FOLDER_SUBSTR);
+		Set<Folder> resourceFolders = findFoldersContainingSubPath(project, RESOURCE_FOLDER_SUBSTR);
+		Folder modelFolder = findModelFolder(sourceCodeFolders);
+		String modelPath = modelFolder == null ? null : modelFolder.path();
+
+		Folder daoFolder = findMostRelevantFolder(modelPath, sourceCodeFolders);
+		String daoPath = daoFolder == null ? null : daoFolder.path();
+
+		Folder resourceFolder = findMostRelevantFolder(daoPath, resourceFolders);
+		String resourcePath = resourceFolder == null ? null : resourceFolder.path();
+
+		MybatisGeneratorContext.Builder builder =  new MybatisGeneratorContext.Builder();
+		builder.setDbUser(databaseMetadataProvider.getUsername());
+		builder.setDbUrl(databaseMetadataProvider.getUrl());
+		builder.setDbPassword(databaseMetadataProvider.getPassword());
+		builder.setDbDriver(databaseMetadataProvider.getDriverClassName());
+		builder.setModelPath(modelPath);
+		builder.setDaoPath(daoPath);
+		builder.setResourcePath(resourcePath);
+		builder.setTableList(databaseMetadataProvider.getTables());
+		builder.setContextId("yobatis");
+
 		MybatisGeneratorXmlCreator mybatisGeneratorXmlCreator = new MybatisGeneratorXmlCreator();
-	    return mybatisGeneratorXmlCreator;
+
+		return mybatisGeneratorXmlCreator;
 	}
 
 

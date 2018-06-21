@@ -20,11 +20,6 @@ public class ProjectTests {
 
 	private class TestedProject extends Project {
 		@Override
-		protected String findMavenRepositoryPath() {
-			return "maven";
-		}
-
-		@Override
 		public String getAbsPathOfSqlConnector() {
 			return null;
 		}
@@ -45,12 +40,7 @@ public class ProjectTests {
 	}
 	
 	
-	@Test
-	public void contcat() {
-		assertTrue(project.concatMavenRepositoryPath("/test").equals("maven/test"));
-	}
-	
-	
+
 	@Test
 	public void pathAndName() {
 		assertTrue(project.name() == "test");

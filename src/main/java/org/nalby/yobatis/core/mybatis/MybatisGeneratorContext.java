@@ -15,10 +15,9 @@
  */
 package org.nalby.yobatis.core.mybatis;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
@@ -28,14 +27,13 @@ import org.nalby.yobatis.core.util.FolderUtil;
 import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.Table;
 import org.nalby.yobatis.core.util.XmlUtil;
-import org.nalby.yobatis.core.xml.AbstractXmlParser;
 
 /**
  * Abstraction of MyBatis Generator's context.
  */
 public class MybatisGeneratorContext {
 	
-	public final static String TARGET_RUNTIME = "MyBatis3";
+	private final static String TARGET_RUNTIME = "MyBatis3";
 
 	public final static String MODEL_GENERATOR_TAG = "javaModelGenerator";
 
@@ -43,9 +41,9 @@ public class MybatisGeneratorContext {
 
 	public final static String CLIENT_GENERATOR_TAG = "javaClientGenerator";
 
-	public final static String TABLE_TAG = "table";
+	private final static String TABLE_TAG = "table";
 
-	public final static String PLUGIN_TAG = "plugin";
+	private final static String PLUGIN_TAG = "plugin";
 
 	public final static String YOBATIS_DAO_PLUGIN = "org.mybatis.generator.plugins.YobatisDaoPlugin";
 	
@@ -71,6 +69,15 @@ public class MybatisGeneratorContext {
 	
 	private String id;
 
+	@SuppressWarnings("unchecked")
+	private MybatisGeneratorContext(String id) {
+		this.id = id;
+		plugins = new LinkedList<>();
+		commentedElements = new LinkedList<>();
+		tableElements = new LinkedList<>();
+		jdbConnection = factory.createElement("jdbcConnection");
+	}
+
 	/**
 	 * Construct a MybatisGeneratorContext according to database details.
 	 * @param id the context id.
@@ -83,7 +90,6 @@ public class MybatisGeneratorContext {
 		this.id = id;
 		plugins = new ArrayList<>();
 		tableElements = new ArrayList<>();
-		plugins.add(createYobatisDaoPlugin());
 		createJdbcConnection(databaseMetadataProvider);
 		createTypeResolver();
 		commentedElements = Collections.EMPTY_LIST;
@@ -149,6 +155,10 @@ public class MybatisGeneratorContext {
 		jdbConnection.addAttribute("userId", sql.getUsername());
 		jdbConnection.addAttribute("password", sql.getPassword());
 	}
+
+	private void addJdbcConnectionAttr(String name, String value) {
+		jdbConnection.addAttribute(name, value);
+	}
 	
 	private String packageNameOfFolder(Folder folder) {
 		if (folder == null) {
@@ -170,6 +180,10 @@ public class MybatisGeneratorContext {
 		Element yobatisPluginElement = factory.createElement(PLUGIN_TAG);
 		yobatisPluginElement.addAttribute("type", YOBATIS_DAO_PLUGIN);
 		return yobatisPluginElement;
+	}
+
+	private void addYobatisDaoPlugin() {
+	    plugins.add(createYobatisDaoPlugin());
 	}
 	
 	private Element findTable(List<Element> elements, Element table) {
@@ -243,6 +257,12 @@ public class MybatisGeneratorContext {
 		javaModel.addAttribute("targetProject", sourceCodePath(folder));
 	}
 
+	private void createJavaModelGenerator(String targetPackage, String targetProject) {
+		javaModel = factory.createElement(MODEL_GENERATOR_TAG);
+		javaModel.addAttribute("targetPackage", targetPackage);
+		javaModel.addAttribute("targetProject", targetProject);
+	}
+
 	/**
 	 * Create the sqlMapGenerator element according to the resource folder,
 	 * if the model folder is null, the targetProject will be empty.
@@ -253,6 +273,12 @@ public class MybatisGeneratorContext {
 		xmlMapper = factory.createElement(SQLMAP_GENERATOR_TAG);
 		xmlMapper.addAttribute("targetPackage", "mybatis-mappers");
 		xmlMapper.addAttribute("targetProject", folder == null? "" : folder.path());
+	}
+
+	private void createXmlMapperGenerator(String targetProject) {
+		xmlMapper = factory.createElement(SQLMAP_GENERATOR_TAG);
+		xmlMapper.addAttribute("targetPackage", "mybatis-mappers");
+		xmlMapper.addAttribute("targetProject", targetProject);
 	}
 	
 	/**
@@ -267,6 +293,13 @@ public class MybatisGeneratorContext {
 		javaClient.addAttribute("type", "XMLMAPPER");
 		javaClient.addAttribute("targetPackage", packageNameOfFolder(folder));
 		javaClient.addAttribute("targetProject", sourceCodePath(folder));
+	}
+
+	private void createJavaClientGenerator(String packageName, String projectName) {
+		javaClient = factory.createElement(CLIENT_GENERATOR_TAG);
+		javaClient.addAttribute("type", "XMLMAPPER");
+		javaClient.addAttribute("targetPackage", packageName);
+		javaClient.addAttribute("targetProject", projectName);
 	}
 	
 
@@ -345,4 +378,106 @@ public class MybatisGeneratorContext {
 			}
 		}
 	}
+
+	public static class Builder {
+		private String daoPath;
+
+		private String modelPath;
+
+		private String resourcePath;
+
+		private List<Table> tableList;
+
+		private String dbUser;
+
+		private String dbPassword;
+
+		private String dbUrl;
+
+		private String dbDriver;
+
+		private String contextId;
+
+		public void setContextId(String contextId) {
+			this.contextId = contextId;
+		}
+
+		public void setDbUser(String dbUser) {
+			this.dbUser = dbUser;
+		}
+
+		public void setDbPassword(String dbPassword) {
+			this.dbPassword = dbPassword;
+		}
+
+		public void setDbUrl(String dbUrl) {
+			this.dbUrl = dbUrl;
+		}
+
+		public void setDbDriver(String dbDriver) {
+			this.dbDriver = dbDriver;
+		}
+
+		public void setDaoPath(String daoPath) {
+			this.daoPath = daoPath;
+		}
+
+		public void setModelPath(String modelPath) {
+			this.modelPath = modelPath;
+		}
+
+		public void setResourcePath(String resourcePath) {
+			this.resourcePath = resourcePath;
+		}
+
+		public void setTableList(List<Table> tableList) {
+			this.tableList = tableList;
+		}
+
+		private String getSchema() {
+			if (dbUrl == null) {
+				return "";
+			}
+			Pattern pattern = Pattern.compile("jdbc:mysql://[^/]+/([^?]+).*");
+			Matcher matcher = pattern.matcher(dbUrl);
+			return matcher.find() ? matcher.group(1) : "";
+		}
+
+		private String parsePackage(String path) {
+			if (path == null) {
+			    return "";
+			}
+			String tmp = FolderUtil.extractPackageName(path);
+			return tmp == null ? "" : tmp;
+		}
+
+		private String parseProject(String path) {
+			if (path == null) {
+				return "";
+			}
+			String tmp = FolderUtil.wipePackagePath(path);
+			return tmp == null ? "" : tmp;
+		}
+
+		public MybatisGeneratorContext build() {
+		    Expect.notNull(contextId, "contextId must not be null");
+		    MybatisGeneratorContext context = new MybatisGeneratorContext(contextId);
+		    context.addJdbcConnectionAttr("driverClass", dbDriver == null ? "" : dbDriver);
+			context.addJdbcConnectionAttr("connectionURL", dbUrl == null ? "" : dbUrl);
+			context.addJdbcConnectionAttr("userId", dbUser == null ? "" : dbUser);
+			context.addJdbcConnectionAttr("password", dbPassword == null ? "" : dbPassword);
+			context.addYobatisDaoPlugin();
+			context.createJavaClientGenerator(parsePackage(daoPath), parseProject(daoPath));
+			context.createJavaModelGenerator(parsePackage(modelPath), parseProject(modelPath));
+			context.createXmlMapperGenerator(parseProject(resourcePath));
+			context.createTypeResolver();
+			if (tableList != null && !tableList.isEmpty()) {
+				String schema = getSchema();
+				context.appendTables(tableList, schema);
+			}
+			return context;
+		}
+
+	}
+
 }

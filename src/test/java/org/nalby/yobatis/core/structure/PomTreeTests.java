@@ -81,14 +81,7 @@ public class PomTreeTests {
 		sourceCodeFolders.add(model);
 
 		when(sourceCodeFolder.listFolders()).thenReturn(sourceCodeFolders);
-		
-		when(project.concatMavenRepositoryPath(anyString())).then((InvocationOnMock invocation) -> {
-			String arg = (String) invocation.getArguments()[0];
-			if (arg.contains("mysql-connector-java")) {
-				return "/m2/" + arg;
-			}
-			return null;
-		});
+
 	}
 	
 

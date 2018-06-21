@@ -236,7 +236,7 @@ public class PomTree {
 			PomXmlParser parser = ((PomNode)node).getParser();
 			String tmp = parser.dbConnectorJarRelativePath(driverClassName);
 			if (tmp != null) {
-				return project.concatMavenRepositoryPath(tmp);
+			    return null;
 			}
 		}
 		return null;
