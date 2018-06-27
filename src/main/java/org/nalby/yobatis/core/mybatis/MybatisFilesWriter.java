@@ -15,7 +15,6 @@
  */
 package org.nalby.yobatis.core.mybatis;
 
-import org.mybatis.generator.api.GeneratedFile;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
@@ -42,11 +41,6 @@ public class MybatisFilesWriter {
 	
 	private Logger logger = LogFactory.getLogger(MybatisFilesWriter.class);
 	
-	@FunctionalInterface
-	private interface FileSelector {
-		boolean select(GeneratedFile file);
-	}
-
 	public MybatisFilesWriter(Project project, MybatisGeneratorRunner mybatisRunner) {
 		Expect.notNull(project, "project must not be null.");
 		Expect.notNull(mybatisRunner, "mybatisRunner must not be null.");
