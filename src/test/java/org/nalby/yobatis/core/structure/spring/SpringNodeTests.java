@@ -5,15 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.util.TestUtil;
-import org.nalby.yobatis.core.xml.SpringXmlParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -117,8 +114,8 @@ public class SpringNodeTests {
                 "<property name=\"systemPropertiesModeName\" value=\"SYSTEM_PROPERTIES_MODE_OVERRIDE\" />" +
                 "<property name=\"ignoreResourceNotFound\" value=\"true\" />" +
                 "<property name=\"locations\"><list><value>/important.properties</value></list></property></bean></beans>";
-        SpringXmlParser parser =  new SpringXmlParser(new ByteArrayInputStream(xml.getBytes()));
-        Set<String> locations = parser.getPropertiesFileLocations();
+        SpringNode parser =  parse(xml);
+        Set<String> locations = parser.getPropertyFileLocations();
         TestUtil.assertCollectionSizeAndStringsIn(locations, 1, "/important.properties");
     }
 

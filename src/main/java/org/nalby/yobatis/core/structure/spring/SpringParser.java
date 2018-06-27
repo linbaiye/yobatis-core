@@ -1,5 +1,7 @@
 package org.nalby.yobatis.core.structure.spring;
 
+import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Folder;
 import org.nalby.yobatis.core.util.FolderUtil;
@@ -50,6 +52,7 @@ public class SpringParser implements Spring {
                 if (TextUtil.isEmpty(text)) {
                     continue;
                 }
+                LOGGER.debug("Found property [{} : {}].", key, text);
                 propertyInFile.put(key, text);
             }
         } catch (IOException e) {
@@ -91,6 +94,7 @@ public class SpringParser implements Spring {
         }
     }
 
+    private final static Logger LOGGER = LogFactory.getLogger(SpringParser.class);
 
     public static SpringParser parse(Folder projectFolder) {
         Set<File> fileSet = FolderUtil.listAllFiles(projectFolder);
@@ -106,6 +110,7 @@ public class SpringParser implements Spring {
                 SpringNode springNode = SpringNode.parse(file);
                 propertyFileLocations.addAll(springNode.getPropertyFileLocations());
                 spring.addNode(springNode);
+                LOGGER.info("Parsed spring file {}.", file.path());
             } catch (Exception e) {
                 //ignore
             }
