@@ -17,7 +17,6 @@ package org.nalby.yobatis.core.structure;
 
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.util.Expect;
-import org.nalby.yobatis.core.util.FolderUtil;
 
 import java.util.List;
 

@@ -42,8 +42,6 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 
 	private Document document;
 
-	private Element root;
-
 	private Element classPathEntry;
 	
 	private DocumentFactory factory = DocumentFactory.getInstance();
@@ -91,7 +89,7 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 	public String asXmlText() {
 		if (document == null) {
 			createDocument();
-			root = factory.createElement(ROOT_TAG);
+			Element root = factory.createElement(ROOT_TAG);
 			document.setRootElement(root);
 			root.add(classPathEntry);
 			for (MybatisGeneratorContext thisContext : contexts) {

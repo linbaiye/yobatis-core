@@ -79,24 +79,6 @@ public class MybatisGeneratorContext {
 	}
 
 	/**
-	 * Construct a MybatisGeneratorContext according to database details.
-	 * @param id the context id.
-	 * @param databaseMetadataProvider the database details provider.
-	 */
-	@SuppressWarnings("unchecked")
-	public MybatisGeneratorContext(String id, DatabaseMetadataProvider databaseMetadataProvider) {
-		Expect.notNull(databaseMetadataProvider, "databaseMetadataProvider must not be null.");
-		Expect.notEmpty(id, "id must not be empty.");
-		this.id = id;
-		plugins = new ArrayList<>();
-		tableElements = new ArrayList<>();
-		createJdbcConnection(databaseMetadataProvider);
-		createTypeResolver();
-		commentedElements = Collections.EMPTY_LIST;
-	}
-	
-	
-	/**
 	 * Construct a MybatisGeneratorContext from an existent element.
 	 * @param context the context element.
 	 */
@@ -148,33 +130,10 @@ public class MybatisGeneratorContext {
 		property.addAttribute("value", "false");
 	}
 	
-	private void createJdbcConnection(DatabaseMetadataProvider sql) {
-		jdbConnection = factory.createElement("jdbcConnection");
-		jdbConnection.addAttribute("driverClass", sql.getDriverClassName());
-		jdbConnection.addAttribute("connectionURL", sql.getUrl());
-		jdbConnection.addAttribute("userId", sql.getUsername());
-		jdbConnection.addAttribute("password", sql.getPassword());
-	}
-
 	private void addJdbcConnectionAttr(String name, String value) {
 		jdbConnection.addAttribute(name, value);
 	}
-	
-	private String packageNameOfFolder(Folder folder) {
-		if (folder == null) {
-			return "";
-		}
-		String packageName = FolderUtil.extractPackageName(folder.path());
-		return packageName == null ? "" : packageName;
-	}
-	
-	private String sourceCodePath(Folder folder) {
-		if (folder == null) {
-			return "";
-		}
-		return FolderUtil.wipePackagePath(folder.path());
-	}
-	
+
 	
 	private Element createYobatisDaoPlugin() {
 		Element yobatisPluginElement = factory.createElement(PLUGIN_TAG);
@@ -243,19 +202,6 @@ public class MybatisGeneratorContext {
 		}
 	}
 
-	
-	/**
-	 * Create the javaModelGenerator element according to the model folder,
-	 * if the model folder is null, both of the targetPackage and targetProject
-	 * will be empty.
-	 * 
-	 * @param folder the model folder.
-	 */
-	public void createJavaModelGenerator(Folder folder) {
-		javaModel = factory.createElement(MODEL_GENERATOR_TAG);
-		javaModel.addAttribute("targetPackage", packageNameOfFolder(folder));
-		javaModel.addAttribute("targetProject", sourceCodePath(folder));
-	}
 
 	private void createJavaModelGenerator(String targetPackage, String targetProject) {
 		javaModel = factory.createElement(MODEL_GENERATOR_TAG);
@@ -263,37 +209,14 @@ public class MybatisGeneratorContext {
 		javaModel.addAttribute("targetProject", targetProject);
 	}
 
-	/**
-	 * Create the sqlMapGenerator element according to the resource folder,
-	 * if the model folder is null, the targetProject will be empty.
-	 * 
-	 * @param folder the resource folder.
-	 */
-	public void createSqlMapGenerator(Folder folder) {
-		xmlMapper = factory.createElement(SQLMAP_GENERATOR_TAG);
-		xmlMapper.addAttribute("targetPackage", "mybatis-mappers");
-		xmlMapper.addAttribute("targetProject", folder == null? "" : folder.path());
-	}
+
 
 	private void createXmlMapperGenerator(String targetProject) {
 		xmlMapper = factory.createElement(SQLMAP_GENERATOR_TAG);
 		xmlMapper.addAttribute("targetPackage", "mybatis-mappers");
 		xmlMapper.addAttribute("targetProject", targetProject);
 	}
-	
-	/**
-	 * Create the sqlMapGenerator element according to the dao folder,
-	 * if the dao folder is null, both of the targetPackage and targetProject
-	 * will be empty.
-	 * 
-	 * @param folder the dao/mapper folder.
-	 */
-	public void createJavaClientGenerator(Folder folder) {
-		javaClient = factory.createElement(CLIENT_GENERATOR_TAG);
-		javaClient.addAttribute("type", "XMLMAPPER");
-		javaClient.addAttribute("targetPackage", packageNameOfFolder(folder));
-		javaClient.addAttribute("targetProject", sourceCodePath(folder));
-	}
+
 
 	private void createJavaClientGenerator(String packageName, String projectName) {
 		javaClient = factory.createElement(CLIENT_GENERATOR_TAG);
@@ -477,7 +400,6 @@ public class MybatisGeneratorContext {
 			}
 			return context;
 		}
-
 	}
 
 }
