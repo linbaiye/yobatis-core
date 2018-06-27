@@ -57,7 +57,7 @@ public class PomNode extends AbstractXmlParser {
         }
     }
 
-    public void addChild(PomNode pomNode) {
+    void addChild(PomNode pomNode) {
         if (!moduleNames.contains(pomNode.artifactId)) {
             throw new ProjectException(artifactId + " does not contain a module named " + pomNode.artifactId);
         }

@@ -2,17 +2,25 @@ package org.nalby.yobatis.core.structure.spring;
 
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Folder;
+import org.nalby.yobatis.core.structure.pom.Pom;
+import org.nalby.yobatis.core.util.AntPathMatcher;
 import org.nalby.yobatis.core.util.FolderUtil;
+import org.nalby.yobatis.core.util.PropertyUtil;
+import org.nalby.yobatis.core.util.TextUtil;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 public class SpringParser implements Spring {
 
     private Set<SpringNode> springNodes;
 
+    private Map<String, String> propertyInFile;
+
     private SpringParser() {
         springNodes = new HashSet<>();
+        propertyInFile = new HashMap<>();
     }
 
     private void addNode(SpringNode node) {
@@ -28,10 +36,27 @@ public class SpringParser implements Spring {
         for (SpringNode springNode : springNodes) {
             String tmp = selector.select(springNode);
             if (tmp != null) {
-                return tmp;
+                String property = PropertyUtil.valueOfPlaceholder(tmp);
+                return propertyInFile.getOrDefault(property, tmp);
             }
         }
         return null;
+    }
+
+    private void addProperties(File file) {
+        try (InputStream inputStream = file.open()) {
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            for (String key : properties.stringPropertyNames()) {
+                String text = properties.getProperty(key);
+                if (TextUtil.isEmpty(text)) {
+                    continue;
+                }
+                propertyInFile.put(key, text);
+            }
+        } catch (IOException e) {
+            //
+        }
     }
 
     @Override
@@ -54,21 +79,40 @@ public class SpringParser implements Spring {
         return "com.mysql.jdbc.Driver";
     }
 
+    private static void loadPropertiesFiles(Set<File> fileSet, SpringParser springParser, Set<String> propertiesLocations) {
+        if (propertiesLocations == null || propertiesLocations.isEmpty()) {
+            return;
+        }
+        for (String propertiesLocation : propertiesLocations) {
+            String location = propertiesLocation.replaceAll("^classpath\\s*\\*?:(.*)$", "$1");
+            for (File file : fileSet) {
+                if (file.path().contains(location)) {
+                    springParser.addProperties(file);
+                }
+            }
+        }
+    }
+
 
     public static SpringParser parse(Folder projectFolder) {
         Set<File> fileSet = FolderUtil.listAllFiles(projectFolder);
         SpringParser spring = new SpringParser();
+        Set<String> propertyFileLocations = new HashSet<>();
         for (File file : fileSet) {
-            if (file.path().endsWith(".xml")) {
-                try {
-                    spring.addNode(SpringNode.parse(file));
-                } catch (Exception e) {
-                    //ignore
-                }
+            if (file.path().contains("src/test") ||
+                    !file.path().endsWith(".xml")) {
+                //Ignore files contained in test dir.
+                continue;
+            }
+            try {
+                SpringNode springNode = SpringNode.parse(file);
+                propertyFileLocations.addAll(springNode.getPropertyFileLocations());
+                spring.addNode(springNode);
+            } catch (Exception e) {
+                //ignore
             }
         }
+        loadPropertiesFiles(fileSet, spring, propertyFileLocations);
         return spring;
     }
-
-
 }

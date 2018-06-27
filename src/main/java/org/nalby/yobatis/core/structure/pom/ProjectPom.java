@@ -6,6 +6,7 @@ import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Folder;
 import org.nalby.yobatis.core.structure.Project;
+import org.nalby.yobatis.core.util.PropertyUtil;
 
 public class ProjectPom implements Pom {
 
@@ -19,7 +20,8 @@ public class ProjectPom implements Pom {
 
     @Override
     public String lookupProperty(String name) {
-        return root.getProperty(name);
+        String tmp = PropertyUtil.valueOfPlaceholder(name);
+        return root.getProperty(tmp);
     }
 
     private static void parsePomSubTree(Folder currentFolder, PomNode pomNode) {

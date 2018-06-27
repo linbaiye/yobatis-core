@@ -23,15 +23,15 @@ import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.log.LogFactory;
 import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.structure.Folder;
-import org.nalby.yobatis.core.structure.MavenProject;
-import org.nalby.yobatis.core.structure.PomTree;
 import org.nalby.yobatis.core.structure.Project;
-import org.nalby.yobatis.core.util.Expect;
 import org.nalby.yobatis.core.util.FolderUtil;
 import org.nalby.yobatis.core.util.TextUtil;
 import org.nalby.yobatis.core.util.XmlUtil;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Generate MyBaits Generator's configuration file according to current project structure.
@@ -42,8 +42,6 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 
 	private Document document;
 
-	private PomTree pomTree;
-	
 	private Element root;
 
 	private Element classPathEntry;
@@ -59,37 +57,11 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 	}
 
 
-	public MybatisGeneratorXmlCreator(PomTree pomTree, 
-			DatabaseMetadataProvider sql,
-			List<TableGroup> tableGroups) {
-		Expect.notNull(pomTree, "pomTree must not be null.");
-		Expect.notNull(sql , "database must not be null.");
-		Expect.notNull(tableGroups, "tableGroups must not be null.");
-		this.pomTree = pomTree;
-		createClassPathEntry(sql);
-		createContexts(sql, tableGroups);
-		logger.info("Generated MyBatis Generator's configuration file.");
+	private void addContext(MybatisGeneratorContext context) {
+		contexts.add(context);
 	}
-	
-	private void createContexts(DatabaseMetadataProvider sql, List<TableGroup> groups) {
-		contexts = new ArrayList<>();
-		for (TableGroup group : groups) {
-			String packageName = FolderUtil.extractPackageName(group.getFolder().path());
 
-			MybatisGeneratorContext thisContext = new MybatisGeneratorContext(packageName, sql);
-			thisContext.createJavaModelGenerator(group.getFolder());
 
-			Folder daoFolder = pomTree.findMostMatchingDaoFolder(group.getFolder());
-			thisContext.createJavaClientGenerator(daoFolder);
-
-			Folder resourceFolder = pomTree.findMostMatchingResourceFolder(group.getFolder());
-			thisContext.createSqlMapGenerator(resourceFolder);
-
-			thisContext.appendTables(group.getTables(), sql.getSchema());
-			contexts.add(thisContext);
-		}
-	}
-	
 	/**
 	 * Get contexts.
 	 * @return contexts, or an empty list.
@@ -102,9 +74,9 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 		return classPathEntry;
 	}
 	
-	private void createClassPathEntry(DatabaseMetadataProvider sql) {
+	private void createClassPathEntry(String connectorPath) {
 		classPathEntry = factory.createElement(CLASS_PATH_ENTRY_TAG);
-		classPathEntry.addAttribute("location", sql.getConnectorJarPath());
+		classPathEntry.addAttribute("location", connectorPath);
 	}
 
 	private void createDocument() {
@@ -168,8 +140,7 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 		return count;
 	}
 
-
-	private static Folder findMostRelevantFolder(String targetPath, Set<Folder> folderSet) {
+	private static Folder findMostRelevantFolder(String targetPath, Set<Folder> folderSet, List<String> keywords) {
 	    int amountOfCommonToken = 0;
 	    Folder target = null;
 	    if (TextUtil.isEmpty(targetPath)) {
@@ -179,6 +150,15 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
             return null;
 		}
 		for (Folder folder : folderSet) {
+	    	boolean containsKeyWord = false;
+			for (String keyword : keywords) {
+			    if (folder.path().contains(keyword)) {
+			        containsKeyWord = true;
+				}
+			}
+			if (!containsKeyWord) {
+				continue;
+			}
 			int nr = calCommonTokenNumber(targetPath, folder.path());
 			if (amountOfCommonToken == 0 || amountOfCommonToken < nr) {
 				amountOfCommonToken = nr;
@@ -194,10 +174,10 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 		Folder modelFolder = findModelFolder(sourceCodeFolders);
 		String modelPath = modelFolder == null ? null : modelFolder.path();
 
-		Folder daoFolder = findMostRelevantFolder(modelPath, sourceCodeFolders);
+		Folder daoFolder = findMostRelevantFolder(modelPath, sourceCodeFolders, DAO_FOLDER_KEYWORDS);
 		String daoPath = daoFolder == null ? null : daoFolder.path();
 
-		Folder resourceFolder = findMostRelevantFolder(daoPath, resourceFolders);
+		Folder resourceFolder = findMostRelevantFolder(daoPath, resourceFolders, Arrays.asList(RESOURCE_FOLDER_SUBSTR));
 		String resourcePath = resourceFolder == null ? null : resourceFolder.path();
 
 		MybatisGeneratorContext.Builder builder =  new MybatisGeneratorContext.Builder();
@@ -210,9 +190,9 @@ public class MybatisGeneratorXmlCreator implements MybatisGenerator {
 		builder.setResourcePath(resourcePath);
 		builder.setTableList(databaseMetadataProvider.getTables());
 		builder.setContextId("yobatis");
-
 		MybatisGeneratorXmlCreator mybatisGeneratorXmlCreator = new MybatisGeneratorXmlCreator();
-
+		mybatisGeneratorXmlCreator.addContext(builder.build());
+		mybatisGeneratorXmlCreator.createClassPathEntry(project.getAbsPathOfSqlConnector());
 		return mybatisGeneratorXmlCreator;
 	}
 

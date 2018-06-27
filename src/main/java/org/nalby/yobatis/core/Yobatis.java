@@ -15,24 +15,20 @@
  */
 package org.nalby.yobatis.core;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.nalby.yobatis.core.mybatis.*;
-import org.nalby.yobatis.core.structure.PomTree;
-import org.nalby.yobatis.core.structure.SpringAntPathFileManager;
-import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
-import org.nalby.yobatis.core.log.LogFactory;
-import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.mysql.MysqlDatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.mysql.MysqlDatabaseMetadataProvider.Builder;
+import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
+import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.mybatis.*;
 import org.nalby.yobatis.core.structure.File;
-import org.nalby.yobatis.core.structure.Folder;
 import org.nalby.yobatis.core.structure.Project;
 import org.nalby.yobatis.core.structure.pom.ProjectPom;
 import org.nalby.yobatis.core.structure.spring.SpringParser;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class Yobatis {
 
@@ -46,18 +42,18 @@ public class Yobatis {
 
 		SpringParser springParser = SpringParser.parse(project);
 
+		ProjectPom projectPom = ProjectPom.parse(project);
+
+
 		Builder builder = MysqlDatabaseMetadataProvider.builder();
 		builder.setConnectorJarPath(project.getAbsPathOfSqlConnector())
-		.setUsername(springParser.lookupDbUser())
-		.setPassword(springParser.lookupDbPassword())
-		.setUrl(springParser.lookupDbUrl())
-		.setDriverClassName(springParser.lookupDbDriver());
-
+		.setUsername(projectPom.lookupProperty(springParser.lookupDbUser()))
+		.setPassword(projectPom.lookupProperty(springParser.lookupDbPassword()))
+		.setUrl(projectPom.lookupProperty(springParser.lookupDbUrl()))
+		.setDriverClassName(projectPom.lookupProperty(springParser.lookupDbDriver()));
 		DatabaseMetadataProvider provider = builder.build();
 
-		ProjectPom projectPom = ProjectPom.parse(project);
-		return null;
-
+		return MybatisGeneratorXmlCreator.create(project, provider);
 		//return new MybatisGeneratorXmlCreator(pomTree, provider, groups);
 	}
 	

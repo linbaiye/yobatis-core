@@ -44,7 +44,7 @@ public abstract class Project implements Folder {
 	}
 
 	/**
-	 * It is left to the platform to find out where the maven repository is.
+	 * It is left to the platform to find out where the database connector is.
 	 * @return the maven path, null if failed to find.
 	 */
 	abstract public String getAbsPathOfSqlConnector();
