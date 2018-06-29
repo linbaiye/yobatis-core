@@ -108,7 +108,7 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 			}
 			res.close();
 		} catch (Exception e) {
-			logger.info("Yobatis is unable to list tables, please configure &lt;table&gt; element manually.");
+			logger.info("Yobatis is unable to list tables, please configure table element manually.");
 		}
 		return tableList;
 	}

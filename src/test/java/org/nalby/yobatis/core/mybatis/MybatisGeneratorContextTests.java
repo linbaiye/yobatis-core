@@ -100,7 +100,7 @@ public class MybatisGeneratorContextTests {
         addTable();
         context = contextBuilder.build();
         Element plugin = findElement("plugin");
-        assertTrue(hasAttr(plugin, "type", "org.mybatis.generator.plugins.YobatisDaoPlugin"));
+        assertTrue(hasAttr(plugin, "type", "org.nalby.yobatis.core.mybatis.YobatisDaoPlugin"));
         Element jdbcConnection = findElement("jdbcConnection");
         assertEquals("driver", jdbcConnection.attributeValue("driverClass"));
         assertEquals("jdbc:mysql://localhost/yobatis", jdbcConnection.attributeValue("connectionURL"));
@@ -133,7 +133,7 @@ public class MybatisGeneratorContextTests {
         initContextBuilder();
         context = contextBuilder.build();
         Element plugin = findElement("plugin");
-        assertTrue(hasAttr(plugin, "type", "org.mybatis.generator.plugins.YobatisDaoPlugin"));
+        assertTrue(hasAttr(plugin, "type", "org.nalby.yobatis.core.mybatis.YobatisDaoPlugin"));
         Element jdbcConnection = findElement("jdbcConnection");
         assertEquals("", jdbcConnection.attributeValue("driverClass"));
         assertEquals("", jdbcConnection.attributeValue("connectionURL"));

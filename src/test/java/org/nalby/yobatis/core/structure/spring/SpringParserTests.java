@@ -47,7 +47,7 @@ public class SpringParserTests {
                 + "<property name=\"url\" value=\"url\"/>"
                 + "<property name=\"driverClassName\" value=\"driver\"/>"
                 + "</bean></beans>";
-        addFile("test.xml", content);
+        addFile("src/main/test.xml", content);
         Spring spring = SpringParser.parse(root);
         assertEquals("test", spring.lookupDbUser());
         assertEquals("test", spring.lookupDbPassword());
@@ -81,7 +81,7 @@ public class SpringParserTests {
                 "<property name=\"ignoreResourceNotFound\" value=\"true\" />" +
                 "<property name=\"locations\"><list><value>  classpath:conf/important.properties   </value></list></property></bean>" +
                 "</beans>";
-        addFile("test.xml", content);
+        addFile("src/main/resources/test.xml", content);
         Spring spring = SpringParser.parse(root);
         assertEquals("${user}", spring.lookupDbUser());
     }
@@ -99,8 +99,8 @@ public class SpringParserTests {
                 "<property name=\"ignoreResourceNotFound\" value=\"true\" />" +
                 "<property name=\"locations\"><list><value>  classpath:conf/important.properties   </value></list></property></bean>" +
                 "</beans>";
-        addFile("test.xml", content);
-        addFile("/yobatis/conf/important.properties", "user:hello");
+        addFile("src/main/resources/test.xml", content);
+        addFile("/yobatis/src/main/resources/conf/important.properties", "user:hello");
         Spring spring = SpringParser.parse(root);
         assertEquals("hello", spring.lookupDbUser());
     }
