@@ -4,13 +4,18 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
+import org.dom4j.io.SAXReader;
 import org.nalby.yobatis.core.exception.ProjectException;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.util.TextUtil;
 import org.nalby.yobatis.core.xml.AbstractXmlParser;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -198,6 +203,16 @@ public class SpringNode extends AbstractXmlParser {
             return true;
         }
         return findElementByAttr(parent.elements("property"), "name", attrName) != null;
+    }
+
+    @Override
+    protected void customSAXReader(SAXReader saxReader) {
+        saxReader.setEntityResolver((publicId, systemId) -> {
+            if (systemId.contains(".dtd")) {
+                return new InputSource(new StringReader(""));
+            }
+            return null;
+        });
     }
 
     private boolean isDatasourceBean(Element element) {

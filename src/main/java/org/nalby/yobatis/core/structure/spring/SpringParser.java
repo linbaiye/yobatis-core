@@ -87,7 +87,11 @@ public class SpringParser implements Spring {
         for (String propertiesLocation : propertiesLocations) {
             String location = propertiesLocation.replaceAll("^classpath\\s*\\*?:(.*)$", "$1");
             for (File file : fileSet) {
-                if (file.path().contains(location)) {
+                if (file.path().contains("bin/src/main")) {
+                    continue;
+                }
+                if (file.path().contains("src/main") && file.path().contains(location)) {
+                    LOGGER.info("Scanning properties file:{}.", file.path());
                     springParser.addProperties(file);
                 }
             }
@@ -101,7 +105,8 @@ public class SpringParser implements Spring {
         SpringParser spring = new SpringParser();
         Set<String> propertyFileLocations = new HashSet<>();
         for (File file : fileSet) {
-            if (file.path().contains("src/test") ||
+            if (file.path().contains("bin/src/main") ||
+                    !file.path().contains("src/main") ||
                     !file.path().endsWith(".xml")) {
                 //Ignore files contained in test dir.
                 continue;

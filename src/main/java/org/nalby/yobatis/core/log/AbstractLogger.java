@@ -23,22 +23,22 @@ import java.util.Date;
 public abstract class AbstractLogger implements Logger {
 
 	private String className;
-	
-	public static enum LogLevel {
+
+	public enum LogLevel {
 		DEBUG,
 		INFO,
 		ERROR
 	}
-	
+
 	public static LogLevel defaultLevel = LogLevel.INFO;
 
-	
+
 	public AbstractLogger(String className) {
 		this.className = className;
 	}
 
 	abstract protected void wirteToConsole(String msg);
-	
+
 	protected String formatArgs (String format, Object ... args) {
 		if (format == null) {
 			return "";
@@ -55,7 +55,7 @@ public abstract class AbstractLogger implements Logger {
 				Exception exception = (Exception) arg;
 				String tmp = exception.getMessage();
 				try (StringWriter sw = new StringWriter();
-					PrintWriter pw = new PrintWriter(sw);) {
+					 PrintWriter pw = new PrintWriter(sw);) {
 					exception.printStackTrace(pw);
 					tmp = sw.toString();
 				} catch (Exception e) {
@@ -74,10 +74,10 @@ public abstract class AbstractLogger implements Logger {
 				break;
 			}
 		}
-		return String.format(format, strings);
+		return String.format(format, (Object[])strings);
 	}
 
-	
+
 	private void formatAndWrite(String level, String format, Object ... args) {
 		String tmp = formatArgs(format, args);
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
@@ -90,7 +90,7 @@ public abstract class AbstractLogger implements Logger {
 	public void info(String format, Object... args) {
 		formatAndWrite("INFO ", format, args);
 	}
-	
+
 	@Override
 	public void error(String format, Object... args) {
 		formatAndWrite("ERROR", format, args);

@@ -26,6 +26,7 @@ import org.nalby.yobatis.core.util.Expect;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +37,8 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 	
 	private Logger logger = LogFactory.getLogger(this.getClass());
 
+	private List<Table> tableList;
+
 	private MysqlDatabaseMetadataProvider(String username, String password,
 			String url, String driverClassName, String jdbcJarPath) {
 		try {
@@ -44,20 +47,20 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 			this.url = url;
 			this.driverClassName = driverClassName;
 			this.connectorJarPath = jdbcJarPath;
-			logger.info("Detected database configuration:[username:{}, url:{}].", username, url);
+			logger.info("Detected database configuration:[username:{}, password:{}, url:{}].", username, password, url);
 			timedoutUrl = this.url;
 			if (!this.timedoutUrl.contains("socketTimeout")) {
 				if (this.timedoutUrl.contains("?")) {
-					this.timedoutUrl = this.timedoutUrl + "&socketTimeout=2000";
+					this.timedoutUrl = this.timedoutUrl + "&socketTimeout=10000";
 				} else {
-					this.timedoutUrl = this.timedoutUrl + "?socketTimeout=2000";
+					this.timedoutUrl = this.timedoutUrl + "?socketTimeout=10000";
 				}
 			}
 			if (!this.timedoutUrl.contains("connectTimeout")) {
 				this.timedoutUrl = this.timedoutUrl + "&connectTimeout=2000";
 			}
 		} catch (Exception e) {
-			throw new ProjectException(e);
+		    //Ignore.
 		}
 	}
 	
@@ -92,19 +95,22 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 	 */
 	@Override
 	public List<Table> getTables() {
+	    if (tableList != null) {
+	    	return tableList;
+		}
+		tableList = new LinkedList<>();
 		try (Connection connection = DriverManager.getConnection(this.timedoutUrl, username, password)) {
 			DatabaseMetaData meta = connection.getMetaData();
 			ResultSet res = meta.getTables(null, null, null, new String[] {"TABLE"});
-			List<Table> result = new ArrayList<>();
 			while (res.next()) {
 				String tmp = res.getString("TABLE_NAME");
-				result.add(makeTable(tmp, meta));
+				tableList.add(makeTable(tmp, meta));
 			}
 			res.close();
-			return result;
 		} catch (Exception e) {
-			throw new ProjectException(e);
+			logger.info("Yobatis is unable to list tables, please configure &lt;table&gt; element manually.");
 		}
+		return tableList;
 	}
 	
 	public static class Builder {
@@ -135,11 +141,6 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 			return this;
 		}
 		public MysqlDatabaseMetadataProvider build() {
-			Expect.notEmpty(username, "username must not be null.");
-			Expect.notEmpty(password, "password must not be null.");
-			Expect.notEmpty(url, "url must not be null.");
-			Expect.notEmpty(connectorJarPath, "connectorJarPath must not be null.");
-			Expect.notEmpty(driverClassName, "driverClassName must not be null.");
 			try {
 				Class.forName(driverClassName);
 				return new MysqlDatabaseMetadataProvider(username, password, url, driverClassName, connectorJarPath);

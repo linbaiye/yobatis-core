@@ -32,7 +32,7 @@ import org.nalby.yobatis.core.util.XmlUtil;
  * Abstraction of MyBatis Generator's context.
  */
 public class MybatisGeneratorContext {
-	
+
 	private final static String TARGET_RUNTIME = "MyBatis3";
 
 	public final static String MODEL_GENERATOR_TAG = "javaModelGenerator";
@@ -45,7 +45,7 @@ public class MybatisGeneratorContext {
 
 	private final static String PLUGIN_TAG = "plugin";
 
-	public final static String YOBATIS_DAO_PLUGIN = "org.mybatis.generator.plugins.YobatisDaoPlugin";
+	public final static String YOBATIS_DAO_PLUGIN = "org.nalby.yobatis.core.mybatis.YobatisDaoPlugin";
 	
 	private DocumentFactory factory = DocumentFactory.getInstance();
 

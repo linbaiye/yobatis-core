@@ -44,17 +44,14 @@ public class Yobatis {
 
 		ProjectPom projectPom = ProjectPom.parse(project);
 
-
 		Builder builder = MysqlDatabaseMetadataProvider.builder();
 		builder.setConnectorJarPath(project.getAbsPathOfSqlConnector())
 		.setUsername(projectPom.lookupProperty(springParser.lookupDbUser()))
 		.setPassword(projectPom.lookupProperty(springParser.lookupDbPassword()))
 		.setUrl(projectPom.lookupProperty(springParser.lookupDbUrl()))
-		.setDriverClassName(projectPom.lookupProperty(springParser.lookupDbDriver()));
+		.setDriverClassName(springParser.lookupDbDriver());
 		DatabaseMetadataProvider provider = builder.build();
-
 		return MybatisGeneratorXmlCreator.create(project, provider);
-		//return new MybatisGeneratorXmlCreator(pomTree, provider, groups);
 	}
 	
 
@@ -95,7 +92,7 @@ public class Yobatis {
 		logger.info("Scanning project:{}.", project.name());
 		MybatisGeneratorXmlCreator generator = buildMybatisGeneratorXmlCreator(project);
 		mergeIntoExistentConfig(generator, project);
-		logger.info("Config file has been created, right-click on {} to generate java and xml mapper files.", MybatisGenerator.CONFIG_FILENAME);
+		logger.info("Config file has been created as {}.", MybatisGenerator.CONFIG_FILENAME);
 	}
 	
 	public static void onClickFile(Project project) {
