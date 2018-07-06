@@ -12,7 +12,7 @@ public class CustomerCriteria extends BaseCriteria {
     private static final Map<String, String> PROPERTY_TO_COLUMN;
 
     static {
-        PROPERTY_TO_COLUMN = new HashMap<String, String>();
+        PROPERTY_TO_COLUMN = new HashMap<>();
         PROPERTY_TO_COLUMN.put("id", "id");
         PROPERTY_TO_COLUMN.put("f1", "f1");
         PROPERTY_TO_COLUMN.put("f3", "f3");
