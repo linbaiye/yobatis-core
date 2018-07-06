@@ -15,13 +15,6 @@
  */
 package org.nalby.yobatis.core.mybatis;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentFactory;
 import org.dom4j.DocumentType;
@@ -29,8 +22,16 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.util.Expect;
+import org.nalby.yobatis.core.util.XmlUtil;
 import org.nalby.yobatis.core.xml.AbstractXmlParser;
 import org.xml.sax.InputSource;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * MybatisGeneratorXmlReader reads the existent configuration file of MyBatis Generator
@@ -310,7 +311,7 @@ public class MybatisGeneratorXmlReader extends AbstractXmlParser implements Myba
 	
 	private void loadCommentedContexts(Element parent) {
 		commentedContexts = new ArrayList<>();
-		List<Element> tmpList = AbstractXmlParser.loadCommentedElements(parent);
+		List<Element> tmpList = XmlUtil.loadCommentedElements(parent);
 		for (Element tmp : tmpList) {
 			if (!tmp.getName().equals("context")) {
 				continue;
@@ -410,29 +411,25 @@ public class MybatisGeneratorXmlReader extends AbstractXmlParser implements Myba
 
 	@Override
 	public String asXmlText() {
-		try {
-			if (document == null) {
-				document = documentFactory.createDocument();
-				DocumentType type = documentFactory.createDocType(ROOT_TAG, 
-						"-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN",
-						"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd");
-				document.setDocType(type);
-				if (classPathEntry != null) {
-					root.add(classPathEntry.createCopy());
-				}
-				for (MybatisGeneratorContext context : contexts) {
-					if (context.hasTable()) {
-						root.add(context.getContext().createCopy());
-					}
-				}
-				for (MybatisGeneratorContext context : commentedContexts) {
-					root.add(AbstractXmlParser.commentElement(context.getContext().createCopy()));
-				}
-				document.setRootElement(root);
+		if (document == null) {
+			document = documentFactory.createDocument();
+			DocumentType type = documentFactory.createDocType(ROOT_TAG,
+					"-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN",
+					"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd");
+			document.setDocType(type);
+			if (classPathEntry != null) {
+				root.add(classPathEntry.createCopy());
 			}
-			return toXmlString(document);
-		} catch (IOException e){
-			throw new InvalidMybatisGeneratorConfigException(e);
+			for (MybatisGeneratorContext context : contexts) {
+				if (context.hasTable()) {
+					root.add(context.getContext().createCopy());
+				}
+			}
+			for (MybatisGeneratorContext context : commentedContexts) {
+				root.add(XmlUtil.commentElement(context.getContext().createCopy()));
+			}
+			document.setRootElement(root);
 		}
+		return XmlUtil.toXmlString(document);
 	}
 }

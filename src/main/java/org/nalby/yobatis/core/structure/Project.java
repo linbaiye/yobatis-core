@@ -15,14 +15,10 @@
  */
 package org.nalby.yobatis.core.structure;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.util.Expect;
-import org.nalby.yobatis.core.util.FolderUtil;
+
+import java.util.List;
 
 public abstract class Project implements Folder {
 
@@ -34,11 +30,6 @@ public abstract class Project implements Folder {
 	public Project(Folder root) {
 		this.root = root;
 	}
-	/**
-	 * It is left to the platform to find out where the maven repository is.
-	 * @return the maven path, null if failed to find.
-	 */
-	abstract protected String findMavenRepositoryPath();
 
 	private String wipeRootFolderPath(String path) {
 		Expect.notEmpty(path, "path must not be empty.");
@@ -51,12 +42,11 @@ public abstract class Project implements Folder {
 		return path;
 	}
 
+	/**
+	 * It is left to the platform to find out where the database connector is.
+	 * @return the maven path, null if failed to find.
+	 */
 	abstract public String getAbsPathOfSqlConnector();
-
-	public String concatMavenRepositoryPath(String path) {
-		Expect.notEmpty(path, "path must not be null.");
-		return FolderUtil.concatPath(findMavenRepositoryPath(), path);
-	}
 
 	@Override
 	public String path() {
@@ -97,53 +87,4 @@ public abstract class Project implements Folder {
 	public List<File> listFiles() {
 		return root.listFiles();
 	}
-	
-	private static interface FileAppender<T> {
-		void append(Set<T> resources, Folder folder);
-	}
-	
-	private static <T> Set<T> iterateTree(Folder folder, FileAppender<T> fileAppender) {
-		Set<T> result = new HashSet<>();
-		Stack<Folder> stack = new Stack<>();
-		stack.push(folder);
-		while (!stack.isEmpty()) {
-			Folder node = stack.pop();
-			fileAppender.append(result, node);
-			for (Folder tmp : node.listFolders()) {
-				stack.push(tmp);
-			}
-		}
-		return result;
-	}
-	
-	/**
-	 * List folders of all depth contained by this folder.
-	 * @param folder the folder to list.
-	 * @return all the folders if any, an empty set otherwise.
-	 */
-	public static Set<Folder> listAllFolders(Folder folder) {
-		Expect.notNull(folder, "Folder must not be null.");
-		return iterateTree(folder, new FileAppender<Folder>() {
-			@Override
-			public void append(Set<Folder> resources, Folder folder) {
-				resources.addAll(folder.listFolders());
-			}
-		});
-	}
-	
-	/**
-	 * List files of all depth contained by this folder.
-	 * @param folder the folder to list.
-	 * @return all the files if any, an empty set otherwise.
-	 */
-	public static Set<File> listAllFiles(Folder folder) {
-		Expect.notNull(folder, "Folder must not be null.");
-		return iterateTree(folder, new FileAppender<File>() {
-			@Override
-			public void append(Set<File> resources, Folder folder) {
-				resources.addAll(folder.listFiles());
-			}
-		});
-	}
-
 }

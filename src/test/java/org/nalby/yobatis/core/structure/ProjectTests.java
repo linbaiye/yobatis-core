@@ -12,17 +12,13 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.nalby.yobatis.core.util.FolderUtil;
 import org.nalby.yobatis.core.util.TestUtil;
 
 public class ProjectTests {
 
 
 	private class TestedProject extends Project {
-		@Override
-		protected String findMavenRepositoryPath() {
-			return "maven";
-		}
-
 		@Override
 		public String getAbsPathOfSqlConnector() {
 			return null;
@@ -44,12 +40,7 @@ public class ProjectTests {
 	}
 	
 	
-	@Test
-	public void contcat() {
-		assertTrue(project.concatMavenRepositoryPath("/test").equals("maven/test"));
-	}
-	
-	
+
 	@Test
 	public void pathAndName() {
 		assertTrue(project.name() == "test");
@@ -92,7 +83,7 @@ public class ProjectTests {
 	@SuppressWarnings("unchecked")
 	public void listEmptyFolders() {
 		when(mockedFolder.listFolders()).thenReturn(Collections.EMPTY_LIST);
-		assertTrue(Project.listAllFolders(mockedFolder).isEmpty());
+		assertTrue(FolderUtil.listAllFolders(mockedFolder).isEmpty());
 	}
 	
 	@Test
@@ -106,7 +97,7 @@ public class ProjectTests {
 
 		when(depth2.listFolders()).thenReturn(Collections.EMPTY_LIST);
 
-		Set<Folder> ret = Project.listAllFolders(mockedFolder);
+		Set<Folder> ret = FolderUtil.listAllFolders(mockedFolder);
 		TestUtil.assertCollectionSizeAndContains(ret, 2, depth1, depth2);
 	}
 	
@@ -122,7 +113,7 @@ public class ProjectTests {
 		when(depth1.listFolders()).thenReturn(Collections.EMPTY_LIST);
 		when(depth1.listFiles()).thenReturn(Arrays.asList(file2));
 
-		Set<File> ret = Project.listAllFiles(mockedFolder);
+		Set<File> ret = FolderUtil.listAllFiles(mockedFolder);
 		TestUtil.assertCollectionSizeAndContains(ret, 2, file, file2);
 	}
 	

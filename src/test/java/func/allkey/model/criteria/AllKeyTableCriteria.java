@@ -11,7 +11,7 @@ public class AllKeyTableCriteria extends BaseCriteria {
     private static final Map<String, String> PROPERTY_TO_COLUMN;
 
     static {
-        PROPERTY_TO_COLUMN = new HashMap<String, String>();
+        PROPERTY_TO_COLUMN = new HashMap<>();
         PROPERTY_TO_COLUMN.put("pk1", "pk1");
         PROPERTY_TO_COLUMN.put("pk2", "pk2");
     }

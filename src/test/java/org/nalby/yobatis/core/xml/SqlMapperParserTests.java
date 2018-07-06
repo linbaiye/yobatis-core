@@ -42,25 +42,26 @@ public class SqlMapperParserTests {
 		
 		
 		@Override
-		public String toXmlString() throws IOException {
-			//OutputFormat format = new OutputFormat(" ");
-			OutputFormat format = OutputFormat.createPrettyPrint();
-			format.setTrimText(false);
-			//format.setNewLineAfterDeclaration(false);
-			//format.setPadText(false);
-			//format.setPadText(true);
-			//OutputFormat format = OutputFormat.createCompactFormat();
-			//format.setTrimText(true);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			//PrintStream ps = new PrintStream(baos, true, "utf-8");
-		    XMLWriter writer = new XMLWriter(baos, format);
-		    writer.setEscapeText(false);
-		    writer.write(document);
-			String content = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-			//ps.close();
-			//return document.asXML();o
-			//return removeBlankLines(content);
-			return content;
+		public String toXmlString() {
+		    return super.toXmlString();
+//			//OutputFormat format = new OutputFormat(" ");
+//			OutputFormat format = OutputFormat.createPrettyPrint();
+//			format.setTrimText(false);
+//			//format.setNewLineAfterDeclaration(false);
+//			//format.setPadText(false);
+//			//format.setPadText(true);
+//			//OutputFormat format = OutputFormat.createCompactFormat();
+//			//format.setTrimText(true);
+//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//			//PrintStream ps = new PrintStream(baos, true, "utf-8");
+//		    XMLWriter writer = new XMLWriter(baos, format);
+//		    writer.setEscapeText(false);
+//		    writer.write(document);
+//			String content = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+//			//ps.close();
+//			//return document.asXML();o
+//			//return removeBlankLines(content);
+//			return content;
 		}
 		
 		public void assertHasElement(String id) {

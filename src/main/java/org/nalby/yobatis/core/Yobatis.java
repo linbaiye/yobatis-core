@@ -15,24 +15,20 @@
  */
 package org.nalby.yobatis.core;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.nalby.yobatis.core.mybatis.*;
-import org.nalby.yobatis.core.structure.PomTree;
-import org.nalby.yobatis.core.structure.SpringAntPathFileManager;
-import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
-import org.nalby.yobatis.core.log.LogFactory;
-import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.mysql.MysqlDatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.mysql.MysqlDatabaseMetadataProvider.Builder;
+import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
+import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.mybatis.*;
 import org.nalby.yobatis.core.structure.File;
-import org.nalby.yobatis.core.structure.Folder;
 import org.nalby.yobatis.core.structure.Project;
-import org.nalby.yobatis.core.structure.SpringParser;
-import org.nalby.yobatis.core.structure.WebContainerParser;
+import org.nalby.yobatis.core.structure.pom.ProjectPom;
+import org.nalby.yobatis.core.structure.spring.SpringParser;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class Yobatis {
 
@@ -43,29 +39,19 @@ public class Yobatis {
 	 */
 	private static MybatisGeneratorXmlCreator buildMybatisGeneratorXmlCreator(Project project) {
 
-		PomTree pomTree = new PomTree(project);
 
-		WebContainerParser webContainerParser = new WebContainerParser(pomTree.getWarPom());
+		SpringParser springParser = SpringParser.parse(project);
 
-		SpringAntPathFileManager fileManager = new SpringAntPathFileManager(pomTree);
-
-		SpringParser springParser = new SpringParser(fileManager, 
-				webContainerParser.searchInitParamValues());
+		ProjectPom projectPom = ProjectPom.parse(project);
 
 		Builder builder = MysqlDatabaseMetadataProvider.builder();
 		builder.setConnectorJarPath(project.getAbsPathOfSqlConnector())
-		.setDriverClassName(springParser.getDatabaseDriverClassName())
-		.setUsername(springParser.getDatabaseUsername())
-		.setPassword(springParser.getDatabasePassword())
-		.setUrl(springParser.getDatabaseUrl());
-
+		.setUsername(projectPom.lookupProperty(springParser.lookupDbUser()))
+		.setPassword(projectPom.lookupProperty(springParser.lookupDbPassword()))
+		.setUrl(projectPom.lookupProperty(springParser.lookupDbUrl()))
+		.setDriverClassName(springParser.lookupDbDriver());
 		DatabaseMetadataProvider provider = builder.build();
-
-		List<Folder> modelFolders = pomTree.lookupModelFolders();
-		TokenSimilarityTableGrouper grouper = new TokenSimilarityTableGrouper(modelFolders);
-		List<TableGroup> groups = grouper.group(provider.getTables());
-
-		return new MybatisGeneratorXmlCreator(pomTree, provider, groups);
+		return MybatisGeneratorXmlCreator.create(project, provider);
 	}
 	
 
@@ -106,7 +92,7 @@ public class Yobatis {
 		logger.info("Scanning project:{}.", project.name());
 		MybatisGeneratorXmlCreator generator = buildMybatisGeneratorXmlCreator(project);
 		mergeIntoExistentConfig(generator, project);
-		logger.info("Config file has been created, right-click on {} to generate java and xml mapper files.", MybatisGenerator.CONFIG_FILENAME);
+		logger.info("Config file has been created as {}.", MybatisGenerator.CONFIG_FILENAME);
 	}
 	
 	public static void onClickFile(Project project) {

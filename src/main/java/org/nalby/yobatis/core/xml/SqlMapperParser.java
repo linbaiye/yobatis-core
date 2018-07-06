@@ -366,16 +366,12 @@ public class SqlMapperParser extends AbstractXmlParser {
 
 	@Override
 	protected void customSAXReader(SAXReader saxReader ) {
-		saxReader.setEntityResolver(new EntityResolver() {
-			@Override
-			public InputSource resolveEntity(String publicId, String systemId)
-					throws SAXException, IOException {
-				if (systemId.contains("mybatis-3-mapper.dtd")) {
-					return new InputSource(new StringReader(DTD)); 
-				}
-				return null;
-			}
-		});
+		saxReader.setEntityResolver((publicId, systemId) -> {
+            if (systemId.contains("mybatis-3-mapper.dtd")) {
+                return new InputSource(new StringReader(DTD));
+            }
+            return null;
+        });
 	}
 
 }

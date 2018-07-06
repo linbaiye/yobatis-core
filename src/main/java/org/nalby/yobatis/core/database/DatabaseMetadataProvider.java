@@ -38,10 +38,6 @@ public abstract class DatabaseMetadataProvider {
 		return url;
 	}
 
-	public String getConnectorJarPath() {
-		return connectorJarPath;
-	}
-
 	public String getDriverClassName() {
 		return driverClassName;
 	}

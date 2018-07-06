@@ -15,6 +15,12 @@
  */
 package org.nalby.yobatis.core.util;
 
+import org.nalby.yobatis.core.structure.File;
+import org.nalby.yobatis.core.structure.Folder;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -97,6 +103,45 @@ public final class FolderUtil {
 			return fullpath;
 		}
 		return fullpath.replace("/" + ret, "");
+	}
+
+	@FunctionalInterface
+	private interface FileAppender<T> {
+		void append(Set<T> resources, Folder folder);
+	}
+
+	private static <T> Set<T> iterateTree(Folder folder, FileAppender<T> fileAppender) {
+		Set<T> result = new HashSet<>();
+		Stack<Folder> stack = new Stack<>();
+		stack.push(folder);
+		while (!stack.isEmpty()) {
+			Folder node = stack.pop();
+			fileAppender.append(result, node);
+			for (Folder tmp : node.listFolders()) {
+				stack.push(tmp);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * List folders of all depth contained by this folder.
+	 * @param folder the folder to list.
+	 * @return all the folders if any, an empty set otherwise.
+	 */
+	public static Set<Folder> listAllFolders(Folder folder) {
+		Expect.notNull(folder, "Folder must not be null.");
+		return iterateTree(folder, (resources, folder1) -> resources.addAll(folder1.listFolders()));
+	}
+
+	/**
+	 * List files of all depth contained by this folder.
+	 * @param folder the folder to list.
+	 * @return all the files if any, an empty set otherwise.
+	 */
+	public static Set<File> listAllFiles(Folder folder) {
+		Expect.notNull(folder, "Folder must not be null.");
+		return iterateTree(folder, (resources, folder1) -> resources.addAll(folder1.listFiles()));
 	}
 	
 }
