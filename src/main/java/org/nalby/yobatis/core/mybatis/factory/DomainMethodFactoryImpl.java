@@ -46,7 +46,7 @@ public class DomainMethodFactoryImpl implements  AbstractDomainMethodFactory {
     public Method createCopy(TopLevelClass baseDomain) {
         Method method = new Method();
         method.setName("copy");
-        method.setReturnType( baseDomain.getType());
+        method.setReturnType(baseDomain.getType());
         method.setVisibility(JavaVisibility.PUBLIC);
 
         method.addParameter(new Parameter(baseDomain.getType(), "dest"));

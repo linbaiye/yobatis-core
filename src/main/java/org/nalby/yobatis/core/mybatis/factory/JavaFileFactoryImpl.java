@@ -742,9 +742,15 @@ public class JavaFileFactoryImpl implements JavaFileFactory {
                 criteriaClass.addImportedType(type);
             }
         }
-        YobatisJavaFile yobatisJavaFile = new YobatisJavaFile(criteriaClass, getDomainProjectName(introspectedTable),
+        YobatisJavaFile yobatisJavaFile = new YobatisJavaFile(criteriaClass,
+                getDomainProjectName(introspectedTable),
                 introspectedTable.getContext().getJavaFormatter());
         yobatisJavaFile.setOverWritable(true);
         return yobatisJavaFile;
+    }
+
+    @Override
+    public GeneratedJavaFile bracketCriteria(TopLevelClass originalExample, IntrospectedTable introspectedTable) {
+        return null;
     }
 }

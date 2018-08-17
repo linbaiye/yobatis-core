@@ -6,7 +6,7 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-public class MapperXmlElementFactoryImpl implements MapperXmlElementFactory {
+public class MapperXmlElementFactoryImpl implements AbstractMapperXmlElementFactory {
 
     private final static String PARAM_TYPE = "parameterType";
 
@@ -36,6 +36,12 @@ public class MapperXmlElementFactoryImpl implements MapperXmlElementFactory {
         return xmlElement;
     }
 
+    private XmlElement sqlElement(String name) {
+        XmlElement xmlElement = new XmlElement("sql");
+        xmlElement.addAttribute(new Attribute("id", name));
+        return xmlElement;
+    }
+
     private void addXmlComment(XmlElement xmlElement) {
         xmlElement.addElement(new TextElement("<!--"));
         xmlElement.addElement(new TextElement("  WARNING - @mbg.generated"));
@@ -51,6 +57,15 @@ public class MapperXmlElementFactoryImpl implements MapperXmlElementFactory {
         TextElement textElement = new TextElement(text);
         xmlElement.addElement(textElement);
         return xmlElement;
+    }
+
+    @Override
+    public XmlElement pagingElement() {
+        XmlElement paging = sqlElement("_PAGING_");
+        addXmlComment(paging);
+        paging.addElement(ifElement("limit != null", "limit #{limit}"));
+        paging.addElement(ifElement("offset != null", "offset #{offset}"));
+        return paging;
     }
 
     private XmlElement insertAll(IntrospectedTable table, boolean ignore) {
@@ -105,7 +120,6 @@ public class MapperXmlElementFactoryImpl implements MapperXmlElementFactory {
         textElement = new TextElement(stringBuilder.toString());
         xmlElement.addElement(textElement);
         return xmlElement;
-
     }
 
     @Override

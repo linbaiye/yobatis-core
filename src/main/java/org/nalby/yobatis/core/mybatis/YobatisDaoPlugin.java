@@ -22,14 +22,11 @@ import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.mybatis.generator.api.dom.xml.Attribute;
-import org.mybatis.generator.api.dom.xml.Document;
-import org.mybatis.generator.api.dom.xml.Element;
-import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.mybatis.generator.api.dom.xml.*;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.mybatis.factory.JavaFileFactory;
 import org.nalby.yobatis.core.mybatis.factory.JavaFileFactoryImpl;
-import org.nalby.yobatis.core.mybatis.factory.MapperXmlElementFactory;
+import org.nalby.yobatis.core.mybatis.factory.AbstractMapperXmlElementFactory;
 import org.nalby.yobatis.core.mybatis.factory.MapperXmlElementFactoryImpl;
 
 import java.util.Iterator;
@@ -146,7 +143,7 @@ public class YobatisDaoPlugin extends PluginAdapter {
     }
 
     /**
-     * Delete a xml element whose id attribute equals to {@code id} and return
+     * Delete an xml element whose id attribute equals to {@code id} and return
      * the position of the element.
      * @param document
      * @param id
@@ -224,7 +221,7 @@ public class YobatisDaoPlugin extends PluginAdapter {
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
         if (introspectedTable.hasPrimaryKeyColumns()) {
-            MapperXmlElementFactory factory = MapperXmlElementFactoryImpl.getInstance();
+            AbstractMapperXmlElementFactory factory = MapperXmlElementFactoryImpl.getInstance();
             document.getRootElement().getAttributes().clear();
             Attribute attribute = new Attribute("namespace",
                     introspectedTable.getMyBatis3JavaMapperType().replaceFirst("([^.]+)Mapper$", "impl.$1DaoImpl"));
@@ -236,6 +233,7 @@ public class YobatisDaoPlugin extends PluginAdapter {
                 elements.add(elements.size(), factory.updateOfAllKeyTable(introspectedTable));
                 elements.add(elements.size(), factory.updateAllOfAllKeyTable(introspectedTable));
             }
+            elements.add(factory.pagingElement());
             int pos = deleteXmlElement(document, "insertAll");
             elements.add(pos, factory.insertAll(introspectedTable));
             elements.add(pos + 1, factory.insertAllIgnore(introspectedTable));
@@ -306,9 +304,8 @@ public class YobatisDaoPlugin extends PluginAdapter {
     @Override
     public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
                                                                      IntrospectedTable introspectedTable) {
-        MapperXmlElementFactoryImpl factory = MapperXmlElementFactoryImpl.getInstance();
-        element.addElement(factory.ifElement("limit != null", "limit #{limit}"));
-        element.addElement(factory.ifElement("offset != null", "offset #{offset}"));
+        AbstractMapperXmlElementFactory factory = MapperXmlElementFactoryImpl.getInstance();
+        element.addElement(new TextElement("<include refid=\"_PAGING_\" />"));
         element.addElement(factory.ifElement("forUpdate != null and forUpdate == true", "for update"));
         return true;
     }

@@ -46,4 +46,13 @@ public interface JavaFileFactory {
     YobatisJavaFile baseCriteria(TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     YobatisJavaFile criteria(TopLevelClass originalExample, IntrospectedTable introspectedTable);
+
+    /**
+     * Create the inner class of BracketCriteria.
+     * @param originalExample
+     * @param introspectedTable
+     * @return the class file.
+     */
+    GeneratedJavaFile bracketCriteria(TopLevelClass originalExample, IntrospectedTable introspectedTable);
+
 }

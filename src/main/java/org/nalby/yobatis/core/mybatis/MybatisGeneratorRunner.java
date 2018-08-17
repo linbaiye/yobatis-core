@@ -44,7 +44,7 @@ public class MybatisGeneratorRunner {
 
     public void parse(InputStream inputStream) {
         if (inputStream == null) {
-            throw new IllegalArgumentException("null pointor passed.");
+            throw new IllegalArgumentException("null pointer passed.");
         }
 
         List<String> warnings = new ArrayList<>();
@@ -68,7 +68,6 @@ public class MybatisGeneratorRunner {
 
     public List<GeneratedXmlFile> getGeneratedXmlFiles() {
         return myBatisGenerator.getGeneratedXmlFiles();
-
     }
 
     public List<GeneratedJavaFile> getGeneratedJavaFiles() {

@@ -18,16 +18,35 @@ public class Main {
             "<generatorConfiguration>\n" +
             "  <classPathEntry location=\"/Users/lintao/.m2/repository/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar\"/>\n" +
             "  <context id=\"func\" targetRuntime=\"MyBatis3\">\n" +
+            "    <property name=\"type\" value=\"spring-boot\"/>" +
             "    <plugin type=\"org.nalby.yobatis.core.mybatis.YobatisDaoPlugin\"/>\n" +
             "    <jdbcConnection driverClass=\"com.mysql.jdbc.Driver\" connectionURL=\"jdbc:mysql://localhost:3306/mybatis?characterEncoding=utf-8\" userId=\"mybatis\" password=\"mybatis\"/>\n" +
-            "    <!--jdbcConnection driverClass=\"com.mysql.jdbc.Driver\" connectionURL=\"jdbc:mysql://localhost:3306/book_store?characterEncoding=utf-8\" userId=\"root\" password=\"root\"/-->\n" +
             "    <javaTypeResolver>\n" +
             "      <property name=\"forceBigDecimals\" value=\"false\"/>\n" +
             "    </javaTypeResolver>\n" +
-            "    <javaModelGenerator targetPackage=\"func.compoundkey.model\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
-            "    <sqlMapGenerator targetPackage=\"mybatis-mappers\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
-            "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"func.compoundkey.dao\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
+            "    <javaModelGenerator targetPackage=\"func.compoundkey.model\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
+            "    <sqlMapGenerator targetPackage=\"mybatis-mappers\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/resources\"/>\n" +
+            "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"func.compoundkey.dao\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
             "    <table tableName=\"compound_key_table\" schema=\"mybatis\" modelType=\"flat\"/>\n" +
+            "  </context>\n" +
+            "</generatorConfiguration>\n";
+
+
+    private final static String ALL_TYPES_TABLE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<!DOCTYPE generatorConfiguration PUBLIC \"-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN\" \"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd\">\n" +
+            "\n" +
+            "<generatorConfiguration>\n" +
+            "  <classPathEntry location=\"/Users/lintao/.m2/repository/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar\"/>\n" +
+            "  <context id=\"func\" targetRuntime=\"MyBatis3\">\n" +
+            "    <plugin type=\"org.nalby.yobatis.core.mybatis.YobatisDaoPlugin\"/>\n" +
+            "    <jdbcConnection driverClass=\"com.mysql.jdbc.Driver\" connectionURL=\"jdbc:mysql://localhost:3306/mybatis?characterEncoding=utf-8\" userId=\"mybatis\" password=\"mybatis\"/>\n" +
+            "    <javaTypeResolver>\n" +
+            "      <property name=\"forceBigDecimals\" value=\"false\"/>\n" +
+            "    </javaTypeResolver>\n" +
+            "    <javaModelGenerator targetPackage=\"func.alltype.model\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
+            "    <sqlMapGenerator targetPackage=\"mybatis-mappers\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/resources\"/>\n" +
+            "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"func.alltype.dao\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
+            "    <table tableName=\"all_data_types\" schema=\"mybatis\" modelType=\"flat\"/>\n" +
             "  </context>\n" +
             "</generatorConfiguration>\n";
 
@@ -39,13 +58,12 @@ public class Main {
             "  <context id=\"func\" targetRuntime=\"MyBatis3\">\n" +
             "    <plugin type=\"org.nalby.yobatis.core.mybatis.YobatisDaoPlugin\"/>\n" +
             "    <jdbcConnection driverClass=\"com.mysql.jdbc.Driver\" connectionURL=\"jdbc:mysql://localhost:3306/mybatis?characterEncoding=utf-8\" userId=\"mybatis\" password=\"mybatis\"/>\n" +
-            "    <!--jdbcConnection driverClass=\"com.mysql.jdbc.Driver\" connectionURL=\"jdbc:mysql://localhost:3306/book_store?characterEncoding=utf-8\" userId=\"root\" password=\"root\"/-->\n" +
             "    <javaTypeResolver>\n" +
             "      <property name=\"forceBigDecimals\" value=\"false\"/>\n" +
             "    </javaTypeResolver>\n" +
-            "    <javaModelGenerator targetPackage=\"func.allkey.model\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
-            "    <sqlMapGenerator targetPackage=\"mybatis-mappers\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
-            "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"func.allkey.dao\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
+            "    <javaModelGenerator targetPackage=\"func.allkey.model\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
+            "    <sqlMapGenerator targetPackage=\"mybatis-mappers\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/resources\"/>\n" +
+            "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"func.allkey.dao\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
             "    <table tableName=\"all_key_table\" schema=\"mybatis\" modelType=\"flat\"/>\n" +
             "  </context>\n" +
             "</generatorConfiguration>\n";
@@ -70,9 +88,9 @@ public class Main {
             "    <javaTypeResolver>\n" +
             "      <property name=\"forceBigDecimals\" value=\"false\"/>\n" +
             "    </javaTypeResolver>\n" +
-            "    <javaModelGenerator targetPackage=\"func.autoinckey.model\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
-            "    <sqlMapGenerator targetPackage=\"mybatis-mappers\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
-            "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"func.autoinckey.dao\" targetProject=\"/Users/lintao/Study/java/workspace/generator/core/mybatis-generator-core\"/>\n" +
+            "    <javaModelGenerator targetPackage=\"func.autoinckey.model\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
+            "    <sqlMapGenerator targetPackage=\"mybatis-mappers\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/resources\"/>\n" +
+            "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"func.autoinckey.dao\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
             "    <table tableName=\"customer\" schema=\"mybatis\" modelType=\"flat\">\n" +
             " 		<generatedKey column=\"id\" sqlStatement=\"mysql\" identity=\"true\"/>" +
             "    </table>\n" +
@@ -82,13 +100,33 @@ public class Main {
             "  </context>\n" +
             "</generatorConfiguration>\n";
 
+    private final static String ALL_TYPES_TABLE_ORIGINAL = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<!DOCTYPE generatorConfiguration PUBLIC \"-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN\" \"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd\">\n" +
+            "\n" +
+            "<generatorConfiguration>\n" +
+            "  <classPathEntry location=\"/Users/lintao/.m2/repository/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar\"/>\n" +
+            "  <context id=\"func\" targetRuntime=\"MyBatis3\">\n" +
+            "    <jdbcConnection driverClass=\"com.mysql.jdbc.Driver\" connectionURL=\"jdbc:mysql://localhost:3306/mybatis?characterEncoding=utf-8\" userId=\"mybatis\" password=\"mybatis\"/>\n" +
+            "    <javaTypeResolver>\n" +
+            "      <property name=\"forceBigDecimals\" value=\"false\"/>\n" +
+            "    </javaTypeResolver>\n" +
+            "    <javaModelGenerator targetPackage=\"original.model\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
+            "    <sqlMapGenerator targetPackage=\"mybatis-origin\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/resources\"/>\n" +
+            "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"original.dao\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
+            "    <table tableName=\"all_data_types\" schema=\"mybatis\" modelType=\"flat\">\n" +
+            " 		<generatedKey column=\"id\" sqlStatement=\"mysql\" identity=\"true\"/>" +
+            "    </table>\n" +
+            "  </context>\n" +
+            "</generatorConfiguration>\n";
+
+
     private static void generate(String name) throws Exception {
         InputStream inputStream = new ByteArrayInputStream(name.getBytes());
         MybatisGeneratorRunner runner = new MybatisGeneratorRunner();
         runner.parse(inputStream);
         List<GeneratedJavaFile> javaFiles = runner.getGeneratedJavaFiles();
         for (GeneratedJavaFile javaFile : javaFiles) {
-            if (javaFile instanceof YobatisJavaFile) {
+            //if (javaFile instanceof YobatisJavaFile) {
                 String packagename = javaFile.getTargetPackage();
                 String rpath = packagename.replaceAll("\\.", "/");
                 Path path = Paths.get("src/test/java/" + rpath + "/" + javaFile.getFileName());
@@ -101,7 +139,7 @@ public class Main {
                 OutputStream outputStream = new FileOutputStream(file);
                 outputStream.write(content.getBytes());
                 outputStream.close();
-            }
+            //}
         }
 
         for (GeneratedXmlFile xmlFile: runner.getGeneratedXmlFiles()) {
@@ -118,9 +156,12 @@ public class Main {
         }
     }
 
+
     public static void main(String[] args) throws Exception {
+        //generate(AUTO_INC_KEY_TABLE_ORIGINAL);
         generate(AUTO_INC_KEY_TABLE);
         generate(COMPOUND_PK_TABLE);
         generate(ALL_PK_TABLE);
+        generate(ALL_TYPES_TABLE);
     }
 }
