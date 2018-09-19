@@ -38,7 +38,7 @@ import java.util.Set;
  * 
  * @author Kyle Lin
  */
-public class MybatisGeneratorXmlCreator implements MybatisGenerator {
+public class MybatisGeneratorXmlCreator implements ConfigGenerator {
 
 	private Document document;
 
