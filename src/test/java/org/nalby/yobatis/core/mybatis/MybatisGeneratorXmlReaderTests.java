@@ -44,7 +44,7 @@ public class MybatisGeneratorXmlReaderTests {
 	private class XmlHelper extends AbstractXmlParser {
 
 		public XmlHelper(InputStream inputStream) throws DocumentException, IOException {
-			super(inputStream, MybatisGenerator.ROOT_TAG);
+			super(inputStream, ConfigGenerator.ROOT_TAG);
 		}
 		public Element getRoot() {
 			return document.getRootElement();

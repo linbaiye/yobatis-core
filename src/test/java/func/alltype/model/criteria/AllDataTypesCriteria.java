@@ -3,14 +3,10 @@ package func.alltype.model.criteria;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/*
- * Do NOT modify, it will be overwrote every time yobatis runs.
- */
-public class AllDataTypesCriteria extends BaseCriteria {
+public final class AllDataTypesCriteria extends BaseCriteria {
     private static final Map<String, String> PROPERTY_TO_COLUMN;
 
     static {
@@ -46,7 +42,7 @@ public class AllDataTypesCriteria extends BaseCriteria {
     }
 
     private void orderBy(String order, String ... fields) {
-        if ( fields == null || fields.length == 0) {
+        if (fields == null || fields.length == 0) {
             throw new IllegalArgumentException("Empty fields passed.");
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -67,47 +63,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
         orderByClause = stringBuilder.toString();
     }
 
-    /**
-     * Add the 'order by field1 asc, field2 asc, ...' clause to query, only fields in {@code AllDataTypes}(not column names) are allowed.
-     * By invoking this method and {@link #descOrderBy(String...) descOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public AllDataTypesCriteria ascOrderBy(String  ... fields) {
-        orderBy("asc", fields);
-        return this;
-    }
-
-    /**
-     * Add the 'order by field1 desc, field2 desc, ...' clause to query, only fields in {@code AllDataTypes}(not column names) are allowed.
-     * By invoking this method and {@link #ascOrderBy(String...) ascOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public AllDataTypesCriteria descOrderBy(String  ... fields) {
-        orderBy("desc", fields);
-        return this;
-    }
-
-    public AllDataTypesCriteria or() {
-        oredCriteria.add(createCriteriaInternal());
-        return this;
-    }
-
     public AllDataTypesCriteria setLimit(Long limit) {
         this.limit = limit;
         return this;
@@ -118,8 +73,23 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllDataTypesCriteria setForUpdate(Boolean forUpdate) {
+    public AllDataTypesCriteria setForUpdate(boolean forUpdate) {
         this.forUpdate = forUpdate;
+        return this;
+    }
+
+    public AllDataTypesCriteria ascOrderBy(String  ... fields) {
+        orderBy("asc", fields);
+        return this;
+    }
+
+    public AllDataTypesCriteria descOrderBy(String  ... fields) {
+        orderBy("desc", fields);
+        return this;
+    }
+
+    public AllDataTypesCriteria or() {
+        oredCriteria.add(createCriteriaInternal());
         return this;
     }
 
@@ -504,52 +474,52 @@ public class AllDataTypesCriteria extends BaseCriteria {
     }
 
     public AllDataTypesCriteria andTypeDateEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_date =", value, "typeDate");
+        lastCriteria().addCriterion("type_date =", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateNotEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_date <>", value, "typeDate");
+        lastCriteria().addCriterion("type_date <>", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateGreaterThan(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_date >", value, "typeDate");
+        lastCriteria().addCriterion("type_date >", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateGreaterThanOrEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_date >=", value, "typeDate");
+        lastCriteria().addCriterion("type_date >=", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateLessThan(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_date <", value, "typeDate");
+        lastCriteria().addCriterion("type_date <", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateLessThanOrEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_date <=", value, "typeDate");
+        lastCriteria().addCriterion("type_date <=", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateIn(List<Date> values) {
-        lastCriteria().addCriterionForJDBCDate("type_date in", values, "typeDate");
+        lastCriteria().addCriterion("type_date in", values, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateNotIn(List<Date> values) {
-        lastCriteria().addCriterionForJDBCDate("type_date not in", values, "typeDate");
+        lastCriteria().addCriterion("type_date not in", values, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateBetween(Date value1, Date value2) {
-        lastCriteria().addCriterionForJDBCDate("type_date between", value1, value2, "typeDate");
+        lastCriteria().addCriterion("type_date between", value1, value2, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateNotBetween(Date value1, Date value2) {
-        lastCriteria().addCriterionForJDBCDate("type_date not between", value1, value2, "typeDate");
+        lastCriteria().addCriterion("type_date not between", value1, value2, "typeDate");
         return this;
     }
 
@@ -864,52 +834,52 @@ public class AllDataTypesCriteria extends BaseCriteria {
     }
 
     public AllDataTypesCriteria andTypeTimeEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCTime("type_time =", value, "typeTime");
+        lastCriteria().addCriterion("type_time =", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeNotEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCTime("type_time <>", value, "typeTime");
+        lastCriteria().addCriterion("type_time <>", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeGreaterThan(Date value) {
-        lastCriteria().addCriterionForJDBCTime("type_time >", value, "typeTime");
+        lastCriteria().addCriterion("type_time >", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeGreaterThanOrEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCTime("type_time >=", value, "typeTime");
+        lastCriteria().addCriterion("type_time >=", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeLessThan(Date value) {
-        lastCriteria().addCriterionForJDBCTime("type_time <", value, "typeTime");
+        lastCriteria().addCriterion("type_time <", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeLessThanOrEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCTime("type_time <=", value, "typeTime");
+        lastCriteria().addCriterion("type_time <=", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeIn(List<Date> values) {
-        lastCriteria().addCriterionForJDBCTime("type_time in", values, "typeTime");
+        lastCriteria().addCriterion("type_time in", values, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeNotIn(List<Date> values) {
-        lastCriteria().addCriterionForJDBCTime("type_time not in", values, "typeTime");
+        lastCriteria().addCriterion("type_time not in", values, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeBetween(Date value1, Date value2) {
-        lastCriteria().addCriterionForJDBCTime("type_time between", value1, value2, "typeTime");
+        lastCriteria().addCriterion("type_time between", value1, value2, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeNotBetween(Date value1, Date value2) {
-        lastCriteria().addCriterionForJDBCTime("type_time not between", value1, value2, "typeTime");
+        lastCriteria().addCriterion("type_time not between", value1, value2, "typeTime");
         return this;
     }
 
@@ -924,52 +894,52 @@ public class AllDataTypesCriteria extends BaseCriteria {
     }
 
     public AllDataTypesCriteria andTypeYearEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_year =", value, "typeYear");
+        lastCriteria().addCriterion("type_year =", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearNotEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_year <>", value, "typeYear");
+        lastCriteria().addCriterion("type_year <>", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearGreaterThan(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_year >", value, "typeYear");
+        lastCriteria().addCriterion("type_year >", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearGreaterThanOrEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_year >=", value, "typeYear");
+        lastCriteria().addCriterion("type_year >=", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearLessThan(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_year <", value, "typeYear");
+        lastCriteria().addCriterion("type_year <", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearLessThanOrEqualTo(Date value) {
-        lastCriteria().addCriterionForJDBCDate("type_year <=", value, "typeYear");
+        lastCriteria().addCriterion("type_year <=", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearIn(List<Date> values) {
-        lastCriteria().addCriterionForJDBCDate("type_year in", values, "typeYear");
+        lastCriteria().addCriterion("type_year in", values, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearNotIn(List<Date> values) {
-        lastCriteria().addCriterionForJDBCDate("type_year not in", values, "typeYear");
+        lastCriteria().addCriterion("type_year not in", values, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearBetween(Date value1, Date value2) {
-        lastCriteria().addCriterionForJDBCDate("type_year between", value1, value2, "typeYear");
+        lastCriteria().addCriterion("type_year between", value1, value2, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearNotBetween(Date value1, Date value2) {
-        lastCriteria().addCriterionForJDBCDate("type_year not between", value1, value2, "typeYear");
+        lastCriteria().addCriterion("type_year not between", value1, value2, "typeYear");
         return this;
     }
 
@@ -1268,51 +1238,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllDataTypesCriteria andTypeBoolNotEqualTo(Boolean value) {
-        lastCriteria().addCriterion("type_bool <>", value, "typeBool");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBoolGreaterThan(Boolean value) {
-        lastCriteria().addCriterion("type_bool >", value, "typeBool");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBoolGreaterThanOrEqualTo(Boolean value) {
-        lastCriteria().addCriterion("type_bool >=", value, "typeBool");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBoolLessThan(Boolean value) {
-        lastCriteria().addCriterion("type_bool <", value, "typeBool");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBoolLessThanOrEqualTo(Boolean value) {
-        lastCriteria().addCriterion("type_bool <=", value, "typeBool");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBoolIn(List<Boolean> values) {
-        lastCriteria().addCriterion("type_bool in", values, "typeBool");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBoolNotIn(List<Boolean> values) {
-        lastCriteria().addCriterion("type_bool not in", values, "typeBool");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBoolBetween(Boolean value1, Boolean value2) {
-        lastCriteria().addCriterion("type_bool between", value1, value2, "typeBool");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBoolNotBetween(Boolean value1, Boolean value2) {
-        lastCriteria().addCriterion("type_bool not between", value1, value2, "typeBool");
-        return this;
-    }
-
     public AllDataTypesCriteria andTypeTextIsNull() {
         lastCriteria().addCriterion("type_text is null");
         return this;
@@ -1393,56 +1318,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllDataTypesCriteria andTypeTinyblobEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_tinyblob =", value, "typeTinyblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeTinyblobNotEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_tinyblob <>", value, "typeTinyblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeTinyblobGreaterThan(byte[] value) {
-        lastCriteria().addCriterion("type_tinyblob >", value, "typeTinyblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeTinyblobGreaterThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_tinyblob >=", value, "typeTinyblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeTinyblobLessThan(byte[] value) {
-        lastCriteria().addCriterion("type_tinyblob <", value, "typeTinyblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeTinyblobLessThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_tinyblob <=", value, "typeTinyblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeTinyblobIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_tinyblob in", values, "typeTinyblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeTinyblobNotIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_tinyblob not in", values, "typeTinyblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeTinyblobBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_tinyblob between", value1, value2, "typeTinyblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeTinyblobNotBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_tinyblob not between", value1, value2, "typeTinyblob");
-        return this;
-    }
-
     public AllDataTypesCriteria andTypeBlobIsNull() {
         lastCriteria().addCriterion("type_blob is null");
         return this;
@@ -1453,56 +1328,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllDataTypesCriteria andTypeBlobEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_blob =", value, "typeBlob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBlobNotEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_blob <>", value, "typeBlob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBlobGreaterThan(byte[] value) {
-        lastCriteria().addCriterion("type_blob >", value, "typeBlob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBlobGreaterThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_blob >=", value, "typeBlob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBlobLessThan(byte[] value) {
-        lastCriteria().addCriterion("type_blob <", value, "typeBlob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBlobLessThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_blob <=", value, "typeBlob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBlobIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_blob in", values, "typeBlob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBlobNotIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_blob not in", values, "typeBlob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBlobBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_blob between", value1, value2, "typeBlob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBlobNotBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_blob not between", value1, value2, "typeBlob");
-        return this;
-    }
-
     public AllDataTypesCriteria andTypeMediumblobIsNull() {
         lastCriteria().addCriterion("type_mediumblob is null");
         return this;
@@ -1510,56 +1335,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
 
     public AllDataTypesCriteria andTypeMediumblobIsNotNull() {
         lastCriteria().addCriterion("type_mediumblob is not null");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_mediumblob =", value, "typeMediumblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobNotEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_mediumblob <>", value, "typeMediumblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobGreaterThan(byte[] value) {
-        lastCriteria().addCriterion("type_mediumblob >", value, "typeMediumblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobGreaterThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_mediumblob >=", value, "typeMediumblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobLessThan(byte[] value) {
-        lastCriteria().addCriterion("type_mediumblob <", value, "typeMediumblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobLessThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_mediumblob <=", value, "typeMediumblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_mediumblob in", values, "typeMediumblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobNotIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_mediumblob not in", values, "typeMediumblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_mediumblob between", value1, value2, "typeMediumblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeMediumblobNotBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_mediumblob not between", value1, value2, "typeMediumblob");
         return this;
     }
 
@@ -1643,56 +1418,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllDataTypesCriteria andTypeLongblobEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_longblob =", value, "typeLongblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeLongblobNotEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_longblob <>", value, "typeLongblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeLongblobGreaterThan(byte[] value) {
-        lastCriteria().addCriterion("type_longblob >", value, "typeLongblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeLongblobGreaterThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_longblob >=", value, "typeLongblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeLongblobLessThan(byte[] value) {
-        lastCriteria().addCriterion("type_longblob <", value, "typeLongblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeLongblobLessThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_longblob <=", value, "typeLongblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeLongblobIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_longblob in", values, "typeLongblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeLongblobNotIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_longblob not in", values, "typeLongblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeLongblobBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_longblob between", value1, value2, "typeLongblob");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeLongblobNotBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_longblob not between", value1, value2, "typeLongblob");
-        return this;
-    }
-
     public AllDataTypesCriteria andTypeLongtextIsNull() {
         lastCriteria().addCriterion("type_longtext is null");
         return this;
@@ -1773,56 +1498,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllDataTypesCriteria andTypeBinaryEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_binary =", value, "typeBinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBinaryNotEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_binary <>", value, "typeBinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBinaryGreaterThan(byte[] value) {
-        lastCriteria().addCriterion("type_binary >", value, "typeBinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBinaryGreaterThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_binary >=", value, "typeBinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBinaryLessThan(byte[] value) {
-        lastCriteria().addCriterion("type_binary <", value, "typeBinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBinaryLessThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_binary <=", value, "typeBinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBinaryIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_binary in", values, "typeBinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBinaryNotIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_binary not in", values, "typeBinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBinaryBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_binary between", value1, value2, "typeBinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeBinaryNotBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_binary not between", value1, value2, "typeBinary");
-        return this;
-    }
-
     public AllDataTypesCriteria andTypeVarbinaryIsNull() {
         lastCriteria().addCriterion("type_varbinary is null");
         return this;
@@ -1830,56 +1505,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
 
     public AllDataTypesCriteria andTypeVarbinaryIsNotNull() {
         lastCriteria().addCriterion("type_varbinary is not null");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_varbinary =", value, "typeVarbinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryNotEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_varbinary <>", value, "typeVarbinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryGreaterThan(byte[] value) {
-        lastCriteria().addCriterion("type_varbinary >", value, "typeVarbinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryGreaterThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_varbinary >=", value, "typeVarbinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryLessThan(byte[] value) {
-        lastCriteria().addCriterion("type_varbinary <", value, "typeVarbinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryLessThanOrEqualTo(byte[] value) {
-        lastCriteria().addCriterion("type_varbinary <=", value, "typeVarbinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_varbinary in", values, "typeVarbinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryNotIn(List<byte[]> values) {
-        lastCriteria().addCriterion("type_varbinary not in", values, "typeVarbinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_varbinary between", value1, value2, "typeVarbinary");
-        return this;
-    }
-
-    public AllDataTypesCriteria andTypeVarbinaryNotBetween(byte[] value1, byte[] value2) {
-        lastCriteria().addCriterion("type_varbinary not between", value1, value2, "typeVarbinary");
         return this;
     }
 
@@ -2799,42 +2424,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return new AllDataTypesCriteria().andTypeBoolEqualTo(value);
     }
 
-    public static AllDataTypesCriteria typeBoolNotEqualTo(Boolean value) {
-        return new AllDataTypesCriteria().andTypeBoolNotEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBoolGreaterThan(Boolean value) {
-        return new AllDataTypesCriteria().andTypeBoolGreaterThan(value);
-    }
-
-    public static AllDataTypesCriteria typeBoolGreaterThanOrEqualTo(Boolean value) {
-        return new AllDataTypesCriteria().andTypeBoolGreaterThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBoolLessThan(Boolean value) {
-        return new AllDataTypesCriteria().andTypeBoolLessThan(value);
-    }
-
-    public static AllDataTypesCriteria typeBoolLessThanOrEqualTo(Boolean value) {
-        return new AllDataTypesCriteria().andTypeBoolLessThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBoolIn(List<Boolean> values) {
-        return new AllDataTypesCriteria().andTypeBoolIn(values);
-    }
-
-    public static AllDataTypesCriteria typeBoolNotIn(List<Boolean> values) {
-        return new AllDataTypesCriteria().andTypeBoolNotIn(values);
-    }
-
-    public static AllDataTypesCriteria typeBoolBetween(Boolean value1, Boolean value2) {
-        return new AllDataTypesCriteria().andTypeBoolBetween(value1, value2);
-    }
-
-    public static AllDataTypesCriteria typeBoolNotBetween(Boolean value1, Boolean value2) {
-        return new AllDataTypesCriteria().andTypeBoolNotBetween(value1, value2);
-    }
-
     public static AllDataTypesCriteria typeTextIsNull() {
         return new AllDataTypesCriteria().andTypeTextIsNull();
     }
@@ -2899,46 +2488,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return new AllDataTypesCriteria().andTypeTinyblobIsNotNull();
     }
 
-    public static AllDataTypesCriteria typeTinyblobEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeTinyblobEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeTinyblobNotEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeTinyblobNotEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeTinyblobGreaterThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeTinyblobGreaterThan(value);
-    }
-
-    public static AllDataTypesCriteria typeTinyblobGreaterThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeTinyblobGreaterThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeTinyblobLessThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeTinyblobLessThan(value);
-    }
-
-    public static AllDataTypesCriteria typeTinyblobLessThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeTinyblobLessThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeTinyblobIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeTinyblobIn(values);
-    }
-
-    public static AllDataTypesCriteria typeTinyblobNotIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeTinyblobNotIn(values);
-    }
-
-    public static AllDataTypesCriteria typeTinyblobBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeTinyblobBetween(value1, value2);
-    }
-
-    public static AllDataTypesCriteria typeTinyblobNotBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeTinyblobNotBetween(value1, value2);
-    }
-
     public static AllDataTypesCriteria typeBlobIsNull() {
         return new AllDataTypesCriteria().andTypeBlobIsNull();
     }
@@ -2947,92 +2496,12 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return new AllDataTypesCriteria().andTypeBlobIsNotNull();
     }
 
-    public static AllDataTypesCriteria typeBlobEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBlobEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBlobNotEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBlobNotEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBlobGreaterThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBlobGreaterThan(value);
-    }
-
-    public static AllDataTypesCriteria typeBlobGreaterThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBlobGreaterThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBlobLessThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBlobLessThan(value);
-    }
-
-    public static AllDataTypesCriteria typeBlobLessThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBlobLessThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBlobIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeBlobIn(values);
-    }
-
-    public static AllDataTypesCriteria typeBlobNotIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeBlobNotIn(values);
-    }
-
-    public static AllDataTypesCriteria typeBlobBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeBlobBetween(value1, value2);
-    }
-
-    public static AllDataTypesCriteria typeBlobNotBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeBlobNotBetween(value1, value2);
-    }
-
     public static AllDataTypesCriteria typeMediumblobIsNull() {
         return new AllDataTypesCriteria().andTypeMediumblobIsNull();
     }
 
     public static AllDataTypesCriteria typeMediumblobIsNotNull() {
         return new AllDataTypesCriteria().andTypeMediumblobIsNotNull();
-    }
-
-    public static AllDataTypesCriteria typeMediumblobEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeMediumblobEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeMediumblobNotEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeMediumblobNotEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeMediumblobGreaterThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeMediumblobGreaterThan(value);
-    }
-
-    public static AllDataTypesCriteria typeMediumblobGreaterThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeMediumblobGreaterThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeMediumblobLessThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeMediumblobLessThan(value);
-    }
-
-    public static AllDataTypesCriteria typeMediumblobLessThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeMediumblobLessThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeMediumblobIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeMediumblobIn(values);
-    }
-
-    public static AllDataTypesCriteria typeMediumblobNotIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeMediumblobNotIn(values);
-    }
-
-    public static AllDataTypesCriteria typeMediumblobBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeMediumblobBetween(value1, value2);
-    }
-
-    public static AllDataTypesCriteria typeMediumblobNotBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeMediumblobNotBetween(value1, value2);
     }
 
     public static AllDataTypesCriteria typeMediumtextIsNull() {
@@ -3099,46 +2568,6 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return new AllDataTypesCriteria().andTypeLongblobIsNotNull();
     }
 
-    public static AllDataTypesCriteria typeLongblobEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeLongblobEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeLongblobNotEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeLongblobNotEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeLongblobGreaterThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeLongblobGreaterThan(value);
-    }
-
-    public static AllDataTypesCriteria typeLongblobGreaterThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeLongblobGreaterThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeLongblobLessThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeLongblobLessThan(value);
-    }
-
-    public static AllDataTypesCriteria typeLongblobLessThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeLongblobLessThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeLongblobIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeLongblobIn(values);
-    }
-
-    public static AllDataTypesCriteria typeLongblobNotIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeLongblobNotIn(values);
-    }
-
-    public static AllDataTypesCriteria typeLongblobBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeLongblobBetween(value1, value2);
-    }
-
-    public static AllDataTypesCriteria typeLongblobNotBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeLongblobNotBetween(value1, value2);
-    }
-
     public static AllDataTypesCriteria typeLongtextIsNull() {
         return new AllDataTypesCriteria().andTypeLongtextIsNull();
     }
@@ -3203,91 +2632,11 @@ public class AllDataTypesCriteria extends BaseCriteria {
         return new AllDataTypesCriteria().andTypeBinaryIsNotNull();
     }
 
-    public static AllDataTypesCriteria typeBinaryEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBinaryEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBinaryNotEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBinaryNotEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBinaryGreaterThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBinaryGreaterThan(value);
-    }
-
-    public static AllDataTypesCriteria typeBinaryGreaterThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBinaryGreaterThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBinaryLessThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBinaryLessThan(value);
-    }
-
-    public static AllDataTypesCriteria typeBinaryLessThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeBinaryLessThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeBinaryIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeBinaryIn(values);
-    }
-
-    public static AllDataTypesCriteria typeBinaryNotIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeBinaryNotIn(values);
-    }
-
-    public static AllDataTypesCriteria typeBinaryBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeBinaryBetween(value1, value2);
-    }
-
-    public static AllDataTypesCriteria typeBinaryNotBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeBinaryNotBetween(value1, value2);
-    }
-
     public static AllDataTypesCriteria typeVarbinaryIsNull() {
         return new AllDataTypesCriteria().andTypeVarbinaryIsNull();
     }
 
     public static AllDataTypesCriteria typeVarbinaryIsNotNull() {
         return new AllDataTypesCriteria().andTypeVarbinaryIsNotNull();
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeVarbinaryEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryNotEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeVarbinaryNotEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryGreaterThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeVarbinaryGreaterThan(value);
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryGreaterThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeVarbinaryGreaterThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryLessThan(byte[] value) {
-        return new AllDataTypesCriteria().andTypeVarbinaryLessThan(value);
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryLessThanOrEqualTo(byte[] value) {
-        return new AllDataTypesCriteria().andTypeVarbinaryLessThanOrEqualTo(value);
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeVarbinaryIn(values);
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryNotIn(List<byte[]> values) {
-        return new AllDataTypesCriteria().andTypeVarbinaryNotIn(values);
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeVarbinaryBetween(value1, value2);
-    }
-
-    public static AllDataTypesCriteria typeVarbinaryNotBetween(byte[] value1, byte[] value2) {
-        return new AllDataTypesCriteria().andTypeVarbinaryNotBetween(value1, value2);
     }
 }

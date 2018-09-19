@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
- * Do NOT modify, it will be overwrote every time yobatis runs.
- */
-public class CustomerCriteria extends BaseCriteria {
+public final class CustomerCriteria extends BaseCriteria {
     private static final Map<String, String> PROPERTY_TO_COLUMN;
 
     static {
@@ -20,7 +17,7 @@ public class CustomerCriteria extends BaseCriteria {
     }
 
     private void orderBy(String order, String ... fields) {
-        if ( fields == null || fields.length == 0) {
+        if (fields == null || fields.length == 0) {
             throw new IllegalArgumentException("Empty fields passed.");
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -41,47 +38,6 @@ public class CustomerCriteria extends BaseCriteria {
         orderByClause = stringBuilder.toString();
     }
 
-    /**
-     * Add the 'order by field1 asc, field2 asc, ...' clause to query, only fields in {@code Customer}(not column names) are allowed.
-     * By invoking this method and {@link #descOrderBy(String...) descOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public CustomerCriteria ascOrderBy(String  ... fields) {
-        orderBy("asc", fields);
-        return this;
-    }
-
-    /**
-     * Add the 'order by field1 desc, field2 desc, ...' clause to query, only fields in {@code Customer}(not column names) are allowed.
-     * By invoking this method and {@link #ascOrderBy(String...) ascOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public CustomerCriteria descOrderBy(String  ... fields) {
-        orderBy("desc", fields);
-        return this;
-    }
-
-    public CustomerCriteria or() {
-        oredCriteria.add(createCriteriaInternal());
-        return this;
-    }
-
     public CustomerCriteria setLimit(Long limit) {
         this.limit = limit;
         return this;
@@ -92,8 +48,23 @@ public class CustomerCriteria extends BaseCriteria {
         return this;
     }
 
-    public CustomerCriteria setForUpdate(Boolean forUpdate) {
+    public CustomerCriteria setForUpdate(boolean forUpdate) {
         this.forUpdate = forUpdate;
+        return this;
+    }
+
+    public CustomerCriteria ascOrderBy(String  ... fields) {
+        orderBy("asc", fields);
+        return this;
+    }
+
+    public CustomerCriteria descOrderBy(String  ... fields) {
+        orderBy("desc", fields);
+        return this;
+    }
+
+    public CustomerCriteria or() {
+        oredCriteria.add(createCriteriaInternal());
         return this;
     }
 

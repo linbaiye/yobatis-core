@@ -15,11 +15,52 @@
  */
 package org.nalby.yobatis.core.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public final class TextUtil {
 	private TextUtil() {}
 	
 	public static boolean isEmpty(String text) {
 		return text == null || "".equals(text.trim());
 	}
+
+
+	private final static Pattern PATTERN = Pattern.compile("([a-zA-Z_])(.*)");
+
+	public static String capitalizeFirstChar(String str) {
+		if (TextUtil.isEmpty(str)) {
+			return str;
+		}
+		Matcher matcher = PATTERN.matcher(str);
+		if (!matcher.matches()) {
+			return str;
+		}
+		if (matcher.groupCount() == 2) {
+			return matcher.group(1).toUpperCase() + matcher.group(2);
+		}
+		return matcher.group(1).toUpperCase();
+	}
+
+	public static String asString(InputStream inputStream) {
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+			int nRead;
+			byte[] data = new byte[2048];
+			while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+				buffer.write(data, 0, nRead);
+			}
+			buffer.flush();
+			byte[] byteArray = buffer.toByteArray();
+			return new String(byteArray, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			// Nothing we can do here.
+		}
+		return null;
+	}
+
 
 }

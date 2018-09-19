@@ -18,7 +18,7 @@ package org.nalby.yobatis.core;
 import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.mysql.MysqlDatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.mysql.MysqlDatabaseMetadataProvider.Builder;
-import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
+import org.nalby.yobatis.core.exception.ProjectException;
 import org.nalby.yobatis.core.log.LogFactory;
 import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.mybatis.*;
@@ -39,7 +39,6 @@ public class Yobatis {
 	 */
 	private static MybatisGeneratorXmlCreator buildMybatisGeneratorXmlCreator(Project project) {
 
-
 		SpringParser springParser = SpringParser.parse(project);
 
 		ProjectPom projectPom = ProjectPom.parse(project);
@@ -53,27 +52,13 @@ public class Yobatis {
 		DatabaseMetadataProvider provider = builder.build();
 		return MybatisGeneratorXmlCreator.create(project, provider);
 	}
-	
 
-	private static MybatisGeneratorRunner buildMyBatisRunner(Project project) {
-		try {
-			File file = project.findFile(MybatisGenerator.CONFIG_FILENAME);
-			try (InputStream inputStream = file.open()) {
-			    MybatisGeneratorRunner runner = new MybatisGeneratorRunner();
-				runner.parse(inputStream);
-				return runner;
-			}
-		} catch (Exception e) {
-			throw new InvalidMybatisGeneratorConfigException(e);
-		}
-	}
-	
 	/*
 	 * Merge the new file into the existent one if exists.
 	 */
-	private static MybatisGenerator mergeIntoExistentConfig(MybatisGeneratorXmlCreator configFileGenerator, Project project) {
-		MybatisGenerator generator = configFileGenerator;
-		File file = project.findFile(MybatisGenerator.CONFIG_FILENAME);
+	private static ConfigGenerator mergeIntoExistentConfig(MybatisGeneratorXmlCreator configFileGenerator, Project project) {
+		ConfigGenerator generator = configFileGenerator;
+		File file = project.findFile(ConfigGenerator.CONFIG_FILENAME);
 		if (file != null) {
 			try (InputStream inputStream = file.open()) {
 				MybatisGeneratorXmlReader mybatisXmlParser = MybatisGeneratorXmlReader.build(inputStream);
@@ -83,7 +68,7 @@ public class Yobatis {
 				logger.info("Unable to merge existent file:{}.", e);
 			}
 		}
-		file = project.createFile(MybatisGenerator.CONFIG_FILENAME);
+		file = project.createFile(ConfigGenerator.CONFIG_FILENAME);
 		file.write(generator.asXmlText());
 		return generator;
 	}
@@ -92,13 +77,17 @@ public class Yobatis {
 		logger.info("Scanning project:{}.", project.name());
 		MybatisGeneratorXmlCreator generator = buildMybatisGeneratorXmlCreator(project);
 		mergeIntoExistentConfig(generator, project);
-		logger.info("Config file has been created as {}.", MybatisGenerator.CONFIG_FILENAME);
+		logger.info("Config file has been created as {}.", ConfigGenerator.CONFIG_FILENAME);
 	}
 	
 	public static void onClickFile(Project project) {
 		logger.info("Using existent config file.");
-		MybatisGeneratorRunner runner = buildMyBatisRunner(project);
-		new MybatisFilesWriter(project, runner).writeAll();
+		File file = project.findFile(ConfigGenerator.CONFIG_FILENAME);
+		try (InputStream inputStream = file.open()) {
+			YobatisFileGenerator runner = YobatisFileGenerator.parse(inputStream, project);
+			runner.writeAll();
+		} catch (IOException e) {
+			throw new ProjectException(e);
+		}
 	}
-
 }

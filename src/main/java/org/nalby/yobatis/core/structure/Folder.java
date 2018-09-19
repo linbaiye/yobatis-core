@@ -56,7 +56,7 @@ public interface Folder {
 	
 	/**
 	 * Create a folder recursively under this folder based on the path.
-	 * @param path the folder path.
+	 * @param folderpath the folder path.
 	 * @return the folder created.
 	 * @throws ResourceNotAvalaibleException if any missing folder was unable to create.
 	 */
@@ -64,7 +64,7 @@ public interface Folder {
 
 	/**
 	 * Find folder under this folder.
-	 * @param folerPath the folder path to find.
+	 * @param folerpath the folder path to find.
 	 * @return the folder if found, null else.
 	 */
 	Folder findFolder(String folerpath);

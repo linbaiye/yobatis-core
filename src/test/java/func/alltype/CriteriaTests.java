@@ -226,10 +226,11 @@ public class CriteriaTests extends SetupClass {
         AllDataTypes allDataTypes = allDataTypesDao.selectOne(AllDataTypesCriteria.typeBoolEqualTo(true));
         assertEqual(allDataTypes, 1, simpleDateFormat.parse("2018-08-11 13:00:00"), true);
 
-        allDataTypes = allDataTypesDao.selectOne(AllDataTypesCriteria.typeBoolNotEqualTo(false));
-        assertEqual(allDataTypes, 1, simpleDateFormat.parse("2018-08-11 13:00:00"), true);
+        List<AllDataTypes> allDataTypesList = allDataTypesDao.selectList(AllDataTypesCriteria.typeBoolEqualTo(false));
+        assertEqual(allDataTypesList.get(0), 2, simpleDateFormat.parse("2018-08-12 13:00:00"), false);
+        assertEqual(allDataTypesList.get(1), 3, simpleDateFormat.parse("2018-08-13 13:00:00"), false);
 
-        List<AllDataTypes> allDataTypesList = allDataTypesDao.selectList(AllDataTypesCriteria.typeBoolIsNotNull());
+        allDataTypesList = allDataTypesDao.selectList(AllDataTypesCriteria.typeBoolIsNotNull());
         assertEqual(allDataTypesList.get(0), 1, simpleDateFormat.parse("2018-08-11 13:00:00"), true);
         assertEqual(allDataTypesList.get(1), 2, simpleDateFormat.parse("2018-08-12 13:00:00"), false);
         assertEqual(allDataTypesList.get(2), 3, simpleDateFormat.parse("2018-08-13 13:00:00"), false);
@@ -885,6 +886,7 @@ public class CriteriaTests extends SetupClass {
         AllDataTypesCriteria criteria = new AllDataTypesCriteria();
         criteria.setForUpdate(true).setLimit(1L).setOffset(1L).or();
         criteria.descOrderBy("typeTime").ascOrderBy("typeTime");
+        assertEquals(3, allDataTypesDao.countAll());
     }
 }
 

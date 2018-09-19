@@ -3,13 +3,10 @@ package func.alltype.dao.impl;
 import func.alltype.dao.AllDataTypesDao;
 import func.alltype.model.AllDataTypes;
 import func.alltype.model.base.BaseAllDataTypes;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
-/*
- * It is safe to add methods.
- */
-@Repository("allDataTypesDao")
-public final class AllDataTypesDaoImpl extends BaseDaoImpl<AllDataTypes, BaseAllDataTypes, Long> implements AllDataTypesDao {
+@Component("allDataTypesDao")
+public class AllDataTypesDaoImpl extends BaseDaoImpl<BaseAllDataTypes, AllDataTypes, Long> implements AllDataTypesDao {
 
     @Override
     protected String namespace() {

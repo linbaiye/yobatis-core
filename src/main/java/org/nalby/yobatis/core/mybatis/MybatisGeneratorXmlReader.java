@@ -40,7 +40,7 @@ import java.util.List;
  * @author Kyle Lin
  *
  */
-public class MybatisGeneratorXmlReader extends AbstractXmlParser implements MybatisGenerator {
+public class MybatisGeneratorXmlReader extends AbstractXmlParser implements ConfigGenerator {
 	private static final String DTD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
 			"<!--\n" + 
 			"\n" + 

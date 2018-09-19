@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
- * Do NOT modify, it will be overwrote every time yobatis runs.
- */
-public class AllKeyTableCriteria extends BaseCriteria {
+public final class AllKeyTableCriteria extends BaseCriteria {
     private static final Map<String, String> PROPERTY_TO_COLUMN;
 
     static {
@@ -17,7 +14,7 @@ public class AllKeyTableCriteria extends BaseCriteria {
     }
 
     private void orderBy(String order, String ... fields) {
-        if ( fields == null || fields.length == 0) {
+        if (fields == null || fields.length == 0) {
             throw new IllegalArgumentException("Empty fields passed.");
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -38,47 +35,6 @@ public class AllKeyTableCriteria extends BaseCriteria {
         orderByClause = stringBuilder.toString();
     }
 
-    /**
-     * Add the 'order by field1 asc, field2 asc, ...' clause to query, only fields in {@code AllKeyTable}(not column names) are allowed.
-     * By invoking this method and {@link #descOrderBy(String...) descOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public AllKeyTableCriteria ascOrderBy(String  ... fields) {
-        orderBy("asc", fields);
-        return this;
-    }
-
-    /**
-     * Add the 'order by field1 desc, field2 desc, ...' clause to query, only fields in {@code AllKeyTable}(not column names) are allowed.
-     * By invoking this method and {@link #ascOrderBy(String...) ascOrderBy} alternately, a more complex 'order by' clause
-     * can be constructed, shown as below.
-     * <pre>
-     * criteria.ascOrderBy('field1');
-     * criteria.descOrderBy('field2');
-     * -> 'order by field1 asc, field2 desc'
-     * </pre>
-     * @param fields the fields to sort.
-     * @throws IllegalArgumentException if fields is empty, or any of the fields is invalid.
-     * @return this criteria.
-     */
-    public AllKeyTableCriteria descOrderBy(String  ... fields) {
-        orderBy("desc", fields);
-        return this;
-    }
-
-    public AllKeyTableCriteria or() {
-        oredCriteria.add(createCriteriaInternal());
-        return this;
-    }
-
     public AllKeyTableCriteria setLimit(Long limit) {
         this.limit = limit;
         return this;
@@ -89,8 +45,23 @@ public class AllKeyTableCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllKeyTableCriteria setForUpdate(Boolean forUpdate) {
+    public AllKeyTableCriteria setForUpdate(boolean forUpdate) {
         this.forUpdate = forUpdate;
+        return this;
+    }
+
+    public AllKeyTableCriteria ascOrderBy(String  ... fields) {
+        orderBy("asc", fields);
+        return this;
+    }
+
+    public AllKeyTableCriteria descOrderBy(String  ... fields) {
+        orderBy("desc", fields);
+        return this;
+    }
+
+    public AllKeyTableCriteria or() {
+        oredCriteria.add(createCriteriaInternal());
         return this;
     }
 
@@ -104,52 +75,52 @@ public class AllKeyTableCriteria extends BaseCriteria {
         return this;
     }
 
-    public AllKeyTableCriteria andPk1EqualTo(Long value) {
+    public AllKeyTableCriteria andPk1EqualTo(Integer value) {
         lastCriteria().addCriterion("pk1 =", value, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1NotEqualTo(Long value) {
+    public AllKeyTableCriteria andPk1NotEqualTo(Integer value) {
         lastCriteria().addCriterion("pk1 <>", value, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1GreaterThan(Long value) {
+    public AllKeyTableCriteria andPk1GreaterThan(Integer value) {
         lastCriteria().addCriterion("pk1 >", value, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1GreaterThanOrEqualTo(Long value) {
+    public AllKeyTableCriteria andPk1GreaterThanOrEqualTo(Integer value) {
         lastCriteria().addCriterion("pk1 >=", value, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1LessThan(Long value) {
+    public AllKeyTableCriteria andPk1LessThan(Integer value) {
         lastCriteria().addCriterion("pk1 <", value, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1LessThanOrEqualTo(Long value) {
+    public AllKeyTableCriteria andPk1LessThanOrEqualTo(Integer value) {
         lastCriteria().addCriterion("pk1 <=", value, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1In(List<Long> values) {
+    public AllKeyTableCriteria andPk1In(List<Integer> values) {
         lastCriteria().addCriterion("pk1 in", values, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1NotIn(List<Long> values) {
+    public AllKeyTableCriteria andPk1NotIn(List<Integer> values) {
         lastCriteria().addCriterion("pk1 not in", values, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1Between(Long value1, Long value2) {
+    public AllKeyTableCriteria andPk1Between(Integer value1, Integer value2) {
         lastCriteria().addCriterion("pk1 between", value1, value2, "pk1");
         return this;
     }
 
-    public AllKeyTableCriteria andPk1NotBetween(Long value1, Long value2) {
+    public AllKeyTableCriteria andPk1NotBetween(Integer value1, Integer value2) {
         lastCriteria().addCriterion("pk1 not between", value1, value2, "pk1");
         return this;
     }
@@ -232,43 +203,43 @@ public class AllKeyTableCriteria extends BaseCriteria {
         return new AllKeyTableCriteria().andPk1IsNotNull();
     }
 
-    public static AllKeyTableCriteria pk1EqualTo(Long value) {
+    public static AllKeyTableCriteria pk1EqualTo(Integer value) {
         return new AllKeyTableCriteria().andPk1EqualTo(value);
     }
 
-    public static AllKeyTableCriteria pk1NotEqualTo(Long value) {
+    public static AllKeyTableCriteria pk1NotEqualTo(Integer value) {
         return new AllKeyTableCriteria().andPk1NotEqualTo(value);
     }
 
-    public static AllKeyTableCriteria pk1GreaterThan(Long value) {
+    public static AllKeyTableCriteria pk1GreaterThan(Integer value) {
         return new AllKeyTableCriteria().andPk1GreaterThan(value);
     }
 
-    public static AllKeyTableCriteria pk1GreaterThanOrEqualTo(Long value) {
+    public static AllKeyTableCriteria pk1GreaterThanOrEqualTo(Integer value) {
         return new AllKeyTableCriteria().andPk1GreaterThanOrEqualTo(value);
     }
 
-    public static AllKeyTableCriteria pk1LessThan(Long value) {
+    public static AllKeyTableCriteria pk1LessThan(Integer value) {
         return new AllKeyTableCriteria().andPk1LessThan(value);
     }
 
-    public static AllKeyTableCriteria pk1LessThanOrEqualTo(Long value) {
+    public static AllKeyTableCriteria pk1LessThanOrEqualTo(Integer value) {
         return new AllKeyTableCriteria().andPk1LessThanOrEqualTo(value);
     }
 
-    public static AllKeyTableCriteria pk1In(List<Long> values) {
+    public static AllKeyTableCriteria pk1In(List<Integer> values) {
         return new AllKeyTableCriteria().andPk1In(values);
     }
 
-    public static AllKeyTableCriteria pk1NotIn(List<Long> values) {
+    public static AllKeyTableCriteria pk1NotIn(List<Integer> values) {
         return new AllKeyTableCriteria().andPk1NotIn(values);
     }
 
-    public static AllKeyTableCriteria pk1Between(Long value1, Long value2) {
+    public static AllKeyTableCriteria pk1Between(Integer value1, Integer value2) {
         return new AllKeyTableCriteria().andPk1Between(value1, value2);
     }
 
-    public static AllKeyTableCriteria pk1NotBetween(Long value1, Long value2) {
+    public static AllKeyTableCriteria pk1NotBetween(Integer value1, Integer value2) {
         return new AllKeyTableCriteria().andPk1NotBetween(value1, value2);
     }
 

@@ -1,12 +1,17 @@
 package org.nalby.yobatis.core.mybatis.factory;
 
+import org.dom4j.Element;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.nalby.yobatis.core.mybatis.NamingHelper;
 
-public class MapperXmlElementFactoryImpl implements AbstractMapperXmlElementFactory {
+import java.util.List;
+
+public class MapperXmlElementFactoryImpl implements MapperXmlElementFactory {
 
     private final static String PARAM_TYPE = "parameterType";
 
@@ -60,12 +65,32 @@ public class MapperXmlElementFactoryImpl implements AbstractMapperXmlElementFact
     }
 
     @Override
-    public XmlElement pagingElement() {
-        XmlElement paging = sqlElement("_PAGING_");
+    public XmlElement pagingElement(String id) {
+        XmlElement paging = sqlElement(id);
         addXmlComment(paging);
         paging.addElement(ifElement("limit != null", "limit #{limit}"));
         paging.addElement(ifElement("offset != null", "offset #{offset}"));
         return paging;
+    }
+
+    @Override
+    public XmlElement include(String refid) {
+        XmlElement xmlElement = new XmlElement("include");
+        xmlElement.addAttribute(new Attribute("refid", refid));
+        return xmlElement;
+    }
+
+    @Override
+    public XmlElement convert(org.dom4j.Element element) {
+        XmlElement xmlElement = new XmlElement(element.getName());
+        for (org.dom4j.Attribute src : element.attributes()) {
+            xmlElement.addAttribute(new Attribute(src.getName(), src.getValue()));
+        }
+        List<Element> elementList = element.elements();
+        for (Element element1 : elementList) {
+
+        }
+        return null;
     }
 
     private XmlElement insertAll(IntrospectedTable table, boolean ignore) {
@@ -73,7 +98,8 @@ public class MapperXmlElementFactoryImpl implements AbstractMapperXmlElementFact
         if (ignore) {
             xmlElement = insertElement("insertAllIgnore");
         }
-        xmlElement.addAttribute(new Attribute(PARAM_TYPE, table.getBaseRecordType()));
+        FullyQualifiedJavaType type = NamingHelper.getBaseEntityType(table);
+        xmlElement.addAttribute(new Attribute(PARAM_TYPE, type.getFullyQualifiedName()));
         addXmlComment(xmlElement);
         StringBuilder stringBuilder = new StringBuilder();
         if (!ignore) {
@@ -123,6 +149,11 @@ public class MapperXmlElementFactoryImpl implements AbstractMapperXmlElementFact
     }
 
     @Override
+    public XmlElement insertIgnore(IntrospectedTable table) {
+        return null;
+    }
+
+    @Override
     public XmlElement insertAll(IntrospectedTable table) {
         return insertAll(table, false);
     }
@@ -152,7 +183,7 @@ public class MapperXmlElementFactoryImpl implements AbstractMapperXmlElementFact
     @Override
     public XmlElement selectByPkOfAllKeyTable(IntrospectedTable introspectedTable) {
         XmlElement xmlElement = selectElement("selectByPk");
-        xmlElement.addAttribute(new Attribute(PARAM_TYPE, Helper.getBaseModelType(introspectedTable.getBaseRecordType()).getFullyQualifiedName()));
+        xmlElement.addAttribute(new Attribute(PARAM_TYPE, NamingHelper.getBaseEntityType(introspectedTable.getBaseRecordType()).getFullyQualifiedName()));
         xmlElement.addAttribute(new Attribute("resultMap", "BASE_RESULT_MAP"));
         addXmlComment(xmlElement);
         xmlElement.addElement(new TextElement("select"));
@@ -165,7 +196,7 @@ public class MapperXmlElementFactoryImpl implements AbstractMapperXmlElementFact
     @Override
     public XmlElement updateOfAllKeyTable(IntrospectedTable introspectedTable) {
         XmlElement xmlElement = updateElement("update");
-        xmlElement.addAttribute(new Attribute("parameterType", Helper.getBaseModelType(introspectedTable.getBaseRecordType()).getFullyQualifiedName()));
+        xmlElement.addAttribute(new Attribute("parameterType", NamingHelper.getBaseEntityType(introspectedTable.getBaseRecordType()).getFullyQualifiedName()));
         addXmlComment(xmlElement);
         xmlElement.addElement(new TextElement("update " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName()));
         XmlElement setElement = new XmlElement("set");
@@ -181,7 +212,7 @@ public class MapperXmlElementFactoryImpl implements AbstractMapperXmlElementFact
     @Override
     public XmlElement updateAllOfAllKeyTable(IntrospectedTable introspectedTable) {
         XmlElement xmlElement = updateElement("updateAll");
-        xmlElement.addAttribute(new Attribute(PARAM_TYPE, Helper.getBaseModelType(introspectedTable.getBaseRecordType()).getFullyQualifiedName()));
+        xmlElement.addAttribute(new Attribute(PARAM_TYPE, NamingHelper.getBaseEntityType(introspectedTable.getBaseRecordType()).getFullyQualifiedName()));
         addXmlComment(xmlElement);
         xmlElement.addElement(new TextElement("update " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName()));
         StringBuilder builder = new StringBuilder("set ");

@@ -10,16 +10,20 @@ public abstract class BaseCriteria {
 
     protected boolean distinct;
 
-    protected List<Criteria> oredCriteria;
+    protected List<BracketCriteria> oredCriteria;
 
     protected Long limit;
 
     protected Long offset;
 
-    protected Boolean forUpdate;
+    protected boolean forUpdate;
 
     public BaseCriteria() {
-        oredCriteria = new ArrayList<Criteria>();
+        oredCriteria = new ArrayList<BracketCriteria>();
+    }
+
+    protected BracketCriteria createCriteriaInternal() {
+        return new BracketCriteria();
     }
 
     public String getOrderByClause() {
@@ -30,25 +34,8 @@ public abstract class BaseCriteria {
         return distinct;
     }
 
-    public List<Criteria> getOredCriteria() {
+    public List<BracketCriteria> getOredCriteria() {
         return oredCriteria;
-    }
-
-    public void or(Criteria criteria) {
-        oredCriteria.add(criteria);
-    }
-
-    @Deprecated
-    public Criteria createCriteria() {
-        Criteria criteria = createCriteriaInternal();
-        if (oredCriteria.size() == 0) {
-            oredCriteria.add(criteria);
-        }
-        return criteria;
-    }
-
-    protected Criteria createCriteriaInternal() {
-        return new Criteria();
     }
 
     public void clear() {
@@ -57,7 +44,7 @@ public abstract class BaseCriteria {
         distinct = false;
         limit = null;
         offset = null;
-        forUpdate = null;
+        forUpdate = false;
     }
 
     public Long getLimit() {
@@ -68,22 +55,21 @@ public abstract class BaseCriteria {
         return offset;
     }
 
-    public Boolean getForUpdate() {
+    public boolean isForUpdate() {
         return forUpdate;
     }
 
-    protected GeneratedCriteria lastCriteria() {
+    public BracketCriteria lastCriteria() {
         if (oredCriteria.isEmpty()) {
             oredCriteria.add(createCriteriaInternal());
         }
         return oredCriteria.get(oredCriteria.size() - 1);
     }
 
-    protected abstract static class GeneratedCriteria {
-        protected List<Criterion> criteria;
+    public static class BracketCriteria {
+        private List<Criterion> criteria;
 
-        protected GeneratedCriteria() {
-            super();
+        BracketCriteria() {
             criteria = new ArrayList<Criterion>();
         }
 
@@ -91,18 +77,11 @@ public abstract class BaseCriteria {
             return criteria.size() > 0;
         }
 
-        public List<Criterion> getAllCriteria() {
-            return criteria;
-        }
-
         public List<Criterion> getCriteria() {
             return criteria;
         }
 
         public void addCriterion(String condition) {
-            if (condition == null) {
-                throw new IllegalArgumentException("Value for condition cannot be null");
-            }
             criteria.add(new Criterion(condition));
         }
 
@@ -134,7 +113,7 @@ public abstract class BaseCriteria {
             List<java.sql.Date> dateList = new ArrayList<java.sql.Date>();
             Iterator<Date> iter = values.iterator();
             while (iter.hasNext()) {
-                    dateList.add(new java.sql.Date(iter.next().getTime()));
+                dateList.add(new java.sql.Date(iter.next().getTime()));
             }
             addCriterion(condition, dateList, property);
         }
@@ -157,12 +136,12 @@ public abstract class BaseCriteria {
             if (values == null || values.size() == 0) {
                 throw new IllegalArgumentException("Value list for " + property + " cannot be null or empty");
             }
-            List<java.sql.Time> dateList = new ArrayList<java.sql.Time>();
+            List<java.sql.Time> timeList = new ArrayList<java.sql.Time>();
             Iterator<Date> iter = values.iterator();
             while (iter.hasNext()) {
-                    dateList.add(new java.sql.Time(iter.next().getTime()));
+                timeList.add(new java.sql.Time(iter.next().getTime()));
             }
-            addCriterion(condition, dateList, property);
+            addCriterion(condition, timeList, property);
         }
 
         public void addCriterionForJDBCTime(String condition, Date value1, Date value2, String property) {
@@ -170,13 +149,6 @@ public abstract class BaseCriteria {
                 throw new IllegalArgumentException("Between values for " + property + " cannot be null");
             }
             addCriterion(condition, new java.sql.Time(value1.getTime()), new java.sql.Time(value2.getTime()), property);
-        }
-    }
-
-    public static class Criteria extends GeneratedCriteria {
-
-        protected Criteria() {
-            super();
         }
     }
 
@@ -194,8 +166,6 @@ public abstract class BaseCriteria {
         private boolean betweenValue;
 
         private boolean listValue;
-
-        private String typeHandler;
 
         public String getCondition() {
             return condition;
@@ -225,22 +195,14 @@ public abstract class BaseCriteria {
             return listValue;
         }
 
-        public String getTypeHandler() {
-            return typeHandler;
-        }
-
         protected Criterion(String condition) {
-            super();
             this.condition = condition;
-            this.typeHandler = null;
             this.noValue = true;
         }
 
-        protected Criterion(String condition, Object value, String typeHandler) {
-            super();
+        protected Criterion(String condition, Object value) {
             this.condition = condition;
             this.value = value;
-            this.typeHandler = typeHandler;
             if (value instanceof List<?>) {
                 this.listValue = true;
             } else {
@@ -248,21 +210,11 @@ public abstract class BaseCriteria {
             }
         }
 
-        protected Criterion(String condition, Object value) {
-            this(condition, value, null);
-        }
-
-        protected Criterion(String condition, Object value, Object secondValue, String typeHandler) {
-            super();
+        protected Criterion(String condition, Object value, Object secondValue) {
             this.condition = condition;
             this.value = value;
             this.secondValue = secondValue;
-            this.typeHandler = typeHandler;
             this.betweenValue = true;
-        }
-
-        protected Criterion(String condition, Object value, Object secondValue) {
-            this(condition, value, secondValue, null);
         }
     }
 }
