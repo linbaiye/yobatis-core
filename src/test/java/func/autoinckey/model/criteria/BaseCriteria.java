@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+/*
+ * Do not modify, it will be overwritten every time yobatis runs.
+ */
 public abstract class BaseCriteria {
     protected String orderByClause;
 

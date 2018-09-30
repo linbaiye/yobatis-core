@@ -1,11 +1,14 @@
 package func.compoundkey.model.base;
 
+/*
+ * Do not modify, it will be overwritten every time yobatis runs.
+ */
 public abstract class BaseCompoundKeyTable {
-    private Integer pk1;
+    protected Integer pk1;
 
-    private String pk2;
+    protected String pk2;
 
-    private String f3;
+    protected String f3;
 
     public Integer getPk1() {
         return pk1;
@@ -36,7 +39,7 @@ public abstract class BaseCompoundKeyTable {
      * @param dest the object to copy properties to.
      * @return the dest object.
      */
-    public BaseCompoundKeyTable copy(BaseCompoundKeyTable dest) {
+    public BaseCompoundKeyTable copyTo(BaseCompoundKeyTable dest) {
         if (dest == null) {
             throw new NullPointerException("dest must not be null.");
         }

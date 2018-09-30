@@ -3,62 +3,65 @@ package func.alltype.model.base;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/*
+ * Do not modify, it will be overwritten every time yobatis runs.
+ */
 public abstract class BaseAllDataTypes {
-    private Long typeBigint;
+    protected Long typeBigint;
 
-    private String typeVarchar;
+    protected String typeVarchar;
 
-    private Byte typeTinyint;
+    protected Byte typeTinyint;
 
-    private Short typeSmallint;
+    protected Short typeSmallint;
 
-    private Integer typeMediumint;
+    protected Integer typeMediumint;
 
-    private Integer typeInt;
+    protected Integer typeInt;
 
-    private Date typeDate;
+    protected Date typeDate;
 
-    private Float typeFloat;
+    protected Float typeFloat;
 
-    private Double typeDouble;
+    protected Double typeDouble;
 
-    private BigDecimal typeDecimal;
+    protected BigDecimal typeDecimal;
 
-    private Date typeDatetime;
+    protected Date typeDatetime;
 
-    private Date typeTimestamp;
+    protected Date typeTimestamp;
 
-    private Date typeTime;
+    protected Date typeTime;
 
-    private Date typeYear;
+    protected Date typeYear;
 
-    private String typeChar;
+    protected String typeChar;
 
-    private String typeTinytext;
+    protected String typeTinytext;
 
-    private String typeEnum;
+    protected String typeEnum;
 
-    private String typeSet;
+    protected String typeSet;
 
-    private Boolean typeBool;
+    protected Boolean typeBool;
 
-    private String typeText;
+    protected String typeText;
 
-    private byte[] typeTinyblob;
+    protected byte[] typeTinyblob;
 
-    private byte[] typeBlob;
+    protected byte[] typeBlob;
 
-    private byte[] typeMediumblob;
+    protected byte[] typeMediumblob;
 
-    private String typeMediumtext;
+    protected String typeMediumtext;
 
-    private byte[] typeLongblob;
+    protected byte[] typeLongblob;
 
-    private String typeLongtext;
+    protected String typeLongtext;
 
-    private byte[] typeBinary;
+    protected byte[] typeBinary;
 
-    private byte[] typeVarbinary;
+    protected byte[] typeVarbinary;
 
     public Long getTypeBigint() {
         return typeBigint;
@@ -289,7 +292,7 @@ public abstract class BaseAllDataTypes {
      * @param dest the object to copy properties to.
      * @return the dest object.
      */
-    public BaseAllDataTypes copy(BaseAllDataTypes dest) {
+    public BaseAllDataTypes copyTo(BaseAllDataTypes dest) {
         if (dest == null) {
             throw new NullPointerException("dest must not be null.");
         }

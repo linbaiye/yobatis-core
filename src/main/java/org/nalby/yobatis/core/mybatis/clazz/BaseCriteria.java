@@ -6,8 +6,8 @@ import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.nalby.yobatis.core.mybatis.NamingHelper;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
-import org.nalby.yobatis.core.mybatis.factory.FieldFactory;
-import org.nalby.yobatis.core.mybatis.factory.FieldFactoryImpl;
+import org.nalby.yobatis.core.mybatis.field.FieldFactory;
+import org.nalby.yobatis.core.mybatis.field.FieldFactoryImpl;
 import org.nalby.yobatis.core.mybatis.method.ConstantMethod;
 
 import java.util.LinkedList;

@@ -22,6 +22,7 @@ public class TableSpecificDaoImpl extends TopLevelClass implements CompatibleYob
     private TableSpecificDaoImpl(FullyQualifiedJavaType type, String pathToPut) {
         super(type);
         this.setVisibility(JavaVisibility.PUBLIC);
+        this.setFinal(true);
         this.pathToPut = pathToPut;
     }
 
@@ -69,7 +70,8 @@ public class TableSpecificDaoImpl extends TopLevelClass implements CompatibleYob
             return existentFile;
         }
         if (compatible) {
-            return super.getFormattedContent().replaceAll("BaseDao<B, T extends B, PK>", "BaseDao<T extends B, B, PK>");
+            return super.getFormattedContent().replaceAll("public final class ([^\\s]+) extends BaseDaoImpl<([^,]+),\\s+([^,]+)",
+                    "public final class $1 extends BaseDaoImpl<$3, $2");
         }
         return super.getFormattedContent();
     }

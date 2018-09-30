@@ -2,7 +2,6 @@ package org.nalby.yobatis.core.mybatis.clazz;
 
 import org.mybatis.generator.api.dom.java.InnerClass;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
-import org.nalby.yobatis.core.mybatis.factory.*;
 import org.nalby.yobatis.core.mybatis.method.ConstantMethod;
 
 import java.util.LinkedList;
@@ -33,7 +32,7 @@ public class Criterion extends InnerClass {
     }
 
     public static Criterion newInstance() {
-        FieldFactory fieldFactory = FieldFactoryImpl.getInstance();
+        org.nalby.yobatis.core.mybatis.field.FieldFactory fieldFactory = org.nalby.yobatis.core.mybatis.field.FieldFactoryImpl.getInstance();
         Criterion clz = new Criterion();
         clz.addField(fieldFactory.privateField("condition", "String"));
         clz.addField(fieldFactory.privateField("value", "Object"));

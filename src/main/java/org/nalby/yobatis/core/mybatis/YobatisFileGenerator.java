@@ -71,6 +71,7 @@ public class YobatisFileGenerator {
             }
             try (InputStream inputStream = file.open()) {
                 currentBaseDao = TextUtil.asString(inputStream);
+                break;
             } catch (IOException e) {
                 // Ignore.
             }

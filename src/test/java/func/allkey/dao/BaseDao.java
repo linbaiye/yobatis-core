@@ -4,11 +4,11 @@ import func.allkey.model.criteria.BaseCriteria;
 import java.util.List;
 
 /*
- * Do NOT modify, it will be overwrote every time yobatis runs.
+ * Do not modify, it will be overwritten every time yobatis runs.
  */
-public interface BaseDao<T extends B, B, PK> {
+public interface BaseDao<B, T extends B, PK> {
     /**
-     * Insert all fields of the record into table.
+     * Insert all fields of the record into table, it throws an exception if the insertion fails.
      * @param record the record to insert.
      * @return 1 if inserted successfully.
      * @throws IllegalArgumentException if record is null.
@@ -18,13 +18,13 @@ public interface BaseDao<T extends B, B, PK> {
     /**
      * Insert all fields of the record into table.
      * @param record the record to insert.
-     * @return 1 if inserted successfully, 0 if the insertion can not be done.
+     * @return 1 if inserted successfully, 0 if the insertion fails.
      * @throws IllegalArgumentException if record is null.
      */
     int insertAllIgnore(B record);
 
     /**
-     * Insert non-null fields into the table. If the table has an auto_increment pk,
+     * Insert non-null fields into the table, it throws an exception if insertion fails. If the table has an auto_increment pk,
      * the primary key field will hold the generated key after insertion.
      * @param record the record to insert.
      * @return 1 if inserted successfully.
@@ -37,17 +37,17 @@ public interface BaseDao<T extends B, B, PK> {
      * @param pk the primary key.
      * @return the record if found, null else.
      * @throws IllegalArgumentException if pk is null.
-     */
+    */
     T selectOne(PK pk);
 
     /**
      * Select a record by criteria, a MybatisSystemException will be thrown if
      * more than one records meet the criteria.
      * @param criteria the criteria.
-     * @return the record if one single record is selected, null if none selected.
+     * @return the record if one single record is selected, null if canNotDecide selected.
      * @throws IllegalArgumentException if criteria is null or empty.
      * @throws MybatisSystemException if more than one records are yielded by the criteria.
-     */
+    */
     T selectOne(BaseCriteria criteria);
 
     /**
@@ -103,19 +103,7 @@ public interface BaseDao<T extends B, B, PK> {
      */
     int updateAll(B record, BaseCriteria criteria);
 
-    /**
-     * Delete the record by primary key.
-     * @param pk the primary key.
-     * @return 1 if deleted successfully, 0 if no such a record.
-     * @throws IllegalArgumentException if pk is null.
-     */
     int delete(PK pk);
 
-    /**
-     * Delete records by criteria.
-     * @param criteria the criteria.
-     * @return the number of deleted records.
-     * @throws IllegalArgumentException if criteria is null or empty.
-     */
     int delete(BaseCriteria criteria);
 }

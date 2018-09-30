@@ -23,8 +23,8 @@ import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Document;
-import org.nalby.yobatis.core.mybatis.factory.JavaFileFactory;
-import org.nalby.yobatis.core.mybatis.factory.JavaFileFactoryImpl;
+import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactory;
+import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactoryImpl;
 import org.nalby.yobatis.core.mybatis.mapper.XmlMapper;
 import org.nalby.yobatis.core.util.Expect;
 

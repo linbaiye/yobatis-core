@@ -113,7 +113,7 @@
       order by ${orderByClause}
     </if>
     <include refid="_PAGING_" />
-    <if test="forUpdate != null and forUpdate == true">
+    <if test="forUpdate">
       for update
     </if>
   </select>

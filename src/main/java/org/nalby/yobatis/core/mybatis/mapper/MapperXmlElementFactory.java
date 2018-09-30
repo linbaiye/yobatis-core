@@ -1,4 +1,4 @@
-package org.nalby.yobatis.core.mybatis.factory;
+package org.nalby.yobatis.core.mybatis.mapper;
 
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.xml.XmlElement;

@@ -1,4 +1,4 @@
-package org.nalby.yobatis.core.mybatis.factory;
+package org.nalby.yobatis.core.mybatis.mapper;
 
 import org.dom4j.Element;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -11,7 +11,7 @@ import org.nalby.yobatis.core.mybatis.NamingHelper;
 
 import java.util.List;
 
-public class MapperXmlElementFactoryImpl implements MapperXmlElementFactory {
+public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybatis.mapper.MapperXmlElementFactory {
 
     private final static String PARAM_TYPE = "parameterType";
 

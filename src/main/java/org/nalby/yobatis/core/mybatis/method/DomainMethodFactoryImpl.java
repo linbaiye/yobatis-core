@@ -45,7 +45,7 @@ public final class DomainMethodFactoryImpl implements DomainMethodFactory {
     @Override
     public Method createCopy(TopLevelClass baseDomain) {
         Method method = new Method();
-        method.setName("copy");
+        method.setName("copyTo");
         method.setReturnType(baseDomain.getType());
         method.setVisibility(JavaVisibility.PUBLIC);
 

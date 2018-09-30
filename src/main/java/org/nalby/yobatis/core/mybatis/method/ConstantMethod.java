@@ -674,6 +674,10 @@ public enum ConstantMethod {
         this.javaVisibility = javaVisibility;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public Method get() {
         CommonMethodFactory commonMethodFactory = CommonMethodFactoryImpl.getInstance();
         Method method;

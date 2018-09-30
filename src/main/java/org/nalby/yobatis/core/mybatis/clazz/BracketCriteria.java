@@ -2,7 +2,6 @@ package org.nalby.yobatis.core.mybatis.clazz;
 
 import org.mybatis.generator.api.dom.java.InnerClass;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
-import org.nalby.yobatis.core.mybatis.factory.*;
 import org.nalby.yobatis.core.mybatis.method.CommonMethodFactory;
 import org.nalby.yobatis.core.mybatis.method.CommonMethodFactoryImpl;
 import org.nalby.yobatis.core.mybatis.method.ConstantMethod;
@@ -37,7 +36,7 @@ public class BracketCriteria extends InnerClass {
 
     public static BracketCriteria newInstance() {
         CommonMethodFactory commonMethodFactory = CommonMethodFactoryImpl.getInstance();
-        FieldFactory fieldFactory = FieldFactoryImpl.getInstance();
+        org.nalby.yobatis.core.mybatis.field.FieldFactory fieldFactory = org.nalby.yobatis.core.mybatis.field.FieldFactoryImpl.getInstance();
 
         BracketCriteria clz = new BracketCriteria();
 

@@ -76,7 +76,7 @@ public final class NamingHelper {
     }
 
     public static String glueEntityPath(IntrospectedTable table, String fullname) {
-        String project = table.getContext().getJavaClientGeneratorConfiguration().getTargetProject();
+        String project = table.getContext().getJavaModelGeneratorConfiguration().getTargetProject();
         return project + "/" + fullname.replaceAll("\\.", "/") + ".java";
     }
 
@@ -110,9 +110,5 @@ public final class NamingHelper {
 
     public static String getMapperFileName(String daoFileName) {
         return daoFileName.replaceAll("Dao\\.java$", "Mapper.xml");
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getDaoPackageName("ph.impl.cashlending.external.dao.impl.MemberDeviceMappingDaoImpl"));
     }
 }

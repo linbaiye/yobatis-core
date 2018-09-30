@@ -3,13 +3,13 @@ package func.allkey.dao.impl;
 import func.allkey.dao.AllKeyTableDao;
 import func.allkey.model.AllKeyTable;
 import func.allkey.model.base.BaseAllKeyTable;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 /*
- * It is safe to add methods.
+ * It is safe to add code to this file.
  */
-@Repository("allKeyTableDao")
-public final class AllKeyTableDaoImpl extends BaseDaoImpl<AllKeyTable, BaseAllKeyTable, BaseAllKeyTable> implements AllKeyTableDao {
+@Component("allKeyTableDao")
+public final class AllKeyTableDaoImpl extends BaseDaoImpl<BaseAllKeyTable, AllKeyTable, BaseAllKeyTable> implements AllKeyTableDao {
 
     @Override
     protected String namespace() {

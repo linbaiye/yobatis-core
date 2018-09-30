@@ -1,9 +1,12 @@
 package func.allkey.model.base;
 
+/*
+ * Do not modify, it will be overwritten every time yobatis runs.
+ */
 public abstract class BaseAllKeyTable {
-    private Integer pk1;
+    protected Integer pk1;
 
-    private String pk2;
+    protected String pk2;
 
     public Integer getPk1() {
         return pk1;
@@ -26,7 +29,7 @@ public abstract class BaseAllKeyTable {
      * @param dest the object to copy properties to.
      * @return the dest object.
      */
-    public BaseAllKeyTable copy(BaseAllKeyTable dest) {
+    public BaseAllKeyTable copyTo(BaseAllKeyTable dest) {
         if (dest == null) {
             throw new NullPointerException("dest must not be null.");
         }

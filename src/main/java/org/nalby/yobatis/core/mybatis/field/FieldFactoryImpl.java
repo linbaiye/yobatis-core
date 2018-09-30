@@ -1,4 +1,4 @@
-package org.nalby.yobatis.core.mybatis.factory;
+package org.nalby.yobatis.core.mybatis.field;
 
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;

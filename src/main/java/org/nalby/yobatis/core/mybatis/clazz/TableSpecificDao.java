@@ -53,7 +53,8 @@ public class TableSpecificDao extends Interface implements CompatibleYobatisUnit
             return existentFile;
         }
         if (compatible) {
-            return super.getFormattedContent().replaceAll("BaseDao<B, T extends B, PK>", "BaseDao<T extends B, B, PK>");
+           return super.getFormattedContent().replaceAll("public interface ([^\\s]+) extends BaseDao<([^,]+),\\s+([^,]+)",
+            "public interface $1 extends BaseDao<$3, $2");
         }
         return super.getFormattedContent();
     }

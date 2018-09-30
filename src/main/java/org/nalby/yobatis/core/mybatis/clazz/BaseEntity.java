@@ -26,6 +26,7 @@ public class BaseEntity extends TopLevelClass implements YobatisUnit {
         DomainMethodFactory domainMethodFactory = DomainMethodFactoryImpl.getInstance();
         for (Field field : originalClass.getFields()) {
             field.getJavaDocLines().clear();
+            field.setVisibility(JavaVisibility.PROTECTED);
             baseEntity.addField(field);
         }
         for (Method method : originalClass.getMethods()) {

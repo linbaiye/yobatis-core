@@ -9,8 +9,6 @@ import org.mybatis.generator.api.dom.xml.*;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.NamingHelper;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
-import org.nalby.yobatis.core.mybatis.factory.MapperXmlElementFactory;
-import org.nalby.yobatis.core.mybatis.factory.MapperXmlElementFactoryImpl;
 import org.nalby.yobatis.core.mybatis.method.NamespaceSuffix;
 import org.xml.sax.EntityResolver;
 import java.io.ByteArrayInputStream;
@@ -214,7 +212,7 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit {
             for (Attribute attribute : xmlElement.getAttributes()) {
                 if ("id".equals(attribute.getName()) && NamespaceSuffix.SELECT_BY_CRITERIA.equals(attribute.getValue())) {
                     xmlElement.addElement(mapperXmlElementFactory.include(PAGING_ID));
-                    xmlElement.addElement(mapperXmlElementFactory.ifElement("forUpdate != null and forUpdate == true", "for update"));
+                    xmlElement.addElement(mapperXmlElementFactory.ifElement("forUpdate", "for update"));
                     return;
                 }
             }

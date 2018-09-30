@@ -2,14 +2,17 @@ package func.autoinckey.model.base;
 
 import java.math.BigDecimal;
 
+/*
+ * Do not modify, it will be overwritten every time yobatis runs.
+ */
 public abstract class BaseCustomer {
-    private Long id;
+    protected Long id;
 
-    private String f1;
+    protected String f1;
 
-    private BigDecimal f3;
+    protected BigDecimal f3;
 
-    private String f2;
+    protected String f2;
 
     public Long getId() {
         return id;
@@ -48,7 +51,7 @@ public abstract class BaseCustomer {
      * @param dest the object to copy properties to.
      * @return the dest object.
      */
-    public BaseCustomer copy(BaseCustomer dest) {
+    public BaseCustomer copyTo(BaseCustomer dest) {
         if (dest == null) {
             throw new NullPointerException("dest must not be null.");
         }
