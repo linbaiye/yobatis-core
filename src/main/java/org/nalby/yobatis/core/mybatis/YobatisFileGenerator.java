@@ -94,15 +94,18 @@ public class YobatisFileGenerator {
             try (InputStream inputStream = file.open()) {
                 String content = TextUtil.asString(inputStream);
                 unit.merge(content);
+                file.write(unit.getFormattedContent());
             } catch (InvalidUnitException e) {
-                logger.error("File {} is broken and Yobatis is unable to merge it, please fix it and then retry.", file.path());
+                logger.error("error:{}.", e.getMessage());
+                logger.error("File {} is broken and Yobatis is unable to merge it, please fix it and retry.", file.path(), e);
             } catch (IOException e) {
                 logger.error("Failed to read file {}.", file.path());
                 throw new InvalidMybatisGeneratorConfigException(e);
             }
+        } else {
+            file = project.createFile(filePath);
+            file.write(unit.getFormattedContent());
         }
-        file = project.createFile(filePath);
-        file.write(unit.getFormattedContent());
     }
 
     private void writeJavaFiles() {

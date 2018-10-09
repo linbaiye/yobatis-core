@@ -86,7 +86,9 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit {
             saxReader.setEntityResolver(entityResolver);
             org.dom4j.Document document = saxReader.read(inputStream);
             for (org.dom4j.Element element : document.getRootElement().elements()) {
-                if (!hasElement(element)) {
+                if (element instanceof TextElement) {
+                    this.document.getRootElement().addElement((TextElement)element);
+                } else if (element instanceof XmlElement && !hasElement(element)) {
                     this.document.getRootElement().addElement(new TextElement(element.asXML()));
                 }
             }
