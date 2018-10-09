@@ -253,4 +253,7 @@
     where pk1 = #{pk1,jdbcType=INTEGER} and
 	pk2 = #{pk2,jdbcType=CHAR}
   </update>
+  <sql id="my">
+    SELECT  * from test
+  </sql>
 </mapper>

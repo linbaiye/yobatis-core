@@ -36,8 +36,8 @@ public class BaseEntity extends TopLevelClass implements YobatisUnit {
         for (FullyQualifiedJavaType javaType: originalClass.getImportedTypes()) {
             baseEntity.addImportedType(javaType);
         }
-        baseEntity.addMethod(domainMethodFactory.createCopy(baseEntity));
         baseEntity.addMethod(domainMethodFactory.createToString(originalClass));
+        baseEntity.addMethod(domainMethodFactory.createCopy(baseEntity));
         return baseEntity;
     }
 

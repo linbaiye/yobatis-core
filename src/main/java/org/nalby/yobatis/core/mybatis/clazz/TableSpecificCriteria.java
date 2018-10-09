@@ -30,12 +30,12 @@ public class TableSpecificCriteria extends TopLevelClass implements YobatisUnit 
         TableSpecificCriteria criteria = new TableSpecificCriteria(thisType, NamingHelper.glueCriteriaPath(table, thisType));
         CriteriaMethodFactory methodFactory = CriteriaMethodFactoryImpl.getInstance();
         criteria.addMethod(ConstantMethod.ORDER_BY.get());
-        criteria.addMethod(methodFactory.setter("Long", "limit", thisType.getFullyQualifiedName()));
-        criteria.addMethod(methodFactory.setter("Long", "offset", thisType.getFullyQualifiedName()));
-        criteria.addMethod(methodFactory.setter("boolean", "forUpdate", thisType.getFullyQualifiedName()));
         criteria.addMethod(methodFactory.order(thisType.getFullyQualifiedName(), true));
         criteria.addMethod(methodFactory.order(thisType.getFullyQualifiedName(), false));
         criteria.addMethod(methodFactory.or(thisType.getFullyQualifiedName()));
+        criteria.addMethod(methodFactory.setter("Long", "limit", thisType.getFullyQualifiedName()));
+        criteria.addMethod(methodFactory.setter("Long", "offset", thisType.getFullyQualifiedName()));
+        criteria.addMethod(methodFactory.setter("boolean", "forUpdate", thisType.getFullyQualifiedName()));
 
         criteria.addImportedType(new FullyQualifiedJavaType("java.util.Map"));
         criteria.addImportedType(new FullyQualifiedJavaType("java.util.HashMap"));

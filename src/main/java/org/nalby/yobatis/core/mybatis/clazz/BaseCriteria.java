@@ -18,10 +18,10 @@ public class BaseCriteria extends TopLevelClass implements YobatisUnit {
 
     static {
         METHOD_LIST.add(ConstantMethod.BASE_CRITERIA_CONSTRUCTOR);
-        METHOD_LIST.add(ConstantMethod.CREATE_CRITERIA_INTERNAL);
         METHOD_LIST.add(ConstantMethod.GET_ORDER_BY_CLAUSE);
         METHOD_LIST.add(ConstantMethod.IS_DISTINCT);
         METHOD_LIST.add(ConstantMethod.GET_ORED_CRITERIA);
+        METHOD_LIST.add(ConstantMethod.CREATE_CRITERIA_INTERNAL);
         METHOD_LIST.add(ConstantMethod.CLEAR);
         METHOD_LIST.add(ConstantMethod.GET_LIMIT);
         METHOD_LIST.add(ConstantMethod.GET_OFFSET);
