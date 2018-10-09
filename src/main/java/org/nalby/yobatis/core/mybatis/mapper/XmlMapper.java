@@ -1,11 +1,14 @@
 package org.nalby.yobatis.core.mybatis.mapper;
 
-import org.dom4j.DocumentException;
+import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.xml.*;
+import org.mybatis.generator.api.dom.xml.Attribute;
+import org.mybatis.generator.api.dom.xml.Document;
+import org.mybatis.generator.api.dom.xml.Element;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.NamingHelper;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
@@ -85,11 +88,13 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit {
             saxReader.setValidation(false);
             saxReader.setEntityResolver(entityResolver);
             org.dom4j.Document document = saxReader.read(inputStream);
-            for (org.dom4j.Element element : document.getRootElement().elements()) {
-                if (element instanceof TextElement) {
-                    this.document.getRootElement().addElement((TextElement)element);
-                } else if (element instanceof XmlElement && !hasElement(element)) {
-                    this.document.getRootElement().addElement(new TextElement(element.asXML()));
+            Iterator<Node> nodeIterator = document.getRootElement().nodeIterator();
+            while (nodeIterator.hasNext()) {
+                Node node = nodeIterator.next();
+                if (node instanceof Comment) {
+                    this.document.getRootElement().addElement(new TextElement(node.asXML()));
+                } else if (node instanceof org.dom4j.Element && !hasElement((org.dom4j.Element)node)) {
+                    this.document.getRootElement().addElement(new TextElement(node.asXML()));
                 }
             }
         } catch (IOException | DocumentException e) {

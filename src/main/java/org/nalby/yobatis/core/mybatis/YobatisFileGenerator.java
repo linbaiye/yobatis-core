@@ -87,48 +87,63 @@ public class YobatisFileGenerator {
         }
     }
 
-    private void mergeAndWriteUnit(YobatisUnit unit) {
+    private void mergeFile(YobatisUnit unit) {
         String filePath = unit.getPathToPut();
         File file = project.findFile(filePath);
-        if (file != null) {
-            try (InputStream inputStream = file.open()) {
-                String content = TextUtil.asString(inputStream);
-                unit.merge(content);
-                file.write(unit.getFormattedContent());
-            } catch (InvalidUnitException e) {
-                logger.error("error:{}.", e.getMessage());
-                logger.error("File {} is broken and Yobatis is unable to merge it, please fix it and retry.", file.path(), e);
-            } catch (IOException e) {
-                logger.error("Failed to read file {}.", file.path());
-                throw new InvalidMybatisGeneratorConfigException(e);
-            }
-        } else {
-            file = project.createFile(filePath);
-            file.write(unit.getFormattedContent());
+        if (file == null) {
+            return;
+        }
+        try (InputStream inputStream = file.open()) {
+            String content = TextUtil.asString(inputStream);
+            unit.merge(content);
+        } catch (InvalidUnitException e) {
+            logger.error("File {} is broken and Yobatis is unable to merge it, please fix it and retry, error:{}.", file.path(), e.getMessage());
+            throw new InvalidMybatisGeneratorConfigException(e);
+        } catch (IOException e) {
+            logger.error("Failed to read file {}.", file.path());
+            throw new InvalidMybatisGeneratorConfigException(e);
         }
     }
 
-    private void writeJavaFiles() {
+
+    private void mergeFiles() {
+        for (GeneratedXmlFile xml: myBatisGenerator.getGeneratedXmlFiles()) {
+            if (xml instanceof YobatisUnit) {
+                mergeFile((YobatisUnit) xml);
+            }
+        }
         for (GeneratedJavaFile tmp : myBatisGenerator.getGeneratedJavaFiles()) {
             CompilationUnit unit = tmp.getCompilationUnit();
             if (unit instanceof YobatisUnit) {
-                mergeAndWriteUnit((YobatisUnit) unit);
+                mergeFile((YobatisUnit) unit);
             }
         }
     }
 
-    private void writeXmlFiles() {
+    private void writeFile(YobatisUnit unit) {
+        String filePath = unit.getPathToPut();
+        File file = project.createFile(filePath);
+        file.write(unit.getFormattedContent());
+    }
+
+    private void writeFiles() {
         for (GeneratedXmlFile xml: myBatisGenerator.getGeneratedXmlFiles()) {
             if (xml instanceof YobatisUnit) {
-                mergeAndWriteUnit((YobatisUnit) xml);
+                writeFile((YobatisUnit) xml);
+            }
+        }
+        for (GeneratedJavaFile tmp : myBatisGenerator.getGeneratedJavaFiles()) {
+            CompilationUnit unit = tmp.getCompilationUnit();
+            if (unit instanceof YobatisUnit) {
+                writeFile((YobatisUnit) unit);
             }
         }
     }
 
     public void writeAll() {
         makeDaoClassesCompatible();
-        writeJavaFiles();
-        writeXmlFiles();
+        mergeFiles();
+        writeFiles();
         logger.info("Files have been generated, happy coding.");
     }
 
