@@ -46,6 +46,19 @@ public abstract class BaseCustomer {
         this.f2 = f2;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append("[");
+        sb.append("id=").append(id);
+        sb.append(", f1=").append(f1);
+        sb.append(", f3=").append(f3);
+        sb.append(", f2=").append(f2);
+        sb.append("]");
+        return sb.toString();
+    }
+
     /**
      * Copy properties of this object to {@code dest} object.
      * @param dest the object to copy properties to.
@@ -60,18 +73,5 @@ public abstract class BaseCustomer {
         dest.f3 = this.f3;
         dest.f2 = this.f2;
         return dest;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append("[");
-        sb.append("id=").append(id);
-        sb.append(", f1=").append(f1);
-        sb.append(", f3=").append(f3);
-        sb.append(", f2=").append(f2);
-        sb.append("]");
-        return sb.toString();
     }
 }

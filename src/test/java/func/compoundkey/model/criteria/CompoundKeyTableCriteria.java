@@ -39,21 +39,6 @@ public final class CompoundKeyTableCriteria extends BaseCriteria {
         orderByClause = stringBuilder.toString();
     }
 
-    public CompoundKeyTableCriteria setLimit(Long limit) {
-        this.limit = limit;
-        return this;
-    }
-
-    public CompoundKeyTableCriteria setOffset(Long offset) {
-        this.offset = offset;
-        return this;
-    }
-
-    public CompoundKeyTableCriteria setForUpdate(boolean forUpdate) {
-        this.forUpdate = forUpdate;
-        return this;
-    }
-
     public CompoundKeyTableCriteria ascOrderBy(String  ... fields) {
         orderBy("asc", fields);
         return this;
@@ -66,6 +51,21 @@ public final class CompoundKeyTableCriteria extends BaseCriteria {
 
     public CompoundKeyTableCriteria or() {
         oredCriteria.add(createCriteriaInternal());
+        return this;
+    }
+
+    public CompoundKeyTableCriteria setLimit(Long limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public CompoundKeyTableCriteria setOffset(Long offset) {
+        this.offset = offset;
+        return this;
+    }
+
+    public CompoundKeyTableCriteria setForUpdate(boolean forUpdate) {
+        this.forUpdate = forUpdate;
         return this;
     }
 

@@ -25,10 +25,6 @@ public abstract class BaseCriteria {
         oredCriteria = new ArrayList<BracketCriteria>();
     }
 
-    protected BracketCriteria createCriteriaInternal() {
-        return new BracketCriteria();
-    }
-
     public String getOrderByClause() {
         return orderByClause;
     }
@@ -39,6 +35,10 @@ public abstract class BaseCriteria {
 
     public List<BracketCriteria> getOredCriteria() {
         return oredCriteria;
+    }
+
+    protected BracketCriteria createCriteriaInternal() {
+        return new BracketCriteria();
     }
 
     public void clear() {

@@ -41,21 +41,6 @@ public final class CustomerCriteria extends BaseCriteria {
         orderByClause = stringBuilder.toString();
     }
 
-    public CustomerCriteria setLimit(Long limit) {
-        this.limit = limit;
-        return this;
-    }
-
-    public CustomerCriteria setOffset(Long offset) {
-        this.offset = offset;
-        return this;
-    }
-
-    public CustomerCriteria setForUpdate(boolean forUpdate) {
-        this.forUpdate = forUpdate;
-        return this;
-    }
-
     public CustomerCriteria ascOrderBy(String  ... fields) {
         orderBy("asc", fields);
         return this;
@@ -68,6 +53,21 @@ public final class CustomerCriteria extends BaseCriteria {
 
     public CustomerCriteria or() {
         oredCriteria.add(createCriteriaInternal());
+        return this;
+    }
+
+    public CustomerCriteria setLimit(Long limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public CustomerCriteria setOffset(Long offset) {
+        this.offset = offset;
+        return this;
+    }
+
+    public CustomerCriteria setForUpdate(boolean forUpdate) {
+        this.forUpdate = forUpdate;
         return this;
     }
 

@@ -24,6 +24,17 @@ public abstract class BaseAllKeyTable {
         this.pk2 = pk2;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append("[");
+        sb.append("pk1=").append(pk1);
+        sb.append(", pk2=").append(pk2);
+        sb.append("]");
+        return sb.toString();
+    }
+
     /**
      * Copy properties of this object to {@code dest} object.
      * @param dest the object to copy properties to.
@@ -36,16 +47,5 @@ public abstract class BaseAllKeyTable {
         dest.pk1 = this.pk1;
         dest.pk2 = this.pk2;
         return dest;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append("[");
-        sb.append("pk1=").append(pk1);
-        sb.append(", pk2=").append(pk2);
-        sb.append("]");
-        return sb.toString();
     }
 }

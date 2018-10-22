@@ -364,6 +364,7 @@ public class CriteriaTests extends SetupClass {
 
     @Test
     public void selectDate() throws Exception {
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2018-08-11");
         assertEquals(1L, allDataTypesDao.count(AllDataTypesCriteria.typeDateEqualTo(date)));
@@ -395,6 +396,38 @@ public class CriteriaTests extends SetupClass {
         assertEquals(2L, allDataTypesDao.count(AllDataTypesCriteria.typeDateIn(Arrays.asList(
                 date, simpleDateFormat.parse("2018-08-12")
         ))));
+
+        SimpleDateFormat simpleDatetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        date = simpleDatetimeFormat.parse("2018-08-11 23:01:02");
+        assertEquals(1L, allDataTypesDao.count(AllDataTypesCriteria.typeDateEqualTo(date)));
+
+        assertEquals(2L, allDataTypesDao.count(AllDataTypesCriteria.typeDateNotEqualTo(date)));
+
+        date = simpleDatetimeFormat.parse("2018-08-11 13:01:02");
+
+        assertEquals(2L, allDataTypesDao.count(
+                AllDataTypesCriteria.typeDateBetween(date, simpleDatetimeFormat.parse("2018-08-12 00:00:01"))));
+
+        assertEquals(1L, allDataTypesDao.count(
+                AllDataTypesCriteria.typeDateNotBetween(date, simpleDatetimeFormat.parse("2018-08-12 11:11:01"))));
+
+        date = simpleDatetimeFormat.parse("2018-08-11 13:01:02");
+        assertEquals(0L, allDataTypesDao.count(AllDataTypesCriteria.typeDateLessThan(date)));
+
+        assertEquals(1L, allDataTypesDao.count(AllDataTypesCriteria.typeDateLessThanOrEqualTo(date)));
+
+        assertEquals(2L, allDataTypesDao.count(AllDataTypesCriteria.typeDateGreaterThan(date)));
+
+        assertEquals(3L, allDataTypesDao.count(AllDataTypesCriteria.typeDateGreaterThanOrEqualTo(date)));
+
+        assertEquals(1L, allDataTypesDao.count(AllDataTypesCriteria.typeDateNotIn(Arrays.asList(
+                date, simpleDateFormat.parse("2018-08-12")
+        ))));
+
+        assertEquals(2L, allDataTypesDao.count(AllDataTypesCriteria.typeDateIn(Arrays.asList(
+                date, simpleDateFormat.parse("2018-08-12")
+        ))));
+
     }
 
     @Test

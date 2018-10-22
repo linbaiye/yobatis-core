@@ -66,21 +66,6 @@ public final class AllDataTypesCriteria extends BaseCriteria {
         orderByClause = stringBuilder.toString();
     }
 
-    public AllDataTypesCriteria setLimit(Long limit) {
-        this.limit = limit;
-        return this;
-    }
-
-    public AllDataTypesCriteria setOffset(Long offset) {
-        this.offset = offset;
-        return this;
-    }
-
-    public AllDataTypesCriteria setForUpdate(boolean forUpdate) {
-        this.forUpdate = forUpdate;
-        return this;
-    }
-
     public AllDataTypesCriteria ascOrderBy(String  ... fields) {
         orderBy("asc", fields);
         return this;
@@ -93,6 +78,21 @@ public final class AllDataTypesCriteria extends BaseCriteria {
 
     public AllDataTypesCriteria or() {
         oredCriteria.add(createCriteriaInternal());
+        return this;
+    }
+
+    public AllDataTypesCriteria setLimit(Long limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public AllDataTypesCriteria setOffset(Long offset) {
+        this.offset = offset;
+        return this;
+    }
+
+    public AllDataTypesCriteria setForUpdate(boolean forUpdate) {
+        this.forUpdate = forUpdate;
         return this;
     }
 
@@ -477,52 +477,52 @@ public final class AllDataTypesCriteria extends BaseCriteria {
     }
 
     public AllDataTypesCriteria andTypeDateEqualTo(Date value) {
-        lastCriteria().addCriterion("type_date =", value, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date =", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateNotEqualTo(Date value) {
-        lastCriteria().addCriterion("type_date <>", value, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date <>", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateGreaterThan(Date value) {
-        lastCriteria().addCriterion("type_date >", value, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date >", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateGreaterThanOrEqualTo(Date value) {
-        lastCriteria().addCriterion("type_date >=", value, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date >=", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateLessThan(Date value) {
-        lastCriteria().addCriterion("type_date <", value, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date <", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateLessThanOrEqualTo(Date value) {
-        lastCriteria().addCriterion("type_date <=", value, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date <=", value, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateIn(List<Date> values) {
-        lastCriteria().addCriterion("type_date in", values, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date in", values, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateNotIn(List<Date> values) {
-        lastCriteria().addCriterion("type_date not in", values, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date not in", values, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateBetween(Date value1, Date value2) {
-        lastCriteria().addCriterion("type_date between", value1, value2, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date between", value1, value2, "typeDate");
         return this;
     }
 
     public AllDataTypesCriteria andTypeDateNotBetween(Date value1, Date value2) {
-        lastCriteria().addCriterion("type_date not between", value1, value2, "typeDate");
+        lastCriteria().addCriterionForJDBCDate("type_date not between", value1, value2, "typeDate");
         return this;
     }
 
@@ -837,52 +837,52 @@ public final class AllDataTypesCriteria extends BaseCriteria {
     }
 
     public AllDataTypesCriteria andTypeTimeEqualTo(Date value) {
-        lastCriteria().addCriterion("type_time =", value, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time =", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeNotEqualTo(Date value) {
-        lastCriteria().addCriterion("type_time <>", value, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time <>", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeGreaterThan(Date value) {
-        lastCriteria().addCriterion("type_time >", value, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time >", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeGreaterThanOrEqualTo(Date value) {
-        lastCriteria().addCriterion("type_time >=", value, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time >=", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeLessThan(Date value) {
-        lastCriteria().addCriterion("type_time <", value, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time <", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeLessThanOrEqualTo(Date value) {
-        lastCriteria().addCriterion("type_time <=", value, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time <=", value, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeIn(List<Date> values) {
-        lastCriteria().addCriterion("type_time in", values, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time in", values, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeNotIn(List<Date> values) {
-        lastCriteria().addCriterion("type_time not in", values, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time not in", values, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeBetween(Date value1, Date value2) {
-        lastCriteria().addCriterion("type_time between", value1, value2, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time between", value1, value2, "typeTime");
         return this;
     }
 
     public AllDataTypesCriteria andTypeTimeNotBetween(Date value1, Date value2) {
-        lastCriteria().addCriterion("type_time not between", value1, value2, "typeTime");
+        lastCriteria().addCriterionForJDBCTime("type_time not between", value1, value2, "typeTime");
         return this;
     }
 
@@ -897,52 +897,52 @@ public final class AllDataTypesCriteria extends BaseCriteria {
     }
 
     public AllDataTypesCriteria andTypeYearEqualTo(Date value) {
-        lastCriteria().addCriterion("type_year =", value, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year =", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearNotEqualTo(Date value) {
-        lastCriteria().addCriterion("type_year <>", value, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year <>", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearGreaterThan(Date value) {
-        lastCriteria().addCriterion("type_year >", value, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year >", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearGreaterThanOrEqualTo(Date value) {
-        lastCriteria().addCriterion("type_year >=", value, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year >=", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearLessThan(Date value) {
-        lastCriteria().addCriterion("type_year <", value, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year <", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearLessThanOrEqualTo(Date value) {
-        lastCriteria().addCriterion("type_year <=", value, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year <=", value, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearIn(List<Date> values) {
-        lastCriteria().addCriterion("type_year in", values, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year in", values, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearNotIn(List<Date> values) {
-        lastCriteria().addCriterion("type_year not in", values, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year not in", values, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearBetween(Date value1, Date value2) {
-        lastCriteria().addCriterion("type_year between", value1, value2, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year between", value1, value2, "typeYear");
         return this;
     }
 
     public AllDataTypesCriteria andTypeYearNotBetween(Date value1, Date value2) {
-        lastCriteria().addCriterion("type_year not between", value1, value2, "typeYear");
+        lastCriteria().addCriterionForJDBCDate("type_year not between", value1, value2, "typeYear");
         return this;
     }
 

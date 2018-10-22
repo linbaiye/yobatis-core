@@ -38,21 +38,6 @@ public final class AllKeyTableCriteria extends BaseCriteria {
         orderByClause = stringBuilder.toString();
     }
 
-    public AllKeyTableCriteria setLimit(Long limit) {
-        this.limit = limit;
-        return this;
-    }
-
-    public AllKeyTableCriteria setOffset(Long offset) {
-        this.offset = offset;
-        return this;
-    }
-
-    public AllKeyTableCriteria setForUpdate(boolean forUpdate) {
-        this.forUpdate = forUpdate;
-        return this;
-    }
-
     public AllKeyTableCriteria ascOrderBy(String  ... fields) {
         orderBy("asc", fields);
         return this;
@@ -65,6 +50,21 @@ public final class AllKeyTableCriteria extends BaseCriteria {
 
     public AllKeyTableCriteria or() {
         oredCriteria.add(createCriteriaInternal());
+        return this;
+    }
+
+    public AllKeyTableCriteria setLimit(Long limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public AllKeyTableCriteria setOffset(Long offset) {
+        this.offset = offset;
+        return this;
+    }
+
+    public AllKeyTableCriteria setForUpdate(boolean forUpdate) {
+        this.forUpdate = forUpdate;
         return this;
     }
 

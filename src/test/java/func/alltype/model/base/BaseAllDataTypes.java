@@ -287,6 +287,43 @@ public abstract class BaseAllDataTypes {
         this.typeVarbinary = typeVarbinary;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append("[");
+        sb.append("typeBigint=").append(typeBigint);
+        sb.append(", typeVarchar=").append(typeVarchar);
+        sb.append(", typeTinyint=").append(typeTinyint);
+        sb.append(", typeSmallint=").append(typeSmallint);
+        sb.append(", typeMediumint=").append(typeMediumint);
+        sb.append(", typeInt=").append(typeInt);
+        sb.append(", typeDate=").append(typeDate);
+        sb.append(", typeFloat=").append(typeFloat);
+        sb.append(", typeDouble=").append(typeDouble);
+        sb.append(", typeDecimal=").append(typeDecimal);
+        sb.append(", typeDatetime=").append(typeDatetime);
+        sb.append(", typeTimestamp=").append(typeTimestamp);
+        sb.append(", typeTime=").append(typeTime);
+        sb.append(", typeYear=").append(typeYear);
+        sb.append(", typeChar=").append(typeChar);
+        sb.append(", typeTinytext=").append(typeTinytext);
+        sb.append(", typeEnum=").append(typeEnum);
+        sb.append(", typeSet=").append(typeSet);
+        sb.append(", typeBool=").append(typeBool);
+        sb.append(", typeText=").append(typeText);
+        sb.append(", typeTinyblob=").append(typeTinyblob);
+        sb.append(", typeBlob=").append(typeBlob);
+        sb.append(", typeMediumblob=").append(typeMediumblob);
+        sb.append(", typeMediumtext=").append(typeMediumtext);
+        sb.append(", typeLongblob=").append(typeLongblob);
+        sb.append(", typeLongtext=").append(typeLongtext);
+        sb.append(", typeBinary=").append(typeBinary);
+        sb.append(", typeVarbinary=").append(typeVarbinary);
+        sb.append("]");
+        return sb.toString();
+    }
+
     /**
      * Copy properties of this object to {@code dest} object.
      * @param dest the object to copy properties to.
@@ -325,42 +362,5 @@ public abstract class BaseAllDataTypes {
         dest.typeBinary = this.typeBinary;
         dest.typeVarbinary = this.typeVarbinary;
         return dest;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append("[");
-        sb.append("typeBigint=").append(typeBigint);
-        sb.append(", typeVarchar=").append(typeVarchar);
-        sb.append(", typeTinyint=").append(typeTinyint);
-        sb.append(", typeSmallint=").append(typeSmallint);
-        sb.append(", typeMediumint=").append(typeMediumint);
-        sb.append(", typeInt=").append(typeInt);
-        sb.append(", typeDate=").append(typeDate);
-        sb.append(", typeFloat=").append(typeFloat);
-        sb.append(", typeDouble=").append(typeDouble);
-        sb.append(", typeDecimal=").append(typeDecimal);
-        sb.append(", typeDatetime=").append(typeDatetime);
-        sb.append(", typeTimestamp=").append(typeTimestamp);
-        sb.append(", typeTime=").append(typeTime);
-        sb.append(", typeYear=").append(typeYear);
-        sb.append(", typeChar=").append(typeChar);
-        sb.append(", typeTinytext=").append(typeTinytext);
-        sb.append(", typeEnum=").append(typeEnum);
-        sb.append(", typeSet=").append(typeSet);
-        sb.append(", typeBool=").append(typeBool);
-        sb.append(", typeText=").append(typeText);
-        sb.append(", typeTinyblob=").append(typeTinyblob);
-        sb.append(", typeBlob=").append(typeBlob);
-        sb.append(", typeMediumblob=").append(typeMediumblob);
-        sb.append(", typeMediumtext=").append(typeMediumtext);
-        sb.append(", typeLongblob=").append(typeLongblob);
-        sb.append(", typeLongtext=").append(typeLongtext);
-        sb.append(", typeBinary=").append(typeBinary);
-        sb.append(", typeVarbinary=").append(typeVarbinary);
-        sb.append("]");
-        return sb.toString();
     }
 }

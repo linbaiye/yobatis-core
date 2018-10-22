@@ -4,6 +4,8 @@ import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
+import org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl;
+import org.mybatis.generator.internal.types.JdbcTypeNameTranslator;
 import org.nalby.yobatis.core.util.TextUtil;
 
 import java.util.ArrayList;
@@ -91,9 +93,22 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     private Method staticNotLikeMethod(IntrospectedColumn column, String returnType) {
         return assembleStaticMethod(column, returnType, "NotLike", ParamType.SINGLE_PARAM);
     }
+    private String selectCallingMethodName(IntrospectedColumn column) {
+        if (column.getJdbcTypeName().equals("DATE")) {
+            return "addCriterionForJDBCDate";
+        } else if (column.getJdbcTypeName().equals("TIME")) {
+            return "addCriterionForJDBCTime";
+        } else {
+            return "addCriterion";
+        }
+    }
 
     private Method equalToMethod(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s =\", value, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String methodToCall = selectCallingMethodName(column);
+        String bodyLine = String.format("lastCriteria().%s(\"%s =\", value, \"%s\");",
+                methodToCall,
+                column.getActualColumnName(),
+                column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "EqualTo";
         return assembleReturnThisMethod(methodName, returnType, bodyLine, new Parameter(column.getFullyQualifiedJavaType(), "value"));
     }
@@ -103,7 +118,9 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     }
 
     private Method notEqualToMethod(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s <>\", value, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String bodyLine = String.format("lastCriteria().%s(\"%s <>\", value, \"%s\");",
+                selectCallingMethodName(column),
+                column.getActualColumnName(), column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "NotEqualTo";
         return assembleReturnThisMethod(methodName, returnType, bodyLine, new Parameter(column.getFullyQualifiedJavaType(), "value"));
     }
@@ -113,7 +130,9 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     }
 
     private Method lessThanMethod(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s <\", value, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String bodyLine = String.format("lastCriteria().%s(\"%s <\", value, \"%s\");",
+                selectCallingMethodName(column),
+                column.getActualColumnName(), column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "LessThan";
         return assembleReturnThisMethod(methodName, returnType, bodyLine, new Parameter(column.getFullyQualifiedJavaType(), "value"));
     }
@@ -123,7 +142,9 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     }
 
     private Method lessThanOrEqualToMethod(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s <=\", value, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String bodyLine = String.format("lastCriteria().%s(\"%s <=\", value, \"%s\");",
+                selectCallingMethodName(column),
+                column.getActualColumnName(), column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "LessThanOrEqualTo";
         return assembleReturnThisMethod(methodName, returnType, bodyLine, new Parameter(column.getFullyQualifiedJavaType(), "value"));
     }
@@ -133,7 +154,9 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     }
 
     private Method greaterThan(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s >\", value, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String bodyLine = String.format("lastCriteria().%s(\"%s >\", value, \"%s\");",
+                selectCallingMethodName(column),
+                column.getActualColumnName(), column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "GreaterThan";
         return assembleReturnThisMethod(methodName, returnType, bodyLine, new Parameter(column.getFullyQualifiedJavaType(), "value"));
     }
@@ -143,7 +166,8 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     }
 
     private Method greaterThanOrEqualTo(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s >=\", value, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String bodyLine = String.format("lastCriteria().%s(\"%s >=\", value, \"%s\");", selectCallingMethodName(column),
+                column.getActualColumnName(), column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "GreaterThanOrEqualTo";
         return assembleReturnThisMethod(methodName, returnType, bodyLine, new Parameter(column.getFullyQualifiedJavaType(), "value"));
     }
@@ -173,7 +197,9 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     }
 
     private Method in(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s in\", values, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String bodyLine = String.format("lastCriteria().%s(\"%s in\", values, \"%s\");",
+                selectCallingMethodName(column),
+                column.getActualColumnName(), column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "In";
         return assembleReturnThisMethod(methodName, returnType, bodyLine, new Parameter(new FullyQualifiedJavaType("List<" + column.getFullyQualifiedJavaType().getShortName() + ">"), "values"));
     }
@@ -183,7 +209,9 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     }
 
     private Method notIn(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s not in\", values, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String bodyLine = String.format("lastCriteria().%s(\"%s not in\", values, \"%s\");",
+                selectCallingMethodName(column),
+                column.getActualColumnName(), column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "NotIn";
         return assembleReturnThisMethod(methodName, returnType, bodyLine, new Parameter(new FullyQualifiedJavaType("List<" + column.getFullyQualifiedJavaType().getShortName() + ">"), "values"));
     }
@@ -193,7 +221,9 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     }
 
     private Method between(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s between\", value1, value2, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String bodyLine = String.format("lastCriteria().%s(\"%s between\", value1, value2, \"%s\");",
+                selectCallingMethodName(column),
+                column.getActualColumnName(), column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "Between";
         return assembleReturnThisMethod(methodName, returnType, bodyLine,
                 new Parameter(column.getFullyQualifiedJavaType(), "value1"), new Parameter(column.getFullyQualifiedJavaType(), "value2"));
@@ -204,7 +234,9 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     }
 
     private Method notBetween(IntrospectedColumn column, String returnType) {
-        String bodyLine = String.format("lastCriteria().addCriterion(\"%s not between\", value1, value2, \"%s\");", column.getActualColumnName(), column.getJavaProperty());
+        String bodyLine = String.format("lastCriteria().%s(\"%s not between\", value1, value2, \"%s\");",
+                selectCallingMethodName(column),
+                column.getActualColumnName(), column.getJavaProperty());
         String methodName = "and" + TextUtil.capitalizeFirstChar(column.getJavaProperty()) + "NotBetween";
         return assembleReturnThisMethod(methodName, returnType, bodyLine,
                 new Parameter(column.getFullyQualifiedJavaType(), "value1"), new Parameter(column.getFullyQualifiedJavaType(), "value2"));
