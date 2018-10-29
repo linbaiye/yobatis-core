@@ -58,7 +58,7 @@ abstract class BaseDaoImpl<B, T extends B, PK> implements BaseDao<B, T, PK> {
     @Override
     public final int insertAll(B record) {
         notNull(record, "record must not be null.");
-        return doInsert("insertAll", record);
+        return sqlSessionTemplate.selectOne(namespace() + "insertAll", record);
     }
 
     @Override
@@ -76,7 +76,7 @@ abstract class BaseDaoImpl<B, T extends B, PK> implements BaseDao<B, T, PK> {
     @Override
     public final T selectOne(PK pk) {
         notNull(pk, "Primary key must not be null.");
-        return doSelectOne("selectByPk", pk);
+        return sqlSessionTemplate.selectOne(namespace() + "selectByPk", pk);
     }
 
     @Override

@@ -207,11 +207,11 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-         generate(ALL_TYPES_TABLE);
+//         generate(ALL_TYPES_TABLE);
         //generate(AUTO_INC_KEY_TABLE_ORIGINAL);
         generate(AUTO_INC_KEY_TABLE);
-        generate(COMPOUND_PK_TABLE);
-        generate(ALL_PK_TABLE);
+//        generate(COMPOUND_PK_TABLE);
+//        generate(ALL_PK_TABLE);
 //        generate(ALL_TYPES_TABLE);
 //          print(ALL_PK_TABLE);
     }

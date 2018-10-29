@@ -23,6 +23,10 @@ import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Document;
+import org.nalby.yobatis.core.database.YobatisTableItemImpl;
+import org.nalby.yobatis.core.database.YobatisTableItem;
+import org.nalby.yobatis.core.mybatis.clazz.Dao;
+import org.nalby.yobatis.core.mybatis.clazz.DaoImpl;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactory;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactoryImpl;
 import org.nalby.yobatis.core.mybatis.mapper.XmlMapper;
@@ -64,6 +68,11 @@ public class YobatisDaoPlugin extends PluginAdapter {
             introspectedTable.getBaseColumns().addAll(introspectedTable.getBLOBColumns());
             introspectedTable.getBLOBColumns().clear();
         }
+        YobatisTableItem yobatisTableItem = YobatisTableItemImpl.wrap(introspectedTable);
+        System.out.println(DaoImpl.build(yobatisTableItem).getFormattedContent());
+//        System.out.println(Dao.build(yobatisTableItem).getFormattedContent());
+//        System.out.println(introspectedTable);
+//        DaoMethodFactoryImpl.getInstance().insert(introspectedTable);
         additionalFiles.add(javaFileFactory.baseDaoInterface(introspectedTable));
         additionalFiles.add(javaFileFactory.baseDaoImpl(introspectedTable));
     }
