@@ -11,15 +11,14 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DaoMethodFactoryTests {
+public class MethodFactoryTests {
 
-    private DaoMethodFactory daoMethodFactory;
+    private MethodFactory methodFactory;
 
     private YobatisTableItem yobatisTableItem;
 
     @Before
     public void setup() {
-        daoMethodFactory = DaoMethodFactoryImpl.getInstance();
         yobatisTableItem = mock(YobatisTableItem.class);
         when(yobatisTableItem.getFullyQualifiedJavaType(YobatisTableItem.ClassType.BASE_ENTITY))
                 .thenReturn(new FullyQualifiedJavaType("org.yobatis.entity.base.BaseYobatis"));
@@ -28,6 +27,7 @@ public class DaoMethodFactoryTests {
         when(yobatisTableItem.getFullyQualifiedJavaType(YobatisTableItem.ClassType.CRITERIA))
                 .thenReturn(new FullyQualifiedJavaType("org.yobatis.entity.criteria.YobatisCriteria"));
         when(yobatisTableItem.getPrimaryKey()).thenReturn(new FullyQualifiedJavaType("long"));
+        methodFactory = DaoMethodFactory.getInstance(yobatisTableItem);
     }
 
     private String asString(Method method) {
@@ -36,61 +36,61 @@ public class DaoMethodFactoryTests {
 
     @Test
     public void insert() {
-        Method method = daoMethodFactory.insert(yobatisTableItem);
+        Method method = methodFactory.create(DaoMethod.INSERT.getName());
         assertEquals("int insert(org.yobatis.entity.base.BaseYobatis record);", asString(method));
     }
 
     @Test
     public void selectOne() {
-        Method method = daoMethodFactory.selectOne(yobatisTableItem);
+        Method method = methodFactory.create(DaoMethod.SELECT_ONE.getName());
         assertEquals("org.yobatis.entity.Yobatis selectOne(long pk);", asString(method));
     }
 
     @Test
     public void selectOneByCriteria() {
-        Method method = daoMethodFactory.selectOneByCriteria(yobatisTableItem);
+        Method method = methodFactory.create(DaoMethod.SELECT_ONE_BY_CRITERIA.getName());
         assertEquals("org.yobatis.entity.Yobatis selectOne(org.yobatis.entity.criteria.YobatisCriteria criteria);",
                 asString(method));
     }
 
     @Test
     public void selectList() {
-        Method method = daoMethodFactory.selectList(yobatisTableItem);
+        Method method = methodFactory.create(DaoMethod.SELECT_LIST.getName());
         assertEquals("List<Yobatis> selectList(org.yobatis.entity.criteria.YobatisCriteria criteria);",
                 asString(method));
     }
 
     @Test
     public void update() {
-        Method method = daoMethodFactory.update(yobatisTableItem);
+        Method method = methodFactory.create(DaoMethod.UPDATE.getName());
         assertEquals("int update(org.yobatis.entity.base.BaseYobatis record);",
                 asString(method));
     }
 
     @Test
     public void updateByCriteria() {
-        Method method = daoMethodFactory.updateByCriteria(yobatisTableItem);
+        Method method = methodFactory.create(DaoMethod.UPDATE_BY_CRITERIA.getName());
         assertEquals("int update(org.yobatis.entity.base.BaseYobatis record, org.yobatis.entity.criteria.YobatisCriteria criteria);",
                 asString(method));
     }
 
     @Test
     public void delete() {
-        Method method = daoMethodFactory.delete(yobatisTableItem);
+        Method method = methodFactory.create(DaoMethod.DELETE.getName());
         assertEquals("int delete(long pk);",
                 asString(method));
     }
 
     @Test
     public void deleteByCriteria() {
-        Method method = daoMethodFactory.deleteByCriteria(yobatisTableItem);
+        Method method = methodFactory.create(DaoMethod.DELETE_BY_CRITERIA.getName());
         assertEquals("int delete(org.yobatis.entity.criteria.YobatisCriteria criteria);",
                 asString(method));
     }
 
     @Test
     public void count() {
-        Method method = daoMethodFactory.count(yobatisTableItem);
+        Method method = methodFactory.create(DaoMethod.COUNT.getName());
         assertEquals("int count(org.yobatis.entity.criteria.YobatisCriteria criteria);",
                 asString(method));
     }

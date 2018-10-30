@@ -4,7 +4,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 
-public abstract class AbstractDaoMethodFactory implements DaoMethodFactory {
+public abstract class AbstractMethodFactory implements MethodFactory {
 
     protected Method makeMethod(String name, FullyQualifiedJavaType returnType, Parameter parameter) {
         Method method = new Method(name);

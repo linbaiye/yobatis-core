@@ -6,7 +6,7 @@ import org.nalby.yobatis.core.database.YobatisTableItem;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
 import org.nalby.yobatis.core.mybatis.method.DaoMethodFactory;
-import org.nalby.yobatis.core.mybatis.method.DaoMethodFactoryImpl;
+import org.nalby.yobatis.core.mybatis.method.MethodFactory;
 
 public class Dao extends Interface implements YobatisUnit {
 
@@ -29,7 +29,7 @@ public class Dao extends Interface implements YobatisUnit {
         existentFile = fileContent;
     }
     public static Dao build(YobatisTableItem yobatisTable) {
-        DaoMethodFactory methodFactory = DaoMethodFactoryImpl.getInstance();
+        MethodFactory methodFactory = DaoMethodFactory.getInstance();
         Dao dao = new Dao(yobatisTable.getFullyQualifiedJavaType(YobatisTableItem.ClassType.DAO),
                 yobatisTable.getClassPath(YobatisTableItem.ClassType.DAO));
         dao.addMethod(methodFactory.insert(yobatisTable));

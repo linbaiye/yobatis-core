@@ -72,7 +72,7 @@ public class YobatisDaoPlugin extends PluginAdapter {
         System.out.println(DaoImpl.build(yobatisTableItem).getFormattedContent());
 //        System.out.println(Dao.build(yobatisTableItem).getFormattedContent());
 //        System.out.println(introspectedTable);
-//        DaoMethodFactoryImpl.getInstance().insert(introspectedTable);
+//        DaoMethodFactory.getInstance().insert(introspectedTable);
         additionalFiles.add(javaFileFactory.baseDaoInterface(introspectedTable));
         additionalFiles.add(javaFileFactory.baseDaoImpl(introspectedTable));
     }

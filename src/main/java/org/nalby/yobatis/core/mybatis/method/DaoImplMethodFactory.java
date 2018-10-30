@@ -4,13 +4,14 @@ import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.nalby.yobatis.core.database.YobatisTableItem;
 
-public class DaoImplMethodFactory extends AbstractDaoMethodFactory {
+public class DaoImplMethodFactory extends AbstractMethodFactory {
 
-    private final static DaoMethodFactory signatureFactory = DaoMethodFactoryImpl.getInstance();
+    private MethodFactory signatureFactory;
 
     private final static DaoImplMethodFactory instance = new DaoImplMethodFactory();
 
-    public static DaoImplMethodFactory getInstance() {
+    public static DaoImplMethodFactory getInstance(YobatisTableItem table) {
+        instance.signatureFactory = DaoMethodFactory.getInstance(table);
         return instance;
     }
 
@@ -23,62 +24,82 @@ public class DaoImplMethodFactory extends AbstractDaoMethodFactory {
     }
 
     @Override
-    public Method insert(YobatisTableItem table) {
-        Method method = signatureFactory.insert(table);
+    public Method create(String name) {
+        if (DaoMethod.COUNT.nameEquals(name)) {
+            return count();
+        } else if (DaoMethod.SELECT_ONE.nameEquals(name)) {
+            return selectOne();
+        } else if (DaoMethod.SELECT_ONE_BY_CRITERIA.nameEquals(name)) {
+            return selectOneByCriteria();
+        } else if (DaoMethod.SELECT_LIST.nameEquals(name)) {
+            return selectList();
+        } else if (DaoMethod.UPDATE.nameEquals(name)) {
+            return update();
+        } else if (DaoMethod.UPDATE_BY_CRITERIA.nameEquals(name)) {
+            return updateByCriteria();
+        } else if (DaoMethod.DELETE.nameEquals(name)) {
+            return delete();
+        } else if (DaoMethod.DELETE_BY_CRITERIA.nameEquals(name)) {
+            return deleteByCriteria();
+        }
+        throw new IllegalArgumentException("Unknown name.");
+    }
+
+    public Method insert() {
+        Method method = signatureFactory.create(DaoMethod.INSERT.getName());
         return completeMethod(method, new String[]{
                 "notNull(record, \"record must not be null.\");",
                 "return sqlSessionTemplate.insert(NAMESPACE + \"" + NamespaceSuffix.INSERT + "\", record);"
         });
     }
 
-    @Override
-    public Method selectOne(YobatisTableItem table) {
-        Method method = signatureFactory.selectOne(table);
+    public Method selectOne() {
+        Method method = signatureFactory.create(DaoMethod.SELECT_ONE.getName());
         return completeMethod(method, new String[]{
                 "notNull(pk, \"pk must not be null.\");",
                 "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + NamespaceSuffix.SELECT_BY_PK + "\", pk);"
         });
     }
 
-    @Override
-    public Method selectOneByCriteria(YobatisTableItem table) {
-        Method method = signatureFactory.selectOneByCriteria(table);
+
+    public Method selectOneByCriteria() {
+        Method method = signatureFactory.create(DaoMethod.SELECT_ONE_BY_CRITERIA.getName());
         return completeMethod(method, new String[]{
                 "notNull(criteria, \"criteria must not be null.\");",
                 "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + NamespaceSuffix.SELECT_BY_CRITERIA + "\", criteria);"
         });
     }
 
-    @Override
-    public Method selectList(YobatisTableItem table) {
-        Method method = signatureFactory.selectList(table);
+
+    public Method selectList() {
+        Method method = signatureFactory.create(DaoMethod.SELECT_LIST.getName());
         return completeMethod(method, new String[]{
                 "notNull(criteria, \"criteria must not be null.\");",
                 "return sqlSessionTemplate.selectList(NAMESPACE + \"" + NamespaceSuffix.SELECT_BY_CRITERIA + "\", criteria);"
         });
     }
 
-    @Override
-    public Method count(YobatisTableItem table) {
-        Method method = signatureFactory.count(table);
+
+    public Method count() {
+        Method method = signatureFactory.create(DaoMethod.COUNT.getName());
         return completeMethod(method, new String[]{
                 "notNull(criteria, \"criteria must not be null.\");",
                 "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + NamespaceSuffix.COUNT + "\", criteria);"
         });
     }
 
-    @Override
-    public Method update(YobatisTableItem table) {
-        Method method = signatureFactory.update(table);
+
+    public Method update() {
+        Method method = signatureFactory.create(DaoMethod.UPDATE.getName());
         return completeMethod(method, new String[]{
                 "notNull(record, \"record must not be null.\");",
                 "return sqlSessionTemplate.update(NAMESPACE + \"" + NamespaceSuffix.UPDATE + "\", record);"
         });
     }
 
-    @Override
-    public Method updateByCriteria(YobatisTableItem table) {
-        Method method = signatureFactory.updateByCriteria(table);
+
+    public Method updateByCriteria() {
+        Method method = signatureFactory.create(DaoMethod.UPDATE_BY_CRITERIA.getName());
         return completeMethod(method, new String[]{
                 "notNull(record, \"record must not be null.\");",
                 "notNull(criteria, \"criteria must not be null.\");",
@@ -89,21 +110,23 @@ public class DaoImplMethodFactory extends AbstractDaoMethodFactory {
         });
     }
 
-    @Override
-    public Method delete(YobatisTableItem table) {
-        Method method = signatureFactory.delete(table);
+
+    public Method delete() {
+        Method method = signatureFactory.create(DaoMethod.DELETE.getName());
         return completeMethod(method, new String[]{
                 "notNull(pk, \"pk must not be null.\");",
                 "return sqlSessionTemplate.delete(NAMESPACE + \"" + NamespaceSuffix.DELETE + "\", pk);"
         });
     }
 
-    @Override
-    public Method deleteByCriteria(YobatisTableItem table) {
-        Method method = signatureFactory.deleteByCriteria(table);
+
+    public Method deleteByCriteria() {
+        Method method = signatureFactory.create(DaoMethod.DELETE_BY_CRITERIA.getName());
         return completeMethod(method, new String[]{
                 "notNull(criteria, \"criteria must not be null.\");",
                 "return sqlSessionTemplate.delete(NAMESPACE + \"" + NamespaceSuffix.DELETE_BY_CRITERIA + "\", criteria);"
         });
     }
+
+
 }
