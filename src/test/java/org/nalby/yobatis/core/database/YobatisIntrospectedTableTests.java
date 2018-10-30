@@ -12,13 +12,11 @@ import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class YobatisTableItemTests {
+public class YobatisIntrospectedTableTests {
 
     private IntrospectedTable introspectedTable;
 
@@ -28,7 +26,7 @@ public class YobatisTableItemTests {
 
     private JavaModelGeneratorConfiguration javaModelGeneratorConfiguration;
 
-    private YobatisTableItem  yobatisTableItem;
+    private YobatisIntrospectedTable yobatisIntrospectedTable;
 
     private List<IntrospectedColumn> columnList;
 
@@ -63,58 +61,58 @@ public class YobatisTableItemTests {
 
         when(introspectedTable.getPrimaryKeyColumns()).thenReturn(columnList);
 
-        yobatisTableItem = YobatisTableItemImpl.wrap(introspectedTable);
+        yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
     }
 
     @Test
     public void paths() {
         assertEquals("/project/org/yobatis/dao/YobatisDao.java",
-                yobatisTableItem.getClassPath(YobatisTableItem.ClassType.DAO));
+                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.DAO));
         assertEquals("/project/org/yobatis/dao/impl/YobatisDaoImpl.java",
-                yobatisTableItem.getClassPath(YobatisTableItem.ClassType.DAO_IMPL));
+                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.DAO_IMPL));
         assertEquals("/project/org/yobatis/entity/Yobatis.java",
-                yobatisTableItem.getClassPath(YobatisTableItem.ClassType.ENTITY));
+                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.ENTITY));
         assertEquals("/project/org/yobatis/entity/base/BaseYobatis.java",
-                yobatisTableItem.getClassPath(YobatisTableItem.ClassType.BASE_ENTITY));
+                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.BASE_ENTITY));
         assertEquals("/project/org/yobatis/entity/criteria/BaseCriteria.java",
-                yobatisTableItem.getClassPath(YobatisTableItem.ClassType.BASE_CRITERIA));
+                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.BASE_CRITERIA));
     }
 
     @Test
     public void fullyQualifiedNames() {
         assertEquals("org.yobatis.entity.Yobatis",
-                yobatisTableItem.getFullyQualifiedJavaType(YobatisTableItem.ClassType.ENTITY).getFullyQualifiedName());
+                yobatisIntrospectedTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY).getFullyQualifiedName());
         assertEquals("org.yobatis.entity.base.BaseYobatis",
-                yobatisTableItem.getFullyQualifiedJavaType(YobatisTableItem.ClassType.BASE_ENTITY).getFullyQualifiedName());
+                yobatisIntrospectedTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY).getFullyQualifiedName());
         assertEquals("org.yobatis.dao.YobatisDao",
-                yobatisTableItem.getFullyQualifiedJavaType(YobatisTableItem.ClassType.DAO).getFullyQualifiedName());
+                yobatisIntrospectedTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO).getFullyQualifiedName());
         assertEquals("org.yobatis.dao.impl.YobatisDaoImpl",
-                yobatisTableItem.getFullyQualifiedJavaType(YobatisTableItem.ClassType.DAO_IMPL).getFullyQualifiedName());
+                yobatisIntrospectedTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO_IMPL).getFullyQualifiedName());
         assertEquals("org.yobatis.entity.criteria.BaseCriteria",
-                yobatisTableItem.getFullyQualifiedJavaType(YobatisTableItem.ClassType.BASE_CRITERIA).getFullyQualifiedName());
+                yobatisIntrospectedTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_CRITERIA).getFullyQualifiedName());
         assertEquals("org.yobatis.entity.criteria.YobatisCriteria",
-                yobatisTableItem.getFullyQualifiedJavaType(YobatisTableItem.ClassType.CRITERIA).getFullyQualifiedName());
+                yobatisIntrospectedTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA).getFullyQualifiedName());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void hasNoPk() {
         when(introspectedTable.hasPrimaryKeyColumns()).thenReturn(false);
-        yobatisTableItem = YobatisTableItemImpl.wrap(introspectedTable);
+        yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
     }
 
     @Test
     public void singleColumnPk() {
-        yobatisTableItem = YobatisTableItemImpl.wrap(introspectedTable);
-        assertEquals("long", yobatisTableItem.getPrimaryKey().getFullyQualifiedName());
-        assertTrue(yobatisTableItem.isAutoIncPrimaryKey());
+        yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
+        assertEquals("long", yobatisIntrospectedTable.getPrimaryKey().getFullyQualifiedName());
+        assertTrue(yobatisIntrospectedTable.isAutoIncPrimaryKey());
     }
 
     @Test
     public void compoundPk() {
         columnList.add(mock(IntrospectedColumn.class));
-        yobatisTableItem = YobatisTableItemImpl.wrap(introspectedTable);
-        assertEquals("org.yobatis.entity.base.BaseYobatis", yobatisTableItem.getPrimaryKey().getFullyQualifiedName());
-        assertFalse(yobatisTableItem.isAutoIncPrimaryKey());
+        yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
+        assertEquals("org.yobatis.entity.base.BaseYobatis", yobatisIntrospectedTable.getPrimaryKey().getFullyQualifiedName());
+        assertFalse(yobatisIntrospectedTable.isAutoIncPrimaryKey());
     }
 
 }

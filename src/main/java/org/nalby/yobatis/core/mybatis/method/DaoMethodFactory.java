@@ -2,7 +2,7 @@ package org.nalby.yobatis.core.mybatis.method;
 
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Method;
-import org.nalby.yobatis.core.database.YobatisTableItem;
+import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
 
 public class DaoMethodFactory extends AbstractMethodFactory {
 
@@ -10,94 +10,96 @@ public class DaoMethodFactory extends AbstractMethodFactory {
 
     private DaoMethodFactory() {}
 
-    private YobatisTableItem table;
+    private YobatisIntrospectedTable table;
 
-    public static DaoMethodFactory getInstance(YobatisTableItem table) {
+    public static DaoMethodFactory getInstance(YobatisIntrospectedTable table) {
         factory.table = table;
         return factory;
     }
 
     @Override
     public Method create(String name) {
-        if (DaoMethod.COUNT.nameEquals(name)) {
+        if (FactoryMethodName.COUNT.nameEquals(name)) {
             return count();
-        } else if (DaoMethod.SELECT_ONE.nameEquals(name)) {
+        } else if (FactoryMethodName.SELECT_ONE_BY_PK.nameEquals(name)) {
             return selectOne();
-        } else if (DaoMethod.SELECT_ONE_BY_CRITERIA.nameEquals(name)) {
+        } else if (FactoryMethodName.SELECT_ONE_BY_CRITERIA.nameEquals(name)) {
             return selectOneByCriteria();
-        } else if (DaoMethod.SELECT_LIST.nameEquals(name)) {
+        } else if (FactoryMethodName.SELECT_LIST.nameEquals(name)) {
             return selectList();
-        } else if (DaoMethod.UPDATE.nameEquals(name)) {
+        } else if (FactoryMethodName.INSERT.nameEquals(name)) {
+            return insert();
+        } else if (FactoryMethodName.UPDATE_BY_PK.nameEquals(name)) {
             return update();
-        } else if (DaoMethod.UPDATE_BY_CRITERIA.nameEquals(name)) {
+        } else if (FactoryMethodName.UPDATE_BY_CRITERIA.nameEquals(name)) {
             return updateByCriteria();
-        } else if (DaoMethod.DELETE.nameEquals(name)) {
+        } else if (FactoryMethodName.DELETE_BY_PK.nameEquals(name)) {
             return delete();
-        } else if (DaoMethod.DELETE_BY_CRITERIA.nameEquals(name)) {
+        } else if (FactoryMethodName.DELETE_BY_CRITERIA.nameEquals(name)) {
             return deleteByCriteria();
         }
         throw new IllegalArgumentException("Unknown name.");
     }
 
 
-    public Method insert() {
+    private Method insert() {
         return makeMethod("insert", new FullyQualifiedJavaType("int"),
-                makeParam(table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.BASE_ENTITY), "record"));
+                makeParam(table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY), "record"));
     }
 
 
-    public Method selectOne() {
-        return makeMethod("selectOne", table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.ENTITY),
+    private Method selectOne() {
+        return makeMethod("selectOne", table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY),
                 makeParam(table.getPrimaryKey(), "pk"));
     }
 
 
-    public Method selectOneByCriteria() {
-        return makeMethod("selectOne", table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.ENTITY),
-                makeParam(table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.CRITERIA), "criteria"));
+    private Method selectOneByCriteria() {
+        return makeMethod("selectOne", table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY),
+                makeParam(table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA), "criteria"));
     }
 
 
-    public Method selectList() {
+    private Method selectList() {
         return makeMethod("selectList",
                 new FullyQualifiedJavaType("List<"
-                        + table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.ENTITY).getShortName() + ">"),
-                makeParam(table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.CRITERIA), "criteria"));
+                        + table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY).getShortName() + ">"),
+                makeParam(table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA), "criteria"));
     }
 
 
-    public Method count() {
+    private Method count() {
         return makeMethod("count", new FullyQualifiedJavaType("int"),
-                makeParam(table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.CRITERIA), "criteria"));
+                makeParam(table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA), "criteria"));
     }
 
 
-    public Method update() {
+    private Method update() {
         return makeMethod("update",
                 new FullyQualifiedJavaType("int"),
-                makeParam(table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.BASE_ENTITY), "record"));
+                makeParam(table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY), "record"));
     }
 
 
-    public Method updateByCriteria() {
+    private Method updateByCriteria() {
         Method method = makeMethod("update",
                 new FullyQualifiedJavaType("int"),
-                makeParam(table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.BASE_ENTITY), "record"));
-        method.addParameter(makeParam(table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.CRITERIA), "criteria"));
+                makeParam(table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY), "record"));
+        method.addParameter(makeParam(table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA), "criteria"));
         return method;
     }
 
 
-    public Method delete() {
+    private Method delete() {
         return makeMethod("delete",
                 new FullyQualifiedJavaType("int"),
                 makeParam(table.getPrimaryKey(), "pk"));
     }
 
 
-    public Method deleteByCriteria() {
+    private Method deleteByCriteria() {
         return makeMethod("delete",
                 new FullyQualifiedJavaType("int"),
-                makeParam(table.getFullyQualifiedJavaType(YobatisTableItem.ClassType.CRITERIA), "criteria"));
+                makeParam(table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA), "criteria"));
     }
 }

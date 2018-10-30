@@ -16,19 +16,19 @@ package org.nalby.yobatis.core.mybatis;
  *    limitations under the License.
  */
 
-import org.mybatis.generator.api.GeneratedJavaFile;
-import org.mybatis.generator.api.GeneratedXmlFile;
-import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
+import org.mybatis.generator.api.*;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Document;
-import org.nalby.yobatis.core.database.YobatisTableItemImpl;
-import org.nalby.yobatis.core.database.YobatisTableItem;
-import org.nalby.yobatis.core.mybatis.clazz.Dao;
+import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.nalby.yobatis.core.database.YobatisIntrospectedTableImpl;
+import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.mybatis.clazz.DaoImpl;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactory;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactoryImpl;
+import org.nalby.yobatis.core.mybatis.mapper.MapperXmlElementFactory;
+import org.nalby.yobatis.core.mybatis.mapper.MapperXmlElementFactoryImpl;
+import org.nalby.yobatis.core.mybatis.mapper.XmlElementName;
 import org.nalby.yobatis.core.mybatis.mapper.XmlMapper;
 import org.nalby.yobatis.core.util.Expect;
 
@@ -68,9 +68,15 @@ public class YobatisDaoPlugin extends PluginAdapter {
             introspectedTable.getBaseColumns().addAll(introspectedTable.getBLOBColumns());
             introspectedTable.getBLOBColumns().clear();
         }
-        YobatisTableItem yobatisTableItem = YobatisTableItemImpl.wrap(introspectedTable);
-        System.out.println(DaoImpl.build(yobatisTableItem).getFormattedContent());
-//        System.out.println(Dao.build(yobatisTableItem).getFormattedContent());
+        YobatisIntrospectedTable yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
+        MapperXmlElementFactory factory = MapperXmlElementFactoryImpl.getInstance(yobatisIntrospectedTable);
+        XmlElement xmlElementName = factory.create(XmlElementName.BASE_RESULT_MAP.getName());
+        System.out.println(xmlElementName.getFormattedContent(0));
+
+        xmlElementName = factory.create(XmlElementName.WHERE_CLAUSE_FOR_UPDATE.getName());
+        System.out.println(xmlElementName.getFormattedContent(0));
+//        System.out.println(DaoImpl.build(yobatisIntrospectedTable).getFormattedContent());
+//        System.out.println(Dao.build(yobatisIntrospectedTable).getFormattedContent());
 //        System.out.println(introspectedTable);
 //        DaoMethodFactory.getInstance().insert(introspectedTable);
         additionalFiles.add(javaFileFactory.baseDaoInterface(introspectedTable));

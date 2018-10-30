@@ -2,9 +2,10 @@ package org.nalby.yobatis.core.mybatis.clazz;
 
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
-import org.nalby.yobatis.core.database.YobatisTableItem;
+import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
+import org.nalby.yobatis.core.mybatis.method.FactoryMethodName;
 import org.nalby.yobatis.core.mybatis.method.DaoMethodFactory;
 import org.nalby.yobatis.core.mybatis.method.MethodFactory;
 
@@ -28,22 +29,26 @@ public class Dao extends Interface implements YobatisUnit {
     public void merge(String fileContent) throws InvalidUnitException {
         existentFile = fileContent;
     }
-    public static Dao build(YobatisTableItem yobatisTable) {
-        MethodFactory methodFactory = DaoMethodFactory.getInstance();
-        Dao dao = new Dao(yobatisTable.getFullyQualifiedJavaType(YobatisTableItem.ClassType.DAO),
-                yobatisTable.getClassPath(YobatisTableItem.ClassType.DAO));
-        dao.addMethod(methodFactory.insert(yobatisTable));
-        dao.addMethod(methodFactory.selectOne(yobatisTable));
-        dao.addMethod(methodFactory.selectOneByCriteria(yobatisTable));
-        dao.addMethod(methodFactory.selectList(yobatisTable));
-        dao.addMethod(methodFactory.count(yobatisTable));
-        dao.addMethod(methodFactory.update(yobatisTable));
-        dao.addMethod(methodFactory.updateByCriteria(yobatisTable));
-        dao.addMethod(methodFactory.delete(yobatisTable));
-        dao.addMethod(methodFactory.deleteByCriteria(yobatisTable));
-        dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisTableItem.ClassType.ENTITY));
-        dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisTableItem.ClassType.BASE_ENTITY));
-        dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisTableItem.ClassType.CRITERIA));
+
+    @Override
+    public String getFormattedContent() {
+        if (existentFile != null) {
+            return existentFile;
+        }
+        return super.getFormattedContent();
+    }
+
+
+    public static Dao build(YobatisIntrospectedTable yobatisTable) {
+        MethodFactory methodFactory = DaoMethodFactory.getInstance(yobatisTable);
+        Dao dao = new Dao(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO),
+                yobatisTable.getClassPath(YobatisIntrospectedTable.ClassType.DAO));
+        for (String name : FactoryMethodName.listMethodNamesByGroup(FactoryMethodName.DAO_GROUP)) {
+            dao.addMethod(methodFactory.create(name));
+        }
+        dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY));
+        dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY));
+        dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA));
         dao.addImportedType(yobatisTable.getPrimaryKey());
         return dao;
     }

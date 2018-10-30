@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class BaseDaoMethodDecoratorTests {
+public class BaseFactoryMethodNameDecoratorTests {
 
     private BaseDaoMethodJavaDocDecorator decorator = BaseDaoMethodJavaDocDecorator.getInstance();
 

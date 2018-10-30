@@ -209,7 +209,7 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit {
     }
 
     private static void addPaging(XmlElement element) {
-        MapperXmlElementFactory  mapperXmlElementFactory = MapperXmlElementFactoryImpl.getInstance();
+        LegacyMapperXmlFactory mapperXmlElementFactory = LegacyMapperXmlElementFactoryImpl.getInstance();
         element.addElement(3, mapperXmlElementFactory.pagingElement(PAGING_ID));
         for (Element e : element.getElements()) {
             if (!(e instanceof XmlElement)) {
@@ -233,7 +233,7 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit {
         replaceTypes(document.getRootElement(), table);
         eraseTimestampedComments(document.getRootElement());
         replaceNamespace(document.getRootElement(), table);
-        MapperXmlElementFactory  mapperXmlElementFactory = MapperXmlElementFactoryImpl.getInstance();
+        LegacyMapperXmlFactory mapperXmlElementFactory = LegacyMapperXmlElementFactoryImpl.getInstance();
         List<Element> elements = document.getRootElement().getElements();
         int pos = deleteXmlElement(document, "insertAll");
         document.getRootElement().getElements().add(pos + 1, mapperXmlElementFactory.insertAll(table));

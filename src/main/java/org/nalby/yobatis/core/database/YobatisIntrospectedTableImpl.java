@@ -7,7 +7,7 @@ import org.nalby.yobatis.core.util.Expect;
 
 import java.util.List;
 
-public class YobatisTableItemImpl implements YobatisTableItem {
+public class YobatisIntrospectedTableImpl implements YobatisIntrospectedTable {
 
     private IntrospectedTable wrappedTable;
 
@@ -27,13 +27,13 @@ public class YobatisTableItemImpl implements YobatisTableItem {
 
     private boolean autoIncPk;
 
-    private YobatisTableItemImpl(IntrospectedTable wrappedTable,
-                                 String entityName,
-                                 String daoPackage,
-                                 String entityPackage,
-                                 String projectPath,
-                                 FullyQualifiedJavaType primaryKey,
-                                 boolean autoIncPk) {
+    private YobatisIntrospectedTableImpl(IntrospectedTable wrappedTable,
+                                         String entityName,
+                                         String daoPackage,
+                                         String entityPackage,
+                                         String projectPath,
+                                         FullyQualifiedJavaType primaryKey,
+                                         boolean autoIncPk) {
         this.wrappedTable = wrappedTable;
         this.entityName = entityName;
         this.daoPackage = daoPackage;
@@ -86,22 +86,6 @@ public class YobatisTableItemImpl implements YobatisTableItem {
     }
 
     @Override
-    public String getClassName(ClassType classType) {
-        switch (classType) {
-            case DAO:
-                return entityName + "Dao";
-            case DAO_IMPL:
-                return entityName + "DaoImpl";
-            case ENTITY:
-                return entityName;
-            case BASE_ENTITY:
-                return "Base" + entityName;
-            default:
-                throw new IllegalArgumentException("Not supported type.");
-        }
-    }
-
-    @Override
     public FullyQualifiedJavaType getFullyQualifiedJavaType(ClassType classType) {
         switch (classType) {
             case DAO:
@@ -121,7 +105,17 @@ public class YobatisTableItemImpl implements YobatisTableItem {
         }
     }
 
-    public static YobatisTableItemImpl wrap(IntrospectedTable introspectedTable) {
+    @Override
+    public List<IntrospectedColumn> getColumns() {
+        return wrappedTable.getAllColumns();
+    }
+
+    @Override
+    public List<IntrospectedColumn> getPrimaryKeyColumns() {
+        return wrappedTable.getPrimaryKeyColumns();
+    }
+
+    public static YobatisIntrospectedTableImpl wrap(IntrospectedTable introspectedTable) {
         Expect.asTrue(introspectedTable.hasPrimaryKeyColumns(),
                 "table " + introspectedTable.getFullyQualifiedTableNameAtRuntime() + " has no primary key.");
         String name = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType()).getShortName();
@@ -135,8 +129,8 @@ public class YobatisTableItemImpl implements YobatisTableItem {
             primaryKey = pkColumns.get(0).getFullyQualifiedJavaType();
             autoInc = pkColumns.get(0).isAutoIncrement();
         }
-        YobatisTableItemImpl yobatisTableItem =
-                new YobatisTableItemImpl(introspectedTable, name, daoPackage, entityPackage, projectPath, primaryKey, autoInc);
+        YobatisIntrospectedTableImpl yobatisTableItem =
+                new YobatisIntrospectedTableImpl(introspectedTable, name, daoPackage, entityPackage, projectPath, primaryKey, autoInc);
         if (primaryKey == null) {
             yobatisTableItem.setPrimaryKey(yobatisTableItem.getFullyQualifiedJavaType(ClassType.BASE_ENTITY));
         }
