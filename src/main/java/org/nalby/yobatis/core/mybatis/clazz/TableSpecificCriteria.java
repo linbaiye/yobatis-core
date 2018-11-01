@@ -6,8 +6,8 @@ import org.mybatis.generator.api.dom.java.*;
 import org.nalby.yobatis.core.mybatis.NamingHelper;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
 import org.nalby.yobatis.core.mybatis.method.ConstantMethod;
-import org.nalby.yobatis.core.mybatis.method.CriteriaMethodFactory;
-import org.nalby.yobatis.core.mybatis.method.CriteriaMethodFactoryImpl;
+import org.nalby.yobatis.core.mybatis.method.legacy.LegacyCriteriaMethodFactory;
+import org.nalby.yobatis.core.mybatis.method.legacy.LegacyCriteriaMethodFactoryImpl;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class TableSpecificCriteria extends TopLevelClass implements YobatisUnit 
         FullyQualifiedJavaType thisType = new FullyQualifiedJavaType(
                 origin.getType().getFullyQualifiedNameWithoutTypeParameters().replaceFirst("([^.]+)Example$", "criteria.$1Criteria"));
         TableSpecificCriteria criteria = new TableSpecificCriteria(thisType, NamingHelper.glueCriteriaPath(table, thisType));
-        CriteriaMethodFactory methodFactory = CriteriaMethodFactoryImpl.getInstance();
+        LegacyCriteriaMethodFactory methodFactory = LegacyCriteriaMethodFactoryImpl.getInstance();
         criteria.addMethod(ConstantMethod.ORDER_BY.get());
         criteria.addMethod(methodFactory.order(thisType.getFullyQualifiedName(), true));
         criteria.addMethod(methodFactory.order(thisType.getFullyQualifiedName(), false));

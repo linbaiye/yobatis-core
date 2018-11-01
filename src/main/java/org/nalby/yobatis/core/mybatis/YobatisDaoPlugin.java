@@ -23,13 +23,12 @@ import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.nalby.yobatis.core.database.YobatisIntrospectedTableImpl;
 import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
-import org.nalby.yobatis.core.mybatis.clazz.DaoImpl;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactory;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactoryImpl;
 import org.nalby.yobatis.core.mybatis.mapper.MapperXmlElementFactory;
 import org.nalby.yobatis.core.mybatis.mapper.MapperXmlElementFactoryImpl;
 import org.nalby.yobatis.core.mybatis.mapper.XmlElementName;
-import org.nalby.yobatis.core.mybatis.mapper.XmlMapper;
+import org.nalby.yobatis.core.mybatis.mapper.legacy.LegacyXmlMapper;
 import org.nalby.yobatis.core.util.Expect;
 
 import java.util.LinkedList;
@@ -56,7 +55,7 @@ public class YobatisDaoPlugin extends PluginAdapter {
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-        generatedXmlFileList.add(XmlMapper.wrap(document, introspectedTable));
+        generatedXmlFileList.add(LegacyXmlMapper.wrap(document, introspectedTable));
         return true;
     }
 

@@ -1,4 +1,4 @@
-package org.nalby.yobatis.core.mybatis.mapper;
+package org.nalby.yobatis.core.mybatis.mapper.legacy;
 
 import org.dom4j.Element;
 import org.mybatis.generator.api.IntrospectedColumn;

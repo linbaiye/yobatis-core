@@ -663,7 +663,8 @@
       type_varbinary = #{typeVarbinary,jdbcType=VARBINARY}
     where type_bigint = #{typeBigint,jdbcType=BIGINT}
   </update>
-  <sql id="hello">
-    I'm for test.
-  </sql>
+
+  <select id="select1" resultMap="BASE_RESULT_MAP">
+      SELECT * from all_data_types;
+  </select>
 </mapper>

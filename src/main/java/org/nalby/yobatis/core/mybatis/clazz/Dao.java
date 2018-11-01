@@ -5,7 +5,7 @@ import org.mybatis.generator.api.dom.java.Interface;
 import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
-import org.nalby.yobatis.core.mybatis.method.FactoryMethodName;
+import org.nalby.yobatis.core.mybatis.method.DaoMethodName;
 import org.nalby.yobatis.core.mybatis.method.DaoMethodFactory;
 import org.nalby.yobatis.core.mybatis.method.MethodFactory;
 
@@ -42,8 +42,8 @@ public class Dao extends Interface implements YobatisUnit {
     public static Dao build(YobatisIntrospectedTable yobatisTable) {
         MethodFactory methodFactory = DaoMethodFactory.getInstance(yobatisTable);
         Dao dao = new Dao(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO),
-                yobatisTable.getClassPath(YobatisIntrospectedTable.ClassType.DAO));
-        for (String name : FactoryMethodName.listMethodNamesByGroup(FactoryMethodName.DAO_GROUP)) {
+                yobatisTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.DAO));
+        for (String name : DaoMethodName.listMethodNamesByGroup(DaoMethodName.DAO_GROUP)) {
             dao.addMethod(methodFactory.create(name));
         }
         dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY));

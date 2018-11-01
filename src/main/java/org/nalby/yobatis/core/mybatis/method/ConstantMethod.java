@@ -182,7 +182,7 @@ public enum ConstantMethod {
             new Parameter[] {}
     ),
     CRITERION_CONDITION(
-            "Criterion", null, JavaVisibility.PROTECTED,
+            "Criterion", null, JavaVisibility.PUBLIC,
             new String[] {
                     "this.condition = condition;",
                     "this.noValue = true;"
@@ -192,7 +192,7 @@ public enum ConstantMethod {
             }
     ),
     CRITERION_CONDITION_VALUE(
-            "Criterion", null, JavaVisibility.PROTECTED,
+            "Criterion", null, JavaVisibility.PUBLIC,
             new String[] {
                     "this.condition = condition;",
                     "this.value = value;",
@@ -208,7 +208,7 @@ public enum ConstantMethod {
             }
     ),
     CRITERION_CONDITION_TWO_VALUES(
-            "Criterion", null, JavaVisibility.PROTECTED,
+            "Criterion", null, JavaVisibility.PUBLIC,
             new String[] {
                     "this.condition = condition;",
                     "this.value = value;",

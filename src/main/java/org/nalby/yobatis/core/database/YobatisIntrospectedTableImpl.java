@@ -17,11 +17,11 @@ public class YobatisIntrospectedTableImpl implements YobatisIntrospectedTable {
 
     private String entityPackage;
 
-    private String projectPath;
-
     private String daoPackagePath;
 
     private String entityPackagePath;
+
+    private String mapperPath;
 
     private FullyQualifiedJavaType primaryKey;
 
@@ -31,20 +31,26 @@ public class YobatisIntrospectedTableImpl implements YobatisIntrospectedTable {
                                          String entityName,
                                          String daoPackage,
                                          String entityPackage,
-                                         String projectPath,
+                                         String daoPath,
+                                         String entityPath,
+                                         String mapperPath,
                                          FullyQualifiedJavaType primaryKey,
                                          boolean autoIncPk) {
         this.wrappedTable = wrappedTable;
         this.entityName = entityName;
         this.daoPackage = daoPackage;
         this.entityPackage = entityPackage;
-        this.projectPath = projectPath;
-        this.daoPackagePath = projectPath + "/" + daoPackage.replaceAll("\\.", "/");
-        this.entityPackagePath = projectPath + "/" + entityPackage.replaceAll("\\.", "/");
+        this.daoPackagePath = daoPath;
+        this.entityPackagePath = entityPath;
+        this.mapperPath = mapperPath;
         this.primaryKey = primaryKey;
         this.autoIncPk = autoIncPk;
     }
 
+    @Override
+    public IntrospectedTable getWrappedTable() {
+        return wrappedTable;
+    }
 
     @Override
     public FullyQualifiedJavaType getPrimaryKey() {
@@ -66,7 +72,7 @@ public class YobatisIntrospectedTableImpl implements YobatisIntrospectedTable {
     }
 
     @Override
-    public String getClassPath(ClassType classType) {
+    public String getPathForGeneratedFile(ClassType classType) {
         switch (classType) {
             case DAO:
                 return daoPackagePath + "/" + entityName + "Dao.java";
@@ -80,6 +86,8 @@ public class YobatisIntrospectedTableImpl implements YobatisIntrospectedTable {
                 return entityPackagePath + "/criteria/" + entityName + "Criteria.java";
             case BASE_CRITERIA:
                 return entityPackagePath + "/criteria/BaseCriteria.java";
+            case XML_MAPPER:
+                return mapperPath + "/" + entityName + "Mapper.xml";
             default:
                 throw new IllegalArgumentException("Not supported type.");
         }
@@ -120,17 +128,25 @@ public class YobatisIntrospectedTableImpl implements YobatisIntrospectedTable {
                 "table " + introspectedTable.getFullyQualifiedTableNameAtRuntime() + " has no primary key.");
         String name = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType()).getShortName();
         String daoPackage = introspectedTable.getContext().getJavaClientGeneratorConfiguration().getTargetPackage();
+        String daoProject = introspectedTable.getContext().getJavaClientGeneratorConfiguration().getTargetProject();
         String entityPackage = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetPackage();
-        String projectPath = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetProject();
+        String entityProject = introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetProject();
+        String xmlPackage = introspectedTable.getContext().getSqlMapGeneratorConfiguration().getTargetPackage();
+        String xmlProject = introspectedTable.getContext().getSqlMapGeneratorConfiguration().getTargetProject();
         FullyQualifiedJavaType primaryKey = null;
         List<IntrospectedColumn> pkColumns = introspectedTable.getPrimaryKeyColumns();
+        introspectedTable.getMyBatis3XmlMapperPackage();
         boolean autoInc = false;
         if (pkColumns.size() == 1) {
             primaryKey = pkColumns.get(0).getFullyQualifiedJavaType();
             autoInc = pkColumns.get(0).isAutoIncrement();
         }
         YobatisIntrospectedTableImpl yobatisTableItem =
-                new YobatisIntrospectedTableImpl(introspectedTable, name, daoPackage, entityPackage, projectPath, primaryKey, autoInc);
+                new YobatisIntrospectedTableImpl(introspectedTable, name, daoPackage, entityPackage,
+                        daoProject + "/" + daoPackage.replaceAll("\\.", "/"),
+                        entityProject+ "/" + entityPackage.replaceAll("\\.", "/"),
+                         xmlProject + "/" + xmlPackage.replaceAll("\\.", "/"),
+                         primaryKey, autoInc);
         if (primaryKey == null) {
             yobatisTableItem.setPrimaryKey(yobatisTableItem.getFullyQualifiedJavaType(ClassType.BASE_ENTITY));
         }

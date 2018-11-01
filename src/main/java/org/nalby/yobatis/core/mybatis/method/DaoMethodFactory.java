@@ -19,23 +19,23 @@ public class DaoMethodFactory extends AbstractMethodFactory {
 
     @Override
     public Method create(String name) {
-        if (FactoryMethodName.COUNT.nameEquals(name)) {
+        if (DaoMethodName.COUNT.nameEquals(name)) {
             return count();
-        } else if (FactoryMethodName.SELECT_ONE_BY_PK.nameEquals(name)) {
+        } else if (DaoMethodName.SELECT_BY_PK.nameEquals(name)) {
             return selectOne();
-        } else if (FactoryMethodName.SELECT_ONE_BY_CRITERIA.nameEquals(name)) {
+        } else if (DaoMethodName.SELECT_BY_CRITERIA.nameEquals(name)) {
             return selectOneByCriteria();
-        } else if (FactoryMethodName.SELECT_LIST.nameEquals(name)) {
+        } else if (DaoMethodName.SELECT_LIST.nameEquals(name)) {
             return selectList();
-        } else if (FactoryMethodName.INSERT.nameEquals(name)) {
+        } else if (DaoMethodName.INSERT.nameEquals(name)) {
             return insert();
-        } else if (FactoryMethodName.UPDATE_BY_PK.nameEquals(name)) {
+        } else if (DaoMethodName.UPDATE_BY_PK.nameEquals(name)) {
             return update();
-        } else if (FactoryMethodName.UPDATE_BY_CRITERIA.nameEquals(name)) {
+        } else if (DaoMethodName.UPDATE_BY_CRITERIA.nameEquals(name)) {
             return updateByCriteria();
-        } else if (FactoryMethodName.DELETE_BY_PK.nameEquals(name)) {
+        } else if (DaoMethodName.DELETE_BY_PK.nameEquals(name)) {
             return delete();
-        } else if (FactoryMethodName.DELETE_BY_CRITERIA.nameEquals(name)) {
+        } else if (DaoMethodName.DELETE_BY_CRITERIA.nameEquals(name)) {
             return deleteByCriteria();
         }
         throw new IllegalArgumentException("Unknown name.");

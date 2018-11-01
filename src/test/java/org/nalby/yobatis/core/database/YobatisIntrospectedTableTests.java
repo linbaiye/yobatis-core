@@ -8,6 +8,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.config.Context;
 import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
+import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,8 @@ public class YobatisIntrospectedTableTests {
 
     private JavaModelGeneratorConfiguration javaModelGeneratorConfiguration;
 
+    private SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration;
+
     private YobatisIntrospectedTable yobatisIntrospectedTable;
 
     private List<IntrospectedColumn> columnList;
@@ -42,9 +45,14 @@ public class YobatisIntrospectedTableTests {
         when(javaClientGeneratorConfiguration.getTargetProject()).thenReturn("/project");
         when(javaClientGeneratorConfiguration.getTargetPackage()).thenReturn("org.yobatis.dao");
 
+        sqlMapGeneratorConfiguration = mock(SqlMapGeneratorConfiguration.class);
+        when(sqlMapGeneratorConfiguration.getTargetProject()).thenReturn("/project/resources");
+        when(sqlMapGeneratorConfiguration.getTargetPackage()).thenReturn("mappers");
+
         context = mock(Context.class);
         when(context.getJavaClientGeneratorConfiguration()).thenReturn(javaClientGeneratorConfiguration);
         when(context.getJavaModelGeneratorConfiguration()).thenReturn(javaModelGeneratorConfiguration);
+        when(context.getSqlMapGeneratorConfiguration()).thenReturn(sqlMapGeneratorConfiguration);
         introspectedTable = mock(IntrospectedTable.class);
 
         when(introspectedTable.getBaseRecordType()).thenReturn("org.yobatis.entity.Yobatis");
@@ -67,15 +75,19 @@ public class YobatisIntrospectedTableTests {
     @Test
     public void paths() {
         assertEquals("/project/org/yobatis/dao/YobatisDao.java",
-                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.DAO));
+                yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.DAO));
         assertEquals("/project/org/yobatis/dao/impl/YobatisDaoImpl.java",
-                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.DAO_IMPL));
+                yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.DAO_IMPL));
         assertEquals("/project/org/yobatis/entity/Yobatis.java",
-                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.ENTITY));
+                yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.ENTITY));
         assertEquals("/project/org/yobatis/entity/base/BaseYobatis.java",
-                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.BASE_ENTITY));
+                yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.BASE_ENTITY));
         assertEquals("/project/org/yobatis/entity/criteria/BaseCriteria.java",
-                yobatisIntrospectedTable.getClassPath(YobatisIntrospectedTable.ClassType.BASE_CRITERIA));
+                yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.BASE_CRITERIA));
+        assertEquals("/project/org/yobatis/entity/criteria/YobatisCriteria.java",
+                yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.CRITERIA));
+        assertEquals("/project/resources/mappers",
+                yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.XML_MAPPER));
     }
 
     @Test

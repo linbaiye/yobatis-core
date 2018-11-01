@@ -26,25 +26,25 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
 
     @Override
     public Method create(String name) {
-        if (FactoryMethodName.COUNT.nameEquals(name)) {
+        if (DaoMethodName.COUNT.nameEquals(name)) {
             return count();
-        } else if (FactoryMethodName.SELECT_ONE_BY_PK.nameEquals(name)) {
+        } else if (DaoMethodName.SELECT_BY_PK.nameEquals(name)) {
             return selectOne();
-        } else if (FactoryMethodName.SELECT_ONE_BY_CRITERIA.nameEquals(name)) {
+        } else if (DaoMethodName.SELECT_BY_CRITERIA.nameEquals(name)) {
             return selectOneByCriteria();
-        } else if (FactoryMethodName.SELECT_LIST.nameEquals(name)) {
+        } else if (DaoMethodName.SELECT_LIST.nameEquals(name)) {
             return selectList();
-        } else if (FactoryMethodName.UPDATE_BY_PK.nameEquals(name)) {
+        } else if (DaoMethodName.UPDATE_BY_PK.nameEquals(name)) {
             return update();
-        } else if (FactoryMethodName.UPDATE_BY_CRITERIA.nameEquals(name)) {
+        } else if (DaoMethodName.UPDATE_BY_CRITERIA.nameEquals(name)) {
             return updateByCriteria();
-        } else if (FactoryMethodName.DELETE_BY_PK.nameEquals(name)) {
+        } else if (DaoMethodName.DELETE_BY_PK.nameEquals(name)) {
             return delete();
-        } else if (FactoryMethodName.DELETE_BY_CRITERIA.nameEquals(name)) {
+        } else if (DaoMethodName.DELETE_BY_CRITERIA.nameEquals(name)) {
             return deleteByCriteria();
-        } else if (FactoryMethodName.INSERT.nameEquals(name)) {
+        } else if (DaoMethodName.INSERT.nameEquals(name)) {
             return insert();
-        } else if (FactoryMethodName.NOT_NULL.nameEquals(name)) {
+        } else if (DaoMethodName.NOT_NULL.nameEquals(name)) {
             return notNull();
         }
         throw new IllegalArgumentException("Unknown name.");
@@ -62,80 +62,80 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
     }
 
     private Method insert() {
-        Method method = signatureFactory.create(FactoryMethodName.INSERT.getName());
+        Method method = signatureFactory.create(DaoMethodName.INSERT.getName());
         return completeMethod(method, new String[]{
                 "notNull(record, \"record must not be null.\");",
-                "return sqlSessionTemplate.insert(NAMESPACE + \"" + FactoryMethodName.INSERT.getName() + "\", record);"
+                "return sqlSessionTemplate.insert(NAMESPACE + \"" + DaoMethodName.INSERT.getName() + "\", record);"
         });
     }
 
     private Method selectOne() {
-        Method method = signatureFactory.create(FactoryMethodName.SELECT_ONE_BY_PK.getName());
+        Method method = signatureFactory.create(DaoMethodName.SELECT_BY_PK.getName());
         return completeMethod(method, new String[]{
                 "notNull(pk, \"pk must not be null.\");",
-                "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + FactoryMethodName.SELECT_ONE_BY_PK.getName() + "\", pk);"
+                "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + DaoMethodName.SELECT_BY_PK.getName() + "\", pk);"
         });
     }
 
 
     private Method selectOneByCriteria() {
-        Method method = signatureFactory.create(FactoryMethodName.SELECT_ONE_BY_CRITERIA.getName());
+        Method method = signatureFactory.create(DaoMethodName.SELECT_BY_CRITERIA.getName());
         return completeMethod(method, new String[]{
                 "notNull(criteria, \"criteria must not be null.\");",
-                "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + FactoryMethodName.SELECT_ONE_BY_CRITERIA.getName() + "\", criteria);"
+                "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + DaoMethodName.SELECT_BY_CRITERIA.getName() + "\", criteria);"
         });
     }
 
     private Method selectList() {
-        Method method = signatureFactory.create(FactoryMethodName.SELECT_LIST.getName());
+        Method method = signatureFactory.create(DaoMethodName.SELECT_LIST.getName());
         return completeMethod(method, new String[]{
                 "notNull(criteria, \"criteria must not be null.\");",
-                "return sqlSessionTemplate.selectList(NAMESPACE + \"" + FactoryMethodName.SELECT_ONE_BY_CRITERIA.getName() + "\", criteria);"
+                "return sqlSessionTemplate.selectList(NAMESPACE + \"" + DaoMethodName.SELECT_BY_CRITERIA.getName() + "\", criteria);"
         });
     }
 
     private Method count() {
-        Method method = signatureFactory.create(FactoryMethodName.COUNT.getName());
+        Method method = signatureFactory.create(DaoMethodName.COUNT.getName());
         return completeMethod(method, new String[]{
                 "notNull(criteria, \"criteria must not be null.\");",
-                "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + FactoryMethodName.COUNT.getName() + "\", criteria);"
+                "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + DaoMethodName.COUNT.getName() + "\", criteria);"
         });
     }
 
 
     private Method update() {
-        Method method = signatureFactory.create(FactoryMethodName.UPDATE_BY_PK.getName());
+        Method method = signatureFactory.create(DaoMethodName.UPDATE_BY_PK.getName());
         return completeMethod(method, new String[]{
                 "notNull(record, \"record must not be null.\");",
-                "return sqlSessionTemplate.update(NAMESPACE + \"" + FactoryMethodName.UPDATE_BY_PK.getName() + "\", record);"
+                "return sqlSessionTemplate.update(NAMESPACE + \"" + DaoMethodName.UPDATE_BY_PK.getName() + "\", record);"
         });
     }
 
     private Method updateByCriteria() {
-        Method method = signatureFactory.create(FactoryMethodName.UPDATE_BY_CRITERIA.getName());
+        Method method = signatureFactory.create(DaoMethodName.UPDATE_BY_CRITERIA.getName());
         return completeMethod(method, new String[]{
                 "notNull(record, \"record must not be null.\");",
                 "notNull(criteria, \"criteria must not be null.\");",
                 "Map<String, Object> param = new HashMap<>();",
                 "param.put(\"record\", record);",
                 "param.put(\"criteria\", criteria);",
-                "return sqlSessionTemplate.update(NAMESPACE + \"" + FactoryMethodName.UPDATE_BY_CRITERIA.getName() + "\", param);"
+                "return sqlSessionTemplate.update(NAMESPACE + \"" + DaoMethodName.UPDATE_BY_CRITERIA.getName() + "\", param);"
         });
     }
 
     private Method delete() {
-        Method method = signatureFactory.create(FactoryMethodName.DELETE_BY_PK.getName());
+        Method method = signatureFactory.create(DaoMethodName.DELETE_BY_PK.getName());
         return completeMethod(method, new String[]{
                 "notNull(pk, \"pk must not be null.\");",
-                "return sqlSessionTemplate.delete(NAMESPACE + \"" + FactoryMethodName.DELETE_BY_PK.getName() + "\", pk);"
+                "return sqlSessionTemplate.delete(NAMESPACE + \"" + DaoMethodName.DELETE_BY_PK.getName() + "\", pk);"
         });
     }
 
     private Method deleteByCriteria() {
-        Method method = signatureFactory.create(FactoryMethodName.DELETE_BY_CRITERIA.getName());
+        Method method = signatureFactory.create(DaoMethodName.DELETE_BY_CRITERIA.getName());
         return completeMethod(method, new String[]{
                 "notNull(criteria, \"criteria must not be null.\");",
-                "return sqlSessionTemplate.delete(NAMESPACE + \"" + FactoryMethodName.DELETE_BY_CRITERIA.getName() + "\", criteria);"
+                "return sqlSessionTemplate.delete(NAMESPACE + \"" + DaoMethodName.DELETE_BY_CRITERIA.getName() + "\", criteria);"
         });
     }
 

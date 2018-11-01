@@ -49,6 +49,9 @@ public final class CommonMethodFactoryImpl implements CommonMethodFactory {
         String s1 = name.substring(0, 1).toUpperCase();
         String nameCapitalized = s1 + name.substring(1);
         Method method = publicMethod("get" + nameCapitalized, type);
+        if ("boolean".equals(type)) {
+            method.setName("is" + nameCapitalized);
+        }
         method.addBodyLine("return " + name + ";");
         return method;
     }

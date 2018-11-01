@@ -12,4 +12,10 @@ public class AllDataTypesDaoImpl extends BaseDaoImpl<BaseAllDataTypes, AllDataTy
     protected String namespace() {
         return "func.alltype.dao.impl.AllDataTypesDaoImpl.";
     }
+
+
+    @Override
+    public <K extends BaseAllDataTypes> K select1() {
+        return sqlSessionTemplate.selectOne(namespace() + "select1");
+    }
 }

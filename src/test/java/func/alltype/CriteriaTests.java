@@ -921,6 +921,7 @@ public class CriteriaTests extends SetupClass {
         criteria.descOrderBy("typeTime").ascOrderBy("typeTime");
         assertEquals(3, allDataTypesDao.countAll());
     }
+
 }
 
 

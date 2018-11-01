@@ -61,7 +61,7 @@ public final class ClassJavaDocDecorator implements JavaDocDecorator<YobatisUnit
         if (docDecorator != null) {
             if (yobatisUnit instanceof Interface) {
                 for (Method method : ((Interface)yobatisUnit).getMethods()) {
-                    //System.out.println(method.getParameters().get(0).getName());
+                    //System.out.println(method.getParameters().get(0).getType());
                     docDecorator.decorate(method);
                 }
             }

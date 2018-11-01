@@ -1,24 +1,35 @@
-package org.nalby.yobatis.core.mybatis.method;
+package org.nalby.yobatis.core.mybatis.method.legacy;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
-import org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl;
-import org.mybatis.generator.internal.types.JdbcTypeNameTranslator;
+import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.method.AbstractMethodFactory;
+import org.nalby.yobatis.core.mybatis.method.CommonMethodFactory;
+import org.nalby.yobatis.core.mybatis.method.CommonMethodFactoryImpl;
+import org.nalby.yobatis.core.mybatis.method.CriteriaMethodType;
 import org.nalby.yobatis.core.util.TextUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
+public final class LegacyCriteriaMethodFactoryImpl implements LegacyCriteriaMethodFactory {
 
-    private final static CriteriaMethodFactoryImpl instance = new CriteriaMethodFactoryImpl();
+    private final static LegacyCriteriaMethodFactoryImpl instance = new LegacyCriteriaMethodFactoryImpl();
 
-    private CriteriaMethodFactoryImpl() {}
+    private LegacyCriteriaMethodFactoryImpl() {}
 
-    public static CriteriaMethodFactoryImpl getInstance() {
+    private YobatisIntrospectedTable table;
+
+    public static LegacyCriteriaMethodFactoryImpl getInstance() {
+        return instance;
+    }
+
+    public static LegacyCriteriaMethodFactoryImpl getInstance(YobatisIntrospectedTable table) {
+        instance.table = table;
         return instance;
     }
 
@@ -93,6 +104,7 @@ public final class CriteriaMethodFactoryImpl implements CriteriaMethodFactory {
     private Method staticNotLikeMethod(IntrospectedColumn column, String returnType) {
         return assembleStaticMethod(column, returnType, "NotLike", ParamType.SINGLE_PARAM);
     }
+
     private String selectCallingMethodName(IntrospectedColumn column) {
         if (column.getJdbcTypeName().equals("DATE")) {
             return "addCriterionForJDBCDate";

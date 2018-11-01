@@ -6,10 +6,9 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
-import org.nalby.yobatis.core.mybatis.field.FieldFactory;
 import org.nalby.yobatis.core.mybatis.field.FieldFactoryImpl;
 import org.nalby.yobatis.core.mybatis.method.DaoImplMethodFactory;
-import org.nalby.yobatis.core.mybatis.method.FactoryMethodName;
+import org.nalby.yobatis.core.mybatis.method.DaoMethodName;
 
 public class DaoImpl extends TopLevelClass implements YobatisUnit {
 
@@ -42,7 +41,7 @@ public class DaoImpl extends TopLevelClass implements YobatisUnit {
 
     public static DaoImpl build(YobatisIntrospectedTable tableItem) {
         DaoImpl daoImpl = new DaoImpl(tableItem.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO_IMPL),
-                tableItem.getClassPath(YobatisIntrospectedTable.ClassType.DAO_IMPL));
+                tableItem.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.DAO_IMPL));
 
         Field field = FieldFactoryImpl.getInstance().privateField("NAMESPACE", "String");
         field.setInitializationString("\"" + tableItem.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO_IMPL).getFullyQualifiedName() + "." + "\"");
@@ -59,7 +58,7 @@ public class DaoImpl extends TopLevelClass implements YobatisUnit {
         daoImpl.addAnnotation("@Component(\"" + beanName + "\")");
 
         DaoImplMethodFactory methodFactory = DaoImplMethodFactory.getInstance(tableItem);
-        for (String name: FactoryMethodName.listMethodNamesByGroup(FactoryMethodName.DAO_IMPL_GROUP)) {
+        for (String name: DaoMethodName.listMethodNamesByGroup(DaoMethodName.DAO_IMPL_GROUP)) {
             daoImpl.addMethod(methodFactory.create(name));
         }
 

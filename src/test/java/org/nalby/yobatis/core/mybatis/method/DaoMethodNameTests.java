@@ -7,15 +7,15 @@ import java.util.List;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class FactoryMethodNameTests {
+public class DaoMethodNameTests {
 
     @Test
     public void listByGroup() {
-        List<String> names = FactoryMethodName.listMethodNamesByGroup(FactoryMethodName.DAO_GROUP);
+        List<String> names = DaoMethodName.listMethodNamesByGroup(DaoMethodName.DAO_GROUP);
         assertFalse(names.contains("NOT_NULL"));
-        names = FactoryMethodName.listMethodNamesByGroup(FactoryMethodName.DAO_IMPL_GROUP);
+        names = DaoMethodName.listMethodNamesByGroup(DaoMethodName.DAO_IMPL_GROUP);
         assertTrue(names.contains("NOT_NULL"));
-        names = FactoryMethodName.listMethodNamesByGroup(0);
+        names = DaoMethodName.listMethodNamesByGroup(0);
         assertTrue(names.isEmpty());
     }
 }

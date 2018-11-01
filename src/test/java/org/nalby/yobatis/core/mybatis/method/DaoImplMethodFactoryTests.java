@@ -2,106 +2,97 @@ package org.nalby.yobatis.core.mybatis.method;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Method;
-import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.AbstractYobatisTableSetup;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-public class DaoImplMethodFactoryTests {
+public class DaoImplMethodFactoryTests  extends AbstractYobatisTableSetup {
 
     private MethodFactory methodFactory;
 
-    private YobatisIntrospectedTable yobatisIntrospectedTable;
-
     @Before
     public void setup() {
-        yobatisIntrospectedTable = mock(YobatisIntrospectedTable.class);
-        when(yobatisIntrospectedTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY))
-                .thenReturn(new FullyQualifiedJavaType("org.yobatis.entity.base.BaseYobatis"));
-        when(yobatisIntrospectedTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY))
-                .thenReturn(new FullyQualifiedJavaType("org.yobatis.entity.Yobatis"));
-        when(yobatisIntrospectedTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA))
-                .thenReturn(new FullyQualifiedJavaType("org.yobatis.entity.criteria.YobatisCriteria"));
-        when(yobatisIntrospectedTable.getPrimaryKey()).thenReturn(new FullyQualifiedJavaType("long"));
+        super.setup();
         methodFactory = DaoImplMethodFactory.getInstance(yobatisIntrospectedTable);
     }
 
-    private String asString(Method method) {
-        return method.getFormattedContent(0, false, new TopLevelClass("test"));
-    }
 
     @Test
     public void notNull() {
-        String method = asString(methodFactory.create(FactoryMethodName.NOT_NULL.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.NOT_NULL.getName()));
         assertTrue(method.contains("if (obj == null)"));
     }
 
     @Test
     public void insert() {
-        String method = asString(methodFactory.create(FactoryMethodName.INSERT.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.INSERT.getName()));
         assertTrue(method.contains("notNull(record"));
-        assertTrue(method.contains("return sqlSessionTemplate.insert(NAMESPACE + \"INSERT\", record);"));
+        assertTrue(method.contains("return sqlSessionTemplate.insert(NAMESPACE + \"insert\", record);"));
     }
 
     @Test
     public void selectOneByPk() {
-        String method = asString(methodFactory.create(FactoryMethodName.SELECT_ONE_BY_PK.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.SELECT_BY_PK.getName()));
         assertTrue(method.contains("notNull("));
-        assertTrue(method.contains("return sqlSessionTemplate.selectOne(NAMESPACE + \"SELECT_ONE_BY_PK\", pk);"));
+        assertTrue(method.contains("return sqlSessionTemplate.selectOne(NAMESPACE + \"selectByPk\", pk);"));
     }
 
     @Test
     public void selectByCriteria() {
-        String method = asString(methodFactory.create(FactoryMethodName.SELECT_ONE_BY_CRITERIA.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.SELECT_BY_CRITERIA.getName()));
         assertTrue(method.contains("notNull(criteria"));
-        assertTrue(method.contains("return sqlSessionTemplate.selectOne(NAMESPACE + \"SELECT_BY_CRITERIA\", criteria);"));
+        assertTrue(method.contains("return sqlSessionTemplate.selectOne(NAMESPACE + \"selectByCriteria\", criteria);"));
     }
 
     @Test
     public void selectList() {
-        String method = asString(methodFactory.create(FactoryMethodName.SELECT_LIST.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.SELECT_LIST.getName()));
         assertTrue(method.contains("notNull(criteria"));
-        assertTrue(method.contains("return sqlSessionTemplate.selectList(NAMESPACE + \"SELECT_BY_CRITERIA\", criteria);"));
+        assertTrue(method.contains("return sqlSessionTemplate.selectList(NAMESPACE + \"selectByCriteria\", criteria);"));
     }
 
     @Test
     public void count() {
-        String method = asString(methodFactory.create(FactoryMethodName.COUNT.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.COUNT.getName()));
         assertTrue(method.contains("notNull(criteria"));
-        assertTrue(method.contains("return sqlSessionTemplate.selectOne(NAMESPACE + \"COUNT\", criteria);"));
+        assertTrue(method.contains("return sqlSessionTemplate.selectOne(NAMESPACE + \"count\", criteria);"));
     }
 
     @Test
     public void update() {
-        String method = asString(methodFactory.create(FactoryMethodName.UPDATE_BY_PK.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.UPDATE_BY_PK.getName()));
         assertTrue(method.contains("notNull(record"));
-        assertTrue(method.contains("return sqlSessionTemplate.update(NAMESPACE + \"UPDATE_BY_PK\", record);"));
+        assertTrue(method.contains("return sqlSessionTemplate.update(NAMESPACE + \"updateByPk\", record);"));
     }
 
     @Test
     public void updateByCriteria() {
-        String method = asString(methodFactory.create(FactoryMethodName.UPDATE_BY_CRITERIA.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.UPDATE_BY_CRITERIA.getName()));
         assertTrue(method.contains("notNull(record"));
         assertTrue(method.contains("notNull(criteria"));
-        assertTrue(method.contains("return sqlSessionTemplate.update(NAMESPACE + \"UPDATE_BY_CRITERIA\", param);"));
+        assertTrue(method.contains("return sqlSessionTemplate.update(NAMESPACE + \"updateByCriteria\", param);"));
     }
 
     @Test
     public void delete() {
-        String method = asString(methodFactory.create(FactoryMethodName.DELETE_BY_PK.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.DELETE_BY_PK.getName()));
         assertTrue(method.contains("notNull(pk"));
-        assertTrue(method.contains("return sqlSessionTemplate.delete(NAMESPACE + \"DELETE_BY_PK\", pk);"));
+        assertTrue(method.contains("return sqlSessionTemplate.delete(NAMESPACE + \"deleteByPk\", pk);"));
     }
 
     @Test
     public void deleteByCriteria() {
-        String method = asString(methodFactory.create(FactoryMethodName.DELETE_BY_CRITERIA.getName()));
+        String method = asString(methodFactory.create(DaoMethodName.DELETE_BY_CRITERIA.getName()));
         assertTrue(method.contains("notNull(criteria"));
-        assertTrue(method.contains("return sqlSessionTemplate.delete(NAMESPACE + \"DELETE_BY_CRITERIA\", criteria);"));
+        assertTrue(method.contains("return sqlSessionTemplate.delete(NAMESPACE + \"deleteByCriteria\", criteria);"));
+    }
+
+
+    @Test
+    public void setLimit() {
+        String method = asString(methodFactory.create(DaoMethodName.DELETE_BY_CRITERIA.getName()));
+        assertTrue(method.contains("notNull(criteria"));
+        assertTrue(method.contains("return sqlSessionTemplate.delete(NAMESPACE + \"deleteByCriteria\", criteria);"));
     }
 
 }
