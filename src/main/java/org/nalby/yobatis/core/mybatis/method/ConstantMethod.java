@@ -287,6 +287,36 @@ public enum ConstantMethod {
             },
             null
     ),
+    HAS_COLUMN(
+            "hasColumn", "boolean", JavaVisibility.PROTECTED,
+            new String[] { "return false;"},
+            new Parameter[] {new Parameter(new FullyQualifiedJavaType("String"), "column")}
+    ),
+    ADD_ORDER_BY(
+            "addOrderBy", "void", JavaVisibility.PROTECTED,
+            new String[] {
+                    "if (fields == null || fields.length == 0) {",
+                    "throw new IllegalArgumentException(\"Empty fields passed.\");",
+                    "}",
+                    "StringBuilder stringBuilder = new StringBuilder();",
+                    "if (orderByClause != null) {",
+                    "stringBuilder.append(orderByClause);",
+                    "stringBuilder.append(',');",
+                    "}",
+                    "for (String field : fields) {",
+                    "if (!hasColumn(field)) {",
+                    "throw new IllegalArgumentException(\"Unrecognizable field:\", field);",
+                    "}",
+                    "stringBuilder.append(field).append(\" \").append(order).append(\",\");",
+                    "}",
+                    "stringBuilder.deleteCharAt(stringBuilder.length() - 1);",
+                    "orderByClause = stringBuilder.toString();",
+            },
+            new Parameter[] {
+                    new Parameter(new FullyQualifiedJavaType("String"), "order"),
+                    new Parameter(new FullyQualifiedJavaType("String"), "fields", true)
+            }
+    ),
     ORDER_BY(
             "orderBy", "void", JavaVisibility.PRIVATE,
             new String[] {

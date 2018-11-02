@@ -2,6 +2,7 @@ package org.nalby.yobatis.core.mybatis.clazz;
 
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
+import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
@@ -18,6 +19,7 @@ public class Dao extends Interface implements YobatisUnit {
     private Dao(FullyQualifiedJavaType type, String pathToPut) {
         super(type);
         this.pathToPut = pathToPut;
+        setVisibility(JavaVisibility.PUBLIC);
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.nalby.yobatis.core.database;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.JavaFormatter;
 import org.mybatis.generator.api.XmlFormatter;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 

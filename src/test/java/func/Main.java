@@ -100,7 +100,7 @@ public class Main {
             "    <javaModelGenerator targetPackage=\"func.autoinckey.model\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
             "    <sqlMapGenerator targetPackage=\"mybatis-mappers\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/resources\"/>\n" +
             "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"func.autoinckey.dao\" targetProject=\"/Users/lintao/Work/idea-projects/yobatis-core/src/test/java\"/>\n" +
-            "    <table tableName=\"customer\" schema=\"mybatis\" modelType=\"flat\">\n" +
+            "    <table tableName=\"customer\" modelType=\"flat\">\n" +
             " 		<generatedKey column=\"id\" sqlStatement=\"mysql\" identity=\"true\"/>" +
             "    </table>\n" +
             "  </context>\n" +
@@ -209,7 +209,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 //         generate(ALL_TYPES_TABLE);
         //generate(AUTO_INC_KEY_TABLE_ORIGINAL);
-        generate(AUTO_INC_KEY_TABLE);
+        print(AUTO_INC_KEY_TABLE);
 //        generate(COMPOUND_PK_TABLE);
 //        generate(ALL_PK_TABLE);
 //        generate(ALL_TYPES_TABLE);

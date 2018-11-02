@@ -15,7 +15,6 @@ public class CriteriaMethodFactory extends AbstractMethodFactory {
 
     private YobatisIntrospectedTable table;
 
-
     public static CriteriaMethodFactory getInstance(YobatisIntrospectedTable table) {
         instance.table = table;
         return instance;
@@ -107,7 +106,7 @@ public class CriteriaMethodFactory extends AbstractMethodFactory {
         Method method = publicStaticMethod(type.makeMethodName(column.getJavaProperty()));
         method.addParameter(new Parameter(new FullyQualifiedJavaType("List<" + column.getFullyQualifiedJavaType().getShortName() + ">"), "values"));
         method.addBodyLine("return new " +
-                table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA) + "()." +
+                table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA).getShortName() + "()." +
                 type.makeCallingMethodName(column.getJavaProperty()) + "(values);"
         );
         return method;
@@ -116,7 +115,7 @@ public class CriteriaMethodFactory extends AbstractMethodFactory {
     private Method staticNoValueMethod(IntrospectedColumn column, CriteriaMethodType type) {
         Method method = publicStaticMethod(type.makeMethodName(column.getJavaProperty()));
         method.addBodyLine("return new " +
-                table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA) + "()." +
+                table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA).getShortName() + "()." +
                 type.makeCallingMethodName(column.getJavaProperty()) + "();"
         );
         return method;
@@ -126,7 +125,7 @@ public class CriteriaMethodFactory extends AbstractMethodFactory {
         Method method = publicStaticMethod(type.makeMethodName(column.getJavaProperty()));
         method.addParameter(new Parameter(column.getFullyQualifiedJavaType(), "value"));
         method.addBodyLine("return new " +
-                table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA) + "()." +
+                table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA).getShortName() + "()." +
                 type.makeCallingMethodName(column.getJavaProperty()) + "(value);"
         );
         return method;
@@ -137,7 +136,7 @@ public class CriteriaMethodFactory extends AbstractMethodFactory {
         method.addParameter(new Parameter(column.getFullyQualifiedJavaType(), "value1"));
         method.addParameter(new Parameter(column.getFullyQualifiedJavaType(), "value2"));
         method.addBodyLine("return new " +
-                table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA) + "()." +
+                table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA).getShortName() + "()." +
                 type.makeCallingMethodName(column.getJavaProperty()) + "(value1, value2);"
         );
         return method;

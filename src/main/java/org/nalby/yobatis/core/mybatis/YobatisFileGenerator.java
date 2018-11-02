@@ -29,7 +29,6 @@ import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.log.LogFactory;
 import org.nalby.yobatis.core.log.Logger;
-import org.nalby.yobatis.core.mybatis.clazz.BaseDao;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Project;
 import org.nalby.yobatis.core.util.TextUtil;
@@ -39,7 +38,6 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * This class wraps MyBatisGenerator and po
@@ -57,35 +55,6 @@ public class YobatisFileGenerator {
         this.project = project;
     }
 
-    private void makeDaoClassesCompatible() {
-        String currentBaseDao = null;
-        for (GeneratedJavaFile generatedJavaFile : myBatisGenerator.getGeneratedJavaFiles()) {
-            CompilationUnit unit = generatedJavaFile.getCompilationUnit();
-            if (!(unit instanceof BaseDao)) {
-                continue;
-            }
-            String path = ((BaseDao) unit).getPathToPut();
-            File file = project.findFile(path);
-            if (project.findFile(path) == null) {
-                return;
-            }
-            try (InputStream inputStream = file.open()) {
-                currentBaseDao = TextUtil.asString(inputStream);
-                break;
-            } catch (IOException e) {
-                // Ignore.
-            }
-        }
-        if (currentBaseDao == null) {
-            return;
-        }
-        for (GeneratedJavaFile generatedJavaFile : myBatisGenerator.getGeneratedJavaFiles()) {
-            CompilationUnit unit = generatedJavaFile.getCompilationUnit();
-            if (unit instanceof CompatibleYobatisUnit ) {
-                ((CompatibleYobatisUnit) unit).inspectBaseDao(currentBaseDao);
-            }
-        }
-    }
 
     private void mergeFile(YobatisUnit unit) {
         String filePath = unit.getPathToPut();
@@ -104,7 +73,6 @@ public class YobatisFileGenerator {
             throw new InvalidMybatisGeneratorConfigException(e);
         }
     }
-
 
     private void mergeFiles() {
         for (GeneratedXmlFile xml: myBatisGenerator.getGeneratedXmlFiles()) {
@@ -141,7 +109,6 @@ public class YobatisFileGenerator {
     }
 
     public void writeAll() {
-        makeDaoClassesCompatible();
         mergeFiles();
         writeFiles();
         logger.info("Files have been generated, happy coding.");

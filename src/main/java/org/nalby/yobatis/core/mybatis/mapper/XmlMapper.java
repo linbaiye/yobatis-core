@@ -1,16 +1,24 @@
 package org.nalby.yobatis.core.mybatis.mapper;
 
+import org.dom4j.Comment;
+import org.dom4j.DocumentException;
+import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.XmlFormatter;
-import org.mybatis.generator.api.dom.xml.Attribute;
-import org.mybatis.generator.api.dom.xml.Document;
-import org.mybatis.generator.api.dom.xml.Element;
-import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.mybatis.generator.api.dom.DefaultXmlFormatter;
+import org.mybatis.generator.api.dom.xml.*;
 import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
+import org.nalby.yobatis.core.mybatis.GeneratorEntityResolver;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
+import org.nalby.yobatis.core.structure.File;
 
 import java.beans.XMLDecoder;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
 
 public class XmlMapper extends GeneratedXmlFile implements YobatisUnit  {
 
@@ -32,6 +40,7 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit  {
     public String getPathToPut() {
         return pathToPut;
     }
+
     private boolean hasElement(org.dom4j.Element element) {
         for (Element el: document.getRootElement().getElements()) {
             if (el instanceof XmlElement) {
@@ -49,8 +58,21 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit  {
 
     @Override
     public void merge(String fileContent) throws InvalidUnitException {
-
-
+        try (InputStream inputStream = new ByteArrayInputStream(fileContent.getBytes())) {
+            SAXReader saxReader = new SAXReader();
+            saxReader.setEntityResolver(GeneratorEntityResolver.ENTITY_RESOLVER);
+            org.dom4j.Document document = saxReader.read(inputStream);
+            for (Iterator<Node> nodeIterator = document.getRootElement().nodeIterator(); nodeIterator.hasNext();) {
+                Node node = nodeIterator.next();
+                if (node instanceof Comment) {
+                    this.document.getRootElement().addElement(new TextElement(node.asXML()));
+                } else if (node instanceof org.dom4j.Element && !hasElement((org.dom4j.Element)node)) {
+                    this.document.getRootElement().addElement(new TextElement(node.asXML()));
+                }
+            }
+        } catch (IOException | DocumentException e) {
+            throw new InvalidUnitException(e);
+        }
     }
 
     public static XmlMapper wrap(YobatisIntrospectedTable table) {
@@ -59,6 +81,7 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit  {
         root.addAttribute(new Attribute("namespace",
                 table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO_IMPL).getFullyQualifiedName()));
         document.setRootElement(root);
+
         MapperXmlElementFactory factory = MapperXmlElementFactoryImpl.getInstance(table);
         for (XmlElementName xmlElementName : XmlElementName.values()) {
             root.addElement(factory.create(xmlElementName.getName()));
@@ -66,7 +89,7 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit  {
         return new XmlMapper(document, table.getFullyQualifiedJavaType(
                 YobatisIntrospectedTable.ClassType.ENTITY).getShortName() + "Mapper.xml",
                 null, null, false,
-                table.getWrappedTable().getContext().getXmlFormatter(),
+                new DefaultXmlFormatter(),
                 table.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.XML_MAPPER));
     }
 }

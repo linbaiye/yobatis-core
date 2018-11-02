@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nalby</groupId>
-	<artifactId>yobatis</artifactId>
+	<artifactId>yobatis-core</artifactId>
 	<version>0.2.5-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
@@ -159,11 +159,6 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-        </dependency>
     </dependencies>
 	<build>
 		<plugins>

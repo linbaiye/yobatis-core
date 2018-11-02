@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * It is just an assistance that collects names used to build Methods
+ * It is just an assistance that collects names used to newInstance Methods
  * via MethodFactory.
  */
 public enum DaoMethodName {

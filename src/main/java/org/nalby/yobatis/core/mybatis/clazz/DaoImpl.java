@@ -2,6 +2,7 @@ package org.nalby.yobatis.core.mybatis.clazz;
 
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
@@ -19,6 +20,7 @@ public class DaoImpl extends TopLevelClass implements YobatisUnit {
     private DaoImpl(FullyQualifiedJavaType type, String pathToPut) {
         super(type);
         this.pathToPut = pathToPut;
+        setVisibility(JavaVisibility.PUBLIC);
     }
 
     @Override

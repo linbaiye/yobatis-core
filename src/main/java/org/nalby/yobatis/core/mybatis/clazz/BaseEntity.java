@@ -18,6 +18,16 @@ public class BaseEntity extends TopLevelClass implements YobatisUnit {
         this.pathToPut = pathToPut;
     }
 
+    @Override
+    public String getPathToPut() {
+        return pathToPut;
+    }
+
+    @Override
+    public void merge(String fileContent) {
+
+    }
+
     public static BaseEntity getInstance(TopLevelClass originalClass, IntrospectedTable table) {
 
         FullyQualifiedJavaType type = NamingHelper.getBaseEntityType(originalClass.getType());
@@ -40,15 +50,4 @@ public class BaseEntity extends TopLevelClass implements YobatisUnit {
         baseEntity.addMethod(domainMethodFactory.createCopy(baseEntity));
         return baseEntity;
     }
-
-    @Override
-    public String getPathToPut() {
-        return pathToPut;
-    }
-
-    @Override
-    public void merge(String fileContent) {
-
-    }
-
 }

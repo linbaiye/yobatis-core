@@ -269,7 +269,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_IS_NULL.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idIsNull() {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdIsNull();\n" +
+                "    return new YobatisCriteria().andIdIsNull();\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -279,7 +279,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_IS_NOT_NULL.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idIsNotNull() {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdIsNotNull();\n" +
+                "    return new YobatisCriteria().andIdIsNotNull();\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -289,7 +289,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_IN.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idIn(List<Integer> values) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdIn(values);\n" +
+                "    return new YobatisCriteria().andIdIn(values);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -299,7 +299,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_NOT_IN.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idNotIn(List<Integer> values) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdNotIn(values);\n" +
+                "    return new YobatisCriteria().andIdNotIn(values);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -309,7 +309,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_EQUAL_TO.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idEqualTo(Integer value) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdEqualTo(value);\n" +
+                "    return new YobatisCriteria().andIdEqualTo(value);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -319,7 +319,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_NOT_EQUAL_TO.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idNotEqualTo(Integer value) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdNotEqualTo(value);\n" +
+                "    return new YobatisCriteria().andIdNotEqualTo(value);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -329,7 +329,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_LESS_THAN.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idLessThan(Integer value) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdLessThan(value);\n" +
+                "    return new YobatisCriteria().andIdLessThan(value);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -339,7 +339,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_LESS_THAN_OR_EQUAL_TO.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idLessThanOrEqualTo(Integer value) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdLessThanOrEqualTo(value);\n" +
+                "    return new YobatisCriteria().andIdLessThanOrEqualTo(value);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -349,7 +349,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_GREATER_THAN.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idGreaterThan(Integer value) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdGreaterThan(value);\n" +
+                "    return new YobatisCriteria().andIdGreaterThan(value);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -359,7 +359,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "INT", "Integer");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_GREATER_THAN_OR_EQUAL_TO.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idGreaterThanOrEqualTo(Integer value) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdGreaterThanOrEqualTo(value);\n" +
+                "    return new YobatisCriteria().andIdGreaterThanOrEqualTo(value);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -369,7 +369,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "CHAR", "String");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_LIKE.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idLike(String value) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdLike(value);\n" +
+                "    return new YobatisCriteria().andIdLike(value);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -379,7 +379,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "CHAR", "String");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_NOT_LIKE.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idNotLike(String value) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdNotLike(value);\n" +
+                "    return new YobatisCriteria().andIdNotLike(value);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -389,7 +389,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "CHAR", "String");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_BETWEEN.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idBetween(String value1, String value2) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdBetween(value1, value2);\n" +
+                "    return new YobatisCriteria().andIdBetween(value1, value2);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -399,7 +399,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
         mockColumn("id", "CHAR", "String");
         Method method = methodFactory.create(CriteriaMethodType.STATIC_NOT_BETWEEN.getType(), column);
         String result = "public static org.yobatis.entity.criteria.YobatisCriteria idNotBetween(String value1, String value2) {\n" +
-                "    return new org.yobatis.entity.criteria.YobatisCriteria().andIdNotBetween(value1, value2);\n" +
+                "    return new YobatisCriteria().andIdNotBetween(value1, value2);\n" +
                 "}";
         assertMethodContentEqual(result, method);
     }
@@ -426,7 +426,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
     public void ascOrder() {
         Method method = methodFactory.create(CriteriaMethodType.ASC_ORDER_BY.getType());
         String content = "public org.yobatis.entity.criteria.YobatisCriteria ascOrderBy(String  ... fields) {\n" +
-                "    orderBy(\"asc\", fields);\n" +
+                "    addOrderBy(\"asc\", fields);\n" +
                 "    return this;\n" +
                 "}";
         assertMethodContentEqual(content, method);
@@ -436,7 +436,7 @@ public class CriteriaMethodFactoryTests extends AbstractYobatisTableSetup {
     public void descOrder() {
         Method method = methodFactory.create(CriteriaMethodType.DESC_ORDER_BY.getType());
         String content = "public org.yobatis.entity.criteria.YobatisCriteria descOrderBy(String  ... fields) {\n" +
-                "    orderBy(\"desc\", fields);\n" +
+                "    addOrderBy(\"desc\", fields);\n" +
                 "    return this;\n" +
                 "}";
         assertMethodContentEqual(content, method);

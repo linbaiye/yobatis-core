@@ -86,7 +86,7 @@ public class YobatisIntrospectedTableTests {
                 yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.BASE_CRITERIA));
         assertEquals("/project/org/yobatis/entity/criteria/YobatisCriteria.java",
                 yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.CRITERIA));
-        assertEquals("/project/resources/mappers",
+        assertEquals("/project/resources/mappers/YobatisMapper.xml",
                 yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.XML_MAPPER));
     }
 
