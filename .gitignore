@@ -3,3 +3,6 @@
 *.settings
 **/target/
 *.gradle
+src/test/resources/mybatis-mappers/
+src/test/resources/mybatis-origin/
+src/test/java/sandbox/
