@@ -2,6 +2,7 @@ package org.nalby.yobatis.core.mybatis.clazz;
 
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
+import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
@@ -28,6 +29,7 @@ public class BaseCriteria extends TopLevelClass implements YobatisUnit {
         METHOD_LIST.add(ConstantMethod.HAS_COLUMN);
         METHOD_LIST.add(ConstantMethod.ADD_ORDER_BY);
         METHOD_LIST.add(ConstantMethod.LAST_CRITERIA);
+        METHOD_LIST.add(ConstantMethod.ASSERT_VALID);
     }
 
     private String pathToPut;
@@ -54,8 +56,9 @@ public class BaseCriteria extends TopLevelClass implements YobatisUnit {
         clz.addImportedType("java.util.Date");
         clz.addImportedType("java.util.Iterator");
         clz.addImportedType("java.util.List");
-        for (ConstantMethod method : METHOD_LIST) {
-            clz.addMethod(method.get());
+
+        for (ConstantMethod constantMethod: METHOD_LIST) {
+            clz.addMethod(constantMethod.get());
         }
         clz.addInnerClass(BracketCriteria.newInstance());
         clz.addInnerClass(Criterion.newInstance());

@@ -18,7 +18,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
     // create table compound_key_table(pk1 int, pk2 char(10), f3 text, primary key(pk1, pk2));
@@ -209,7 +211,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
 //         generate(ALL_TYPES_TABLE);
         //generate(AUTO_INC_KEY_TABLE_ORIGINAL);
-        print(AUTO_INC_KEY_TABLE);
+        Map<String, Object> kv = new HashMap<>();
+        kv.put("Base", null);
+        System.out.println(kv.size());
+        System.out.println(kv.get("Base"));
+//        print(AUTO_INC_KEY_TABLE);
 //        generate(COMPOUND_PK_TABLE);
 //        generate(ALL_PK_TABLE);
 //        generate(ALL_TYPES_TABLE);

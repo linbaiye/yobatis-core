@@ -1,5 +1,7 @@
 package org.nalby.yobatis.core;
 
+import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.mybatis.Settings;
 import org.nalby.yobatis.core.mybatis.TableElement;
 import org.nalby.yobatis.core.mybatis.YobatisConfiguration;
@@ -17,6 +19,9 @@ public class YobatisShell {
 
     private Project project;
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(YobatisShell.class);
+
+
     private YobatisShell(YobatisConfiguration configuration, Project project) {
         this.configuration = configuration;
         this.project = project;
@@ -28,6 +33,7 @@ public class YobatisShell {
     public void onGenerateClicked(List<TableElement> tableElementList) {
         configuration.update(tableElementList);
         String config = configuration.asStringWithoutDisabledTables();
+        LOGGER.debug("Got config:{}.", config);
         YobatisFileGenerator generator = YobatisFileGenerator.parse(
                 new ByteArrayInputStream(config.getBytes()), project);
         generator.mergeAndWrite();

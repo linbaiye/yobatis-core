@@ -6,7 +6,7 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
-import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Project;
@@ -45,7 +45,7 @@ public class YobatisConfiguration {
 
     private Project project;
 
-    private final static Logger LOGGER = LogFactory.getLogger(YobatisConfiguration.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(YobatisConfiguration.class);
 
     private YobatisConfiguration(Document document, Project project) {
         this.document = document;

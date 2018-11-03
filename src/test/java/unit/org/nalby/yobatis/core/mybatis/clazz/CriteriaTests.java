@@ -38,8 +38,9 @@ public class CriteriaTests extends AbstractYobatisTableSetup {
     public void all() throws InvalidUnitException {
         addColumn("id", "id", "Integer");
         Criteria criteria = Criteria.newInstance(yobatisIntrospectedTable);
-        assertTrue(criteria.getFormattedContent().contains("import java.util.HashSet;\n" +
-                "import java.util.Set;"));
+        assertTrue(criteria.getFormattedContent().contains("import java.util.HashSet"));
+        assertTrue(criteria.getFormattedContent().contains("import java.util.Set"));
+        assertTrue(criteria.getFormattedContent().contains("import java.util.List"));
         criteria.merge("test");
         assertEquals("/yobatis/YobatisCriteria.java", criteria.getPathToPut());
         addColumn("f1", "DATE", "java.util.Date");

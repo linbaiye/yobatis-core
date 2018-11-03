@@ -24,7 +24,7 @@ import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
-import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Project;
@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class YobatisFileGenerator {
 
     private Project project;
 
-    private static final Logger LOGGER = LogFactory.getLogger(YobatisFileGenerator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(YobatisFileGenerator.class);
 
     private List<YobatisUnit> fileList;
 
@@ -101,9 +102,10 @@ public class YobatisFileGenerator {
 
             myBatisGenerator.generate(null, null, null, false);
             List<YobatisUnit> fileList = myBatisGenerator.getGeneratedJavaFiles()
-                    .stream().filter(e -> e instanceof YobatisUnit)
-                        .map(e -> (YobatisUnit)e)
+                    .stream().filter(e -> e.getCompilationUnit() instanceof YobatisUnit)
+                        .map(e -> (YobatisUnit)e.getCompilationUnit())
                         .collect(Collectors.toList());
+            LOGGER.debug("Collected {} java files.", fileList.size());
             myBatisGenerator.getGeneratedXmlFiles().forEach(e -> {
                 if (e instanceof YobatisUnit) {
                     fileList.add((YobatisUnit)e);

@@ -1,27 +1,21 @@
-package func.compoundkey;
+package integration.org.nalby.yobatis.core.compound;
 
-import func.compoundkey.dao.CompoundKeyTableDao;
-import func.compoundkey.model.CompoundKeyTable;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import integration.org.nalby.yobatis.core.AbstractSpringSetup;
+import sandbox.alltype.dao.CompoundKeyTableDao;
+import sandbox.alltype.entity.CompoundKeyTable;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:spring/test-config.xml")
-public abstract class SetupClass {
+public abstract class SetupClass extends AbstractSpringSetup {
 
     @Resource
     protected DataSource masterDataSource;
@@ -29,11 +23,6 @@ public abstract class SetupClass {
     @Resource
     protected CompoundKeyTableDao compoundKeyTableDao;
 
-    List<String> tablesToDeleteFrom() {
-        return Arrays.asList("compound_key_table");
-    }
-
-    void setup() {}
 
     protected CompoundKeyTable build(Integer pk1, String pk2, String f3) {
         CompoundKeyTable table = new CompoundKeyTable();
@@ -71,18 +60,7 @@ public abstract class SetupClass {
         }
     }
 
-    @Before
-    public void _setup() {
-        try (Connection connection = masterDataSource.getConnection()) {
-            for (String table :tablesToDeleteFrom()) {
-                connection.prepareStatement("delete from " + table).execute();
-            }
-            connection.close();
-            setup();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     protected void assertRecord(CompoundKeyTable table, Integer pk1, String pk2, String f3) {
         if (pk1 == null) {

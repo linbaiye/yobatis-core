@@ -32,7 +32,7 @@ import java.util.List;
 
 public class YobatisDaoPlugin extends PluginAdapter {
 
-    private List<GeneratedJavaFile> additionalFiles = new LinkedList<>();
+    private List<GeneratedJavaFile> additionalJavaFiles = new LinkedList<>();
 
     private List<GeneratedXmlFile> generatedXmlFileList = new LinkedList<>();
 
@@ -54,11 +54,11 @@ public class YobatisDaoPlugin extends PluginAdapter {
             introspectedTable.getBLOBColumns().clear();
         }
         YobatisIntrospectedTable yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
-        additionalFiles.add(javaFileFactory.baseCriteria(yobatisIntrospectedTable));
-        additionalFiles.add(javaFileFactory.criteria(yobatisIntrospectedTable));
-        additionalFiles.add(javaFileFactory.dao(yobatisIntrospectedTable));
-        additionalFiles.add(javaFileFactory.daoImpl(yobatisIntrospectedTable));
-        additionalFiles.add(javaFileFactory.domain(introspectedTable));
+        additionalJavaFiles.add(javaFileFactory.baseCriteria(yobatisIntrospectedTable));
+        additionalJavaFiles.add(javaFileFactory.criteria(yobatisIntrospectedTable));
+        additionalJavaFiles.add(javaFileFactory.dao(yobatisIntrospectedTable));
+        additionalJavaFiles.add(javaFileFactory.daoImpl(yobatisIntrospectedTable));
+        additionalJavaFiles.add(javaFileFactory.domain(introspectedTable));
     }
 
     @Override
@@ -73,14 +73,14 @@ public class YobatisDaoPlugin extends PluginAdapter {
 
     @Override
     public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles() {
-        return additionalFiles;
+        return additionalJavaFiles;
     }
 
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
                                                  IntrospectedTable introspectedTable) {
         GeneratedJavaFile baseDomainJavaFile = javaFileFactory.baseDomain(topLevelClass, introspectedTable);
-        additionalFiles.add(baseDomainJavaFile);
+        additionalJavaFiles.add(baseDomainJavaFile);
         return true;
     }
 }

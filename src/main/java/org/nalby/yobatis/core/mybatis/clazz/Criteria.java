@@ -58,10 +58,11 @@ public class Criteria extends TopLevelClass implements YobatisUnit {
         criteria.addField(columns);
         InitializationBlock block = new InitializationBlock(true);
         block.addBodyLine("COLUMNS = new HashSet<>();");
-        table.getColumns().forEach(e -> block.addBodyLine("COLUMNS.add(\"" + e.getJdbcTypeName() + "\");"));
+        table.getColumns().forEach(e -> block.addBodyLine("COLUMNS.add(\"" + e.getActualColumnName() + "\");"));
         criteria.addInitializationBlock(block);
         criteria.addImportedType(new FullyQualifiedJavaType("java.util.Set"));
         criteria.addImportedType(new FullyQualifiedJavaType("java.util.HashSet"));
+        criteria.addImportedType(new FullyQualifiedJavaType("java.util.List"));
     }
 
     public static Criteria newInstance(YobatisIntrospectedTable table) {

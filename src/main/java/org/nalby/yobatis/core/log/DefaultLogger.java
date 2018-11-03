@@ -22,7 +22,7 @@ public class DefaultLogger extends AbstractLogger {
 	}
 
 	@Override
-	protected void wirteToConsole(String msg) {
-		System.out.println(msg);
+	protected void wirteToConsole(String msg){
+		System.out.print(msg);
 	}
 }

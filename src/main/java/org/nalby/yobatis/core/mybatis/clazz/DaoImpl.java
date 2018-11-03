@@ -69,6 +69,7 @@ public class DaoImpl extends TopLevelClass implements YobatisUnit {
         daoImpl.addImportedType(tableItem.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO));
         daoImpl.addImportedType(new FullyQualifiedJavaType("java.util.Map"));
         daoImpl.addImportedType(new FullyQualifiedJavaType("java.util.HashMap"));
+        daoImpl.addImportedType(new FullyQualifiedJavaType("java.util.List"));
         daoImpl.addImportedType(tableItem.getPrimaryKey());
         daoImpl.addImportedType(tableItem.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY));
         daoImpl.addImportedType(tableItem.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY));

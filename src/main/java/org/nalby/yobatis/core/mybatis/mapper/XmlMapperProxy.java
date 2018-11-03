@@ -2,6 +2,8 @@ package org.nalby.yobatis.core.mybatis.mapper;
 
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.dom.xml.Document;
+import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
@@ -17,6 +19,8 @@ public class XmlMapperProxy extends GeneratedXmlFile implements YobatisUnit {
     private LegacyXmlMapper legacyXmlMapper;
 
     private XmlMapper xmlMapper;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(XmlMapperProxy.class);
 
     private final static List<String> LEGACY_KEYWORDS = Arrays.asList("selectByCriteria", "selectByPk", "deleteByPk",
                 "deleteByCriteria", "insert", "insertAll", "insertAllIgnore",
@@ -51,6 +55,7 @@ public class XmlMapperProxy extends GeneratedXmlFile implements YobatisUnit {
     @Override
     public void merge(String fileContent) throws InvalidUnitException {
         if (isLegacy(fileContent)) {
+            LOGGER.debug("Detected legacy xml mapper.");
             legacyExist = true;
             legacyXmlMapper.merge(fileContent);
         } else {

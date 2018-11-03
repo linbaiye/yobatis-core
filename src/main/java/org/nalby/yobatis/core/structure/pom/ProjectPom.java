@@ -1,7 +1,7 @@
 package org.nalby.yobatis.core.structure.pom;
 
 import org.nalby.yobatis.core.exception.ProjectException;
-import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Folder;
@@ -10,7 +10,7 @@ import org.nalby.yobatis.core.util.PropertyUtil;
 
 public class ProjectPom implements Pom {
 
-    private static final Logger LOGGER = LogFactory.getLogger(ProjectPom.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectPom.class);
 
     private PomNode root;
 

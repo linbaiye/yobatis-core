@@ -14,6 +14,15 @@ public enum ConstantMethod {
             new String[] {"return criteria.size() > 0;"},
             new Parameter[] {}
     ),
+    ASSERT_VALID(
+            "isValid", "boolean", JavaVisibility.PUBLIC,
+            new String[] {"if (oredCriteria.size() > 0) {",
+                "return true;",
+                "}",
+                "throw new IllegalArgumentException(\"Empty criteria is not allowed.\");",
+            },
+            new Parameter[] {}
+    ),
     GET_CRITERIA(
             "getCriteria", "List<Criterion>", JavaVisibility.PUBLIC,
             new String[] {"return criteria;"},
@@ -290,7 +299,7 @@ public enum ConstantMethod {
     ),
     HAS_COLUMN(
             "hasColumn", "boolean", JavaVisibility.PROTECTED,
-            new String[] { "return false;"},
+            new String[] {},
             new Parameter[] {new Parameter(new FullyQualifiedJavaType("String"), "column")}
     ),
     ADD_ORDER_BY(
@@ -306,7 +315,7 @@ public enum ConstantMethod {
                     "}",
                     "for (String field : fields) {",
                     "if (!hasColumn(field)) {",
-                    "throw new IllegalArgumentException(\"Unrecognizable field:\", field);",
+                    "throw new IllegalArgumentException(\"Unrecognizable field:\" + field);",
                     "}",
                     "stringBuilder.append(field).append(\" \").append(order).append(\",\");",
                     "}",

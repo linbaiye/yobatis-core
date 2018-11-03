@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <classPathEntry location="/Users/lintao/.m2/repository/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar"/>
+    <context id="yobatis" targetRuntime="MyBatis3">
+        <plugin type="org.nalby.yobatis.core.mybatis.YobatisDaoPlugin"/>
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/mybatis?characterEncoding=utf-8" userId="root" password="root"/>
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <javaModelGenerator targetPackage="sandbox.alltype.entity" targetProject="/test/java"/>
+        <sqlMapGenerator targetPackage="mybatis-mappers" targetProject="/test/resources"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="sandbox.alltype.dao" targetProject="/test/java"/>
+    </context>
+</generatorConfiguration>

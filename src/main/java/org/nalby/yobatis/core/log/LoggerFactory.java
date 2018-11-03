@@ -17,7 +17,7 @@ package org.nalby.yobatis.core.log;
 
 import java.lang.reflect.Constructor;
 
-public class LogFactory {
+public class LoggerFactory {
 	
 	private static Class<? extends Logger> loggerClass;
 	

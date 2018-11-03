@@ -242,7 +242,6 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
 
     private XmlElement updateTemplate(String name, String param) {
         XmlElement xmlElement = xmlTemplate("update", name);
-        xmlElement.addAttribute(new Attribute("resultType", "int"));
         xmlElement.addAttribute(new Attribute("parameterType", param));
         xmlElement.addElement(new TextElement("update " + table.getTableName()));
         return xmlElement;
@@ -307,7 +306,6 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
     private XmlElement insert() {
         XmlElement xmlElement = xmlTemplate("insert", XmlElementName.INSERT.getName());
         xmlElement.addAttribute(new Attribute("parameterType", table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY).getFullyQualifiedName()));
-        xmlElement.addAttribute(new Attribute("resultType", "int"));
         xmlElement.addElement(new TextElement("insert into " + table.getTableName()));
         StringBuilder stringBuilder = new StringBuilder("(");
         for (int i = 0; i < table.getColumns().size(); i++) {
@@ -335,7 +333,6 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
 
     private XmlElement deletelTemplate(String id, String param) {
         XmlElement delete = xmlTemplate("delete", id);
-        delete.addAttribute(new Attribute("resultType", "int"));
         delete.addAttribute(new Attribute("parameterType", param));
         delete.addElement(new TextElement("delete from " + table.getTableName()));
         return delete;

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.nalby.yobatis.core.log.AbstractLogger;
-import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.LoggerFactory;
 
 public class AbstractLoggerTests {
 	
@@ -27,8 +27,8 @@ public class AbstractLoggerTests {
 	
 	@Before
 	public void setup() {
-		LogFactory.setLogger(TestLogger.class);
-		logger = (TestLogger)LogFactory.getLogger(TestLogger.class);
+		LoggerFactory.setLogger(TestLogger.class);
+		logger = (TestLogger) LoggerFactory.getLogger(TestLogger.class);
 	}
 	
 	

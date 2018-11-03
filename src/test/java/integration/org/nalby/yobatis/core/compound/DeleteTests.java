@@ -1,16 +1,20 @@
-package func.compoundkey;
+package integration.org.nalby.yobatis.core.compound;
 
-import func.compoundkey.model.CompoundKeyTable;
-import func.compoundkey.model.criteria.CompoundKeyTableCriteria;
+import org.junit.Before;
 import org.junit.Test;
-
-import javax.annotation.Resource;
+import sandbox.alltype.entity.CompoundKeyTable;
+import sandbox.alltype.entity.criteria.CompoundKeyTableCriteria;
 
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
 public class DeleteTests extends SetupClass {
+
+    @Before
+    public void setup() {
+        clearTable("compound_key_table");
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void deleteByNullPk() {

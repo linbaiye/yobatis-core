@@ -20,7 +20,7 @@ import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
 import org.nalby.yobatis.core.database.Table;
 import org.nalby.yobatis.core.exception.InvalidSqlConfigException;
 import org.nalby.yobatis.core.exception.ProjectException;
-import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.log.Logger;
 
 import java.sql.*;
@@ -33,7 +33,7 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 	
 	private String timedoutUrl;
 	
-	private final static Logger LOGGER = LogFactory.getLogger(MysqlDatabaseMetadataProvider.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(MysqlDatabaseMetadataProvider.class);
 
 	private List<Table> tableList;
 

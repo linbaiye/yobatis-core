@@ -1,6 +1,6 @@
 package org.nalby.yobatis.core.structure.spring;
 
-import org.nalby.yobatis.core.log.LogFactory;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Folder;
@@ -98,7 +98,7 @@ public class SpringParser implements Spring {
         }
     }
 
-    private final static Logger LOGGER = LogFactory.getLogger(SpringParser.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SpringParser.class);
 
     public static SpringParser parse(Folder projectFolder) {
         Set<File> fileSet = FolderUtil.listAllFiles(projectFolder);

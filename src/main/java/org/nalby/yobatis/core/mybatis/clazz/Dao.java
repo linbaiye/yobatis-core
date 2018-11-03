@@ -52,6 +52,7 @@ public class Dao extends Interface implements YobatisUnit {
         dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY));
         dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA));
         dao.addImportedType(yobatisTable.getPrimaryKey());
+        dao.addImportedType(new FullyQualifiedJavaType("java.util.List"));
         return dao;
     }
 }
