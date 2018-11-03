@@ -3,7 +3,7 @@ package org.nalby.yobatis.core.mybatis.clazz;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 
 public interface JavaFileFactory {
 

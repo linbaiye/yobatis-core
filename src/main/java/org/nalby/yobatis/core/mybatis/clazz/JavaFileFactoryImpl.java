@@ -6,18 +6,11 @@ import org.mybatis.generator.api.dom.DefaultJavaFormatter;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
-import org.nalby.yobatis.core.mybatis.YobatisUnit;
-import org.nalby.yobatis.core.mybatis.javadoc.ClassJavaDocDecorator;
-import org.nalby.yobatis.core.mybatis.javadoc.JavaDocDecorator;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 
 public final class JavaFileFactoryImpl implements JavaFileFactory {
 
-
     private final static JavaFileFactoryImpl instance = new JavaFileFactoryImpl();
-
-
-    private final static JavaDocDecorator<YobatisUnit> docDecorator = ClassJavaDocDecorator.getInstance();
 
     public static JavaFileFactoryImpl getInstance() {
         return instance;
@@ -28,16 +21,10 @@ public final class JavaFileFactoryImpl implements JavaFileFactory {
         return configuration.getTargetProject();
     }
 
-    private void addJavaDoc(TopLevelClass topLevelClass) {
-        if (topLevelClass instanceof YobatisUnit) {
-            docDecorator.decorate((YobatisUnit)topLevelClass);
-        }
-    }
 
     @Override
     public GeneratedJavaFile baseDomain(TopLevelClass originalDomainClass, IntrospectedTable introspectedTable) {
         BaseEntity baseEntity = BaseEntity.getInstance(originalDomainClass, introspectedTable);
-        addJavaDoc(baseEntity);
         return new GeneratedJavaFile(baseEntity, getDomainProjectName(introspectedTable),
                 new DefaultJavaFormatter());
     }
@@ -45,7 +32,6 @@ public final class JavaFileFactoryImpl implements JavaFileFactory {
     @Override
     public GeneratedJavaFile domain(IntrospectedTable introspectedTable) {
         Entity entity = Entity.getInstance(introspectedTable);
-        addJavaDoc(entity);
         return new GeneratedJavaFile(entity,
                 getDomainProjectName(introspectedTable), new DefaultJavaFormatter());
     }

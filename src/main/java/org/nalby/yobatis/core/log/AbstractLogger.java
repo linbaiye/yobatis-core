@@ -80,7 +80,7 @@ public abstract class AbstractLogger implements Logger {
 
 	private void formatAndWrite(String level, String format, Object ... args) {
 		String tmp = formatArgs(format, args);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm:ss");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
 		String timestamp = simpleDateFormat.format(new Date());
 		String msg =  timestamp + " " + level + " " + className + " - " + tmp + "\n";
 		wirteToConsole(msg);

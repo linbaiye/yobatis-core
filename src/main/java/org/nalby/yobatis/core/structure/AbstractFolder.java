@@ -67,7 +67,7 @@ public abstract class AbstractFolder implements Folder {
 	 * Create a file based on the platform, throw a ResourceNotAvailableExeception if it is unable to create.
 	 * @param name the file name.
 	 * @return the file created.
-	 * @throws ResourceNotAvailableExeception if error.
+	 * @throws org.nalby.yobatis.core.exception.ResourceNotAvailableExeception if error.
 	 */
 	protected abstract File doCreateFile(String name);
 	

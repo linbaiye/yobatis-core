@@ -22,10 +22,8 @@ import org.nalby.yobatis.core.exception.InvalidSqlConfigException;
 import org.nalby.yobatis.core.exception.ProjectException;
 import org.nalby.yobatis.core.log.LogFactory;
 import org.nalby.yobatis.core.log.Logger;
-import org.nalby.yobatis.core.util.Expect;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -35,7 +33,7 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 	
 	private String timedoutUrl;
 	
-	private Logger logger = LogFactory.getLogger(this.getClass());
+	private final static Logger LOGGER = LogFactory.getLogger(MysqlDatabaseMetadataProvider.class);
 
 	private List<Table> tableList;
 
@@ -47,7 +45,7 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 			this.url = url;
 			this.driverClassName = driverClassName;
 			this.connectorJarPath = jdbcJarPath;
-			logger.info("Detected database configuration:[username:{}, password:{}, url:{}].", username, password, url);
+			LOGGER.info("Detected database configuration:[username:{}, password:{}, url:{}].", username, password, url);
 			timedoutUrl = this.url;
 			if (!this.timedoutUrl.contains("socketTimeout")) {
 				if (this.timedoutUrl.contains("?")) {
@@ -66,24 +64,27 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 	
 	private Table makeTable(String name, DatabaseMetaData metaData) {
 		Table table = new Table(name);
-		try {
-			ResultSet resultSet = metaData.getColumns(null, null, name, null);
+		// Fetch column metadata.
+		try (ResultSet resultSet =
+					 metaData.getColumns(null, null, name, null)) {
 			while (resultSet.next()) {
 				String columnName = resultSet.getString("COLUMN_NAME");
 				String autoIncrment = resultSet.getString("IS_AUTOINCREMENT");
 				if (autoIncrment.toLowerCase().contains("true") ||
-					autoIncrment.toLowerCase().contains("yes")) {
+						autoIncrment.toLowerCase().contains("yes")) {
 					table.addAutoIncColumn(columnName);
 				}
 			}
-			resultSet.close();
-			resultSet = metaData.getPrimaryKeys(null,null, name);
+		} catch (Exception e) {
+		    LOGGER.error("Failed to fetch metadata for {}.", name);
+		    throw new InvalidSqlConfigException(e.getMessage());
+		}
+		try (ResultSet resultSet = metaData.getPrimaryKeys(null,null, name)) {
 			while(resultSet.next()) {
 				table.addPrimaryKey(resultSet.getString("COLUMN_NAME"));
 			}
-			resultSet.close();
-		} catch (Exception e) {
-			//Nothing we can do.
+		} catch (SQLException e) {
+		    throw new InvalidSqlConfigException("Unable to fetch primary key meta for " + name);
 		}
 		return table;
 	}
@@ -108,7 +109,7 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 			}
 			res.close();
 		} catch (Exception e) {
-			logger.info("Yobatis is unable to list tables, please configure table element manually.");
+			LOGGER.info("Yobatis is unable to list tables, please configure table element manually.");
 		}
 		return tableList;
 	}

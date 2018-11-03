@@ -5,7 +5,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
-import org.nalby.yobatis.core.database.Table;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.log.LogFactory;
 import org.nalby.yobatis.core.log.Logger;
@@ -13,8 +12,6 @@ import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Project;
 import org.nalby.yobatis.core.util.TextUtil;
 
-import javax.xml.bind.annotation.XmlElement;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

@@ -4,7 +4,7 @@ import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 
 import java.util.List;
 

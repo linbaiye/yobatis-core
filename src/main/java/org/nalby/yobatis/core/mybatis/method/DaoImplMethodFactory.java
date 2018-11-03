@@ -3,7 +3,7 @@ package org.nalby.yobatis.core.mybatis.method;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 
 public class DaoImplMethodFactory extends AbstractMethodFactory {
 

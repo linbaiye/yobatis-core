@@ -16,10 +16,7 @@ package org.nalby.yobatis.core.mybatis;
  *    limitations under the License.
  */
 
-import org.mybatis.generator.api.GeneratedJavaFile;
-import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.MyBatisGenerator;
-import org.mybatis.generator.api.dom.java.CompilationUnit;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.exception.InvalidConfigurationException;
@@ -38,25 +35,24 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * This class wraps MyBatisGenerator and po
- */
 public class YobatisFileGenerator {
-
-    private MyBatisGenerator myBatisGenerator;
 
     private Project project;
 
-    private Logger logger = LogFactory.getLogger(YobatisFileGenerator.class);
+    private static final Logger LOGGER = LogFactory.getLogger(YobatisFileGenerator.class);
 
-    private YobatisFileGenerator(MyBatisGenerator myBatisGenerator, Project project) {
-        this.myBatisGenerator = myBatisGenerator;
+    private List<YobatisUnit> fileList;
+
+    private YobatisFileGenerator(List<YobatisUnit> fileList,
+                                 Project project) {
+        this.fileList = fileList;
         this.project = project;
     }
 
 
-    private void mergeFile(YobatisUnit unit) {
+    private void mergeFileIfPresent(YobatisUnit unit) {
         String filePath = unit.getPathToPut();
         File file = project.findFile(filePath);
         if (file == null) {
@@ -66,57 +62,36 @@ public class YobatisFileGenerator {
             String content = TextUtil.asString(inputStream);
             unit.merge(content);
         } catch (InvalidUnitException e) {
-            logger.error("File {} is broken and Yobatis is unable to merge it, please fix it and retry, error:{}.", file.path(), e.getMessage());
+            LOGGER.error("File {} is broken and Yobatis is unable to merge it, please fix it and retry, error:{}.", file.path(), e.getMessage());
             throw new InvalidMybatisGeneratorConfigException(e);
         } catch (IOException e) {
-            logger.error("Failed to read file {}.", file.path());
+            LOGGER.error("Failed to read file {}.", file.path());
             throw new InvalidMybatisGeneratorConfigException(e);
         }
     }
 
     private void mergeFiles() {
-        for (GeneratedXmlFile xml: myBatisGenerator.getGeneratedXmlFiles()) {
-            if (xml instanceof YobatisUnit) {
-                mergeFile((YobatisUnit) xml);
-            }
-        }
-        for (GeneratedJavaFile tmp : myBatisGenerator.getGeneratedJavaFiles()) {
-            CompilationUnit unit = tmp.getCompilationUnit();
-            if (unit instanceof YobatisUnit) {
-                mergeFile((YobatisUnit) unit);
-            }
-        }
+        fileList.forEach(this::mergeFileIfPresent);
     }
 
-    private void writeFile(YobatisUnit unit) {
-        String filePath = unit.getPathToPut();
-        File file = project.createFile(filePath);
-        file.write(unit.getFormattedContent());
-    }
 
     private void writeFiles() {
-        for (GeneratedXmlFile xml: myBatisGenerator.getGeneratedXmlFiles()) {
-            if (xml instanceof YobatisUnit) {
-                writeFile((YobatisUnit) xml);
-            }
-        }
-        for (GeneratedJavaFile tmp : myBatisGenerator.getGeneratedJavaFiles()) {
-            CompilationUnit unit = tmp.getCompilationUnit();
-            if (unit instanceof YobatisUnit) {
-                writeFile((YobatisUnit) unit);
-            }
-        }
+        fileList.forEach(e -> {
+            String filePath = e.getPathToPut();
+            File file = project.createFile(filePath);
+            file.write(e.getFormattedContent());
+        });
     }
 
-    public void writeAll() {
+    public void mergeAndWrite() {
         mergeFiles();
         writeFiles();
-        logger.info("Files have been generated, happy coding.");
+        LOGGER.info("Files have been generated, happy coding.");
     }
 
     public static YobatisFileGenerator parse(InputStream inputStream, Project project) {
-        List<String> warnings = new ArrayList<>();
         try {
+            List<String> warnings = new ArrayList<>();
             ConfigurationParser cp = new ConfigurationParser(warnings);
             Configuration config = cp.parseConfiguration(inputStream);
 
@@ -125,7 +100,19 @@ public class YobatisFileGenerator {
             MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, shellCallback, warnings);
 
             myBatisGenerator.generate(null, null, null, false);
-            return new YobatisFileGenerator(myBatisGenerator, project);
+            List<YobatisUnit> fileList = myBatisGenerator.getGeneratedJavaFiles()
+                    .stream().filter(e -> e instanceof YobatisUnit)
+                        .map(e -> (YobatisUnit)e)
+                        .collect(Collectors.toList());
+            myBatisGenerator.getGeneratedXmlFiles().forEach(e -> {
+                if (e instanceof YobatisUnit) {
+                    fileList.add((YobatisUnit)e);
+                }
+            });
+            if (fileList.isEmpty()) {
+                throw new InvalidMybatisGeneratorConfigException("No file to generate, please check your configuration and retry.");
+            }
+            return new YobatisFileGenerator(fileList, project);
         } catch (XMLParserException | InvalidConfigurationException | SQLException | IOException | InterruptedException e) {
             throw new InvalidMybatisGeneratorConfigException(e);
         }

@@ -8,13 +8,11 @@ import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.XmlFormatter;
 import org.mybatis.generator.api.dom.DefaultXmlFormatter;
 import org.mybatis.generator.api.dom.xml.*;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.GeneratorEntityResolver;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
-import org.nalby.yobatis.core.structure.File;
 
-import java.beans.XMLDecoder;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

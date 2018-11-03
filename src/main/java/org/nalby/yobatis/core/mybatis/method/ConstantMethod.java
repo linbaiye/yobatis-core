@@ -710,12 +710,11 @@ public enum ConstantMethod {
     }
 
     public Method get() {
-        CommonMethodFactory commonMethodFactory = MethodUtil.getInstance();
         Method method;
         if (returnType != null) {
-            method = commonMethodFactory.publicMethod(name, returnType);
+            method = MethodUtil.publicMethod(name, returnType);
         } else {
-            method = commonMethodFactory.constructor(name);
+            method = MethodUtil.constructor(name);
         }
         if (javaVisibility != null) {
             method.setVisibility(javaVisibility);

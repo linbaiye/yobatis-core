@@ -2,7 +2,7 @@ package org.nalby.yobatis.core.mybatis.clazz;
 
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.java.*;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
 import org.nalby.yobatis.core.mybatis.field.FieldFactoryImpl;

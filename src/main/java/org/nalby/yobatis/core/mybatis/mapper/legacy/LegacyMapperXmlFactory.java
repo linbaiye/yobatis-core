@@ -5,8 +5,6 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 
 public interface LegacyMapperXmlFactory {
 
-    XmlElement insertIgnore(IntrospectedTable table);
-
     XmlElement insertAll(IntrospectedTable table);
 
     XmlElement insertAllIgnore(IntrospectedTable table);
@@ -22,6 +20,4 @@ public interface LegacyMapperXmlFactory {
     XmlElement pagingElement(String id);
 
     XmlElement include(String refid);
-
-    XmlElement convert(org.dom4j.Element element);
 }

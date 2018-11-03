@@ -21,7 +21,7 @@ public class LogFactory {
 	
 	private static Class<? extends Logger> loggerClass;
 	
-	private static final Logger nullLogger = new NullLogger();
+	private static final Logger DEFAULT_LOGGER = new DefaultLogger();
 	
 	public static void setLogger(Class <? extends Logger> c) {
 		loggerClass = c;
@@ -41,6 +41,6 @@ public class LogFactory {
 		} catch (Exception e) {
 			//
 		}
-		return nullLogger;
+		return DEFAULT_LOGGER;
 	}
 }

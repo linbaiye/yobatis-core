@@ -1,6 +1,5 @@
 package org.nalby.yobatis.core.mybatis.mapper.legacy;
 
-import org.dom4j.Element;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -8,8 +7,6 @@ import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.nalby.yobatis.core.mybatis.NamingHelper;
-
-import java.util.List;
 
 public class LegacyMapperXmlElementFactoryImpl implements LegacyMapperXmlFactory {
     private final static String PARAM_TYPE = "parameterType";
@@ -79,18 +76,6 @@ public class LegacyMapperXmlElementFactoryImpl implements LegacyMapperXmlFactory
         return xmlElement;
     }
 
-    @Override
-    public XmlElement convert(org.dom4j.Element element) {
-        XmlElement xmlElement = new XmlElement(element.getName());
-        for (org.dom4j.Attribute src : element.attributes()) {
-            xmlElement.addAttribute(new Attribute(src.getName(), src.getValue()));
-        }
-        List<Element> elementList = element.elements();
-        for (Element element1 : elementList) {
-
-        }
-        return null;
-    }
 
     private XmlElement insertAll(IntrospectedTable table, boolean ignore) {
         XmlElement xmlElement = insertElement("insertAll");
@@ -145,12 +130,6 @@ public class LegacyMapperXmlElementFactoryImpl implements LegacyMapperXmlFactory
         textElement = new TextElement(stringBuilder.toString());
         xmlElement.addElement(textElement);
         return xmlElement;
-    }
-
-
-    @Override
-    public XmlElement insertIgnore(IntrospectedTable table) {
-        return null;
     }
 
     @Override

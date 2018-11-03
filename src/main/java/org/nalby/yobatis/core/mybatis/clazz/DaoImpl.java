@@ -4,7 +4,7 @@ import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
 import org.nalby.yobatis.core.mybatis.field.FieldFactoryImpl;

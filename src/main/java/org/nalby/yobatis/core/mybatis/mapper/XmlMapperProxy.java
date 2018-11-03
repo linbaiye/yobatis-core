@@ -1,12 +1,8 @@
 package org.nalby.yobatis.core.mybatis.mapper;
 
 import org.mybatis.generator.api.GeneratedXmlFile;
-import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.XmlFormatter;
-import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
-import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
 import org.nalby.yobatis.core.mybatis.mapper.legacy.LegacyXmlMapper;

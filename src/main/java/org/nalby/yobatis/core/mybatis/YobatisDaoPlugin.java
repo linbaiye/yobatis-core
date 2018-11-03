@@ -22,8 +22,6 @@ import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Document;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
-import org.nalby.yobatis.core.database.YobatisIntrospectedTableImpl;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactory;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactoryImpl;
 import org.nalby.yobatis.core.mybatis.mapper.XmlMapperProxy;
