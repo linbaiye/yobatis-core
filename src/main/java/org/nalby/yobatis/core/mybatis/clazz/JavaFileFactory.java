@@ -20,4 +20,8 @@ public interface JavaFileFactory {
 
     GeneratedJavaFile criteria(YobatisIntrospectedTable introspectedTable);
 
+    GeneratedJavaFile dao(YobatisIntrospectedTable introspectedTable);
+
+    GeneratedJavaFile daoImpl(YobatisIntrospectedTable introspectedTable);
+
 }

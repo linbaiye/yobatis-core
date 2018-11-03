@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -207,6 +208,17 @@ public class YobatisConfigurationTests {
         assertEquals(2, list.size());
         assertEquals("table1", list.get(0).getName());
         assertEquals("table2", list.get(1).getName());
+    }
+
+    @Test
+    public void asStringWithoutDisabledTables() {
+        addTable("table2", false);
+        addTable("table1", true);
+        YobatisConfiguration configure = YobatisConfiguration.open(project);
+        configure.update(tableElementList);
+        String content = configure.asStringWithoutDisabledTables();
+        assertFalse(content.contains("<table tableName=\"table2\" modelType=\"flat\"><property name=\"enable\" value=\"true\"/></table>"));
+        assertTrue(content.contains("<table tableName=\"table1\" modelType=\"flat\"><property name=\"enable\" value=\"true\"/></table>"));
     }
 
 }

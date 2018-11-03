@@ -41,7 +41,7 @@ public class Dao extends Interface implements YobatisUnit {
     }
 
 
-    public static Dao build(YobatisIntrospectedTable yobatisTable) {
+    public static Dao newInstance(YobatisIntrospectedTable yobatisTable) {
         MethodFactory methodFactory = DaoMethodFactory.getInstance(yobatisTable);
         Dao dao = new Dao(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO),
                 yobatisTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.DAO));

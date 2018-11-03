@@ -20,7 +20,7 @@ public class DaoTests extends AbstractYobatisTableSetup {
     @Test
     public void all() throws InvalidUnitException {
         when(yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.DAO)).thenReturn("/yobatisdao.java");
-        Dao dao = Dao.build(yobatisIntrospectedTable);
+        Dao dao = Dao.newInstance(yobatisIntrospectedTable);
         assertTrue(dao.getFormattedContent().contains("public interface YobatisDao"));
         String current = "current";
         dao.merge(current);

@@ -14,6 +14,7 @@ import org.nalby.yobatis.core.structure.Project;
 import org.nalby.yobatis.core.util.TextUtil;
 
 import javax.xml.bind.annotation.XmlElement;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,7 +121,6 @@ public class YobatisConfiguration {
         file.write(document.asXML());
     }
 
-
     public void update(Settings setting) {
         upsert("//context/jdbcConnection/@connectionURL", setting.getUrl());
         upsert("//context/jdbcConnection/@userId", setting.getUser());
@@ -133,9 +133,26 @@ public class YobatisConfiguration {
         upsert("//classPathEntry/@location", setting.getConnectorPath());
     }
 
-    public static YobatisConfiguration open(Project project) {
+    public String asStringWithoutDisabledTables() {
+        String content = this.document.asXML();
+        try {
+            Document document = buildSaxReader().read(new ByteArrayInputStream(content.getBytes()));
+            List<Node> nodeList = document.selectNodes("//context/table/property[@name='enable' and @value='false']");
+            nodeList.forEach(e -> e.getParent().detach());
+            return document.asXML();
+        } catch (DocumentException e) {
+            throw new InvalidMybatisGeneratorConfigException(FILE_NAME + " is misconfigured, please delete or correct it first.");
+        }
+    }
+
+    private static SAXReader buildSaxReader( ) {
         SAXReader saxReader = new SAXReader();
         saxReader.setEntityResolver(GeneratorEntityResolver.ENTITY_RESOLVER);
+        return saxReader;
+    }
+
+    public static YobatisConfiguration open(Project project) {
+        SAXReader saxReader = buildSaxReader();
         File file = project.findFile(FILE_NAME);
         try {
             if (file == null) {
@@ -150,4 +167,5 @@ public class YobatisConfiguration {
             throw new InvalidMybatisGeneratorConfigException(FILE_NAME + " is misconfigured, please delete or correct it first.");
         }
     }
+
 }

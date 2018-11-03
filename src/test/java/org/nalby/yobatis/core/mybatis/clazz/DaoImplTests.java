@@ -24,7 +24,7 @@ public class DaoImplTests extends AbstractYobatisTableSetup {
     @Test
     public void all() throws InvalidUnitException {
         when(yobatisIntrospectedTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.DAO_IMPL)).thenReturn("/yobatisdao.java");
-        DaoImpl dao = DaoImpl.build(yobatisIntrospectedTable);
+        DaoImpl dao = DaoImpl.newInstance(yobatisIntrospectedTable);
         assertTrue(dao.getFormattedContent().contains("public class YobatisDaoImpl implements YobatisDao"));
 
         String current = "current";

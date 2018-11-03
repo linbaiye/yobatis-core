@@ -4,6 +4,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
+import org.nalby.yobatis.core.util.MethodUtil;
 
 public enum ConstantMethod {
 
@@ -709,7 +710,7 @@ public enum ConstantMethod {
     }
 
     public Method get() {
-        CommonMethodFactory commonMethodFactory = CommonMethodFactoryImpl.getInstance();
+        CommonMethodFactory commonMethodFactory = MethodUtil.getInstance();
         Method method;
         if (returnType != null) {
             method = commonMethodFactory.publicMethod(name, returnType);

@@ -26,12 +26,11 @@ import org.nalby.yobatis.core.database.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.database.YobatisIntrospectedTableImpl;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactory;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactoryImpl;
-import org.nalby.yobatis.core.mybatis.mapper.legacy.LegacyXmlMapper;
+import org.nalby.yobatis.core.mybatis.mapper.XmlMapperProxy;
 import org.nalby.yobatis.core.util.Expect;
 
 import java.util.LinkedList;
 import java.util.List;
-
 
 public class YobatisDaoPlugin extends PluginAdapter {
 
@@ -43,7 +42,8 @@ public class YobatisDaoPlugin extends PluginAdapter {
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-        generatedXmlFileList.add(LegacyXmlMapper.wrap(document, introspectedTable));
+        YobatisIntrospectedTable yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
+        generatedXmlFileList.add(XmlMapperProxy.wrap(document, yobatisIntrospectedTable));
         return true;
     }
 
@@ -58,9 +58,9 @@ public class YobatisDaoPlugin extends PluginAdapter {
         YobatisIntrospectedTable yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
         additionalFiles.add(javaFileFactory.baseCriteria(yobatisIntrospectedTable));
         additionalFiles.add(javaFileFactory.criteria(yobatisIntrospectedTable));
-
-        GeneratedJavaFile domainJavaFile = javaFileFactory.domain(introspectedTable);
-        additionalFiles.add(domainJavaFile);
+        additionalFiles.add(javaFileFactory.dao(yobatisIntrospectedTable));
+        additionalFiles.add(javaFileFactory.daoImpl(yobatisIntrospectedTable));
+        additionalFiles.add(javaFileFactory.domain(introspectedTable));
     }
 
     @Override

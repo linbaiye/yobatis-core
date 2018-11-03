@@ -41,7 +41,7 @@ public class DaoImpl extends TopLevelClass implements YobatisUnit {
         return super.getFormattedContent();
     }
 
-    public static DaoImpl build(YobatisIntrospectedTable tableItem) {
+    public static DaoImpl newInstance(YobatisIntrospectedTable tableItem) {
         DaoImpl daoImpl = new DaoImpl(tableItem.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO_IMPL),
                 tableItem.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.DAO_IMPL));
 
