@@ -61,7 +61,7 @@ public class GeneratorEntityResolver {
             "  tables.\n" +
             "-->\n" +
             "<!ELEMENT context (property*, plugin*, commentGenerator?, (connectionFactory | jdbcConnection), javaTypeResolver?,\n" +
-            "                         javaModelGenerator, sqlMapGenerator?, javaClientGenerator?, table+)>\n" +
+            "                         javaModelGenerator, sqlMapGenerator?, javaClientGenerator?, table*)>\n" +
             "<!ATTLIST context id ID #REQUIRED\n" +
             "  defaultModelType CDATA #IMPLIED\n" +
             "  targetRuntime CDATA #IMPLIED\n" +

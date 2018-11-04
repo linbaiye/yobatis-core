@@ -1,4 +1,4 @@
-package unit.org.nalby.yobatis.core.database;
+package unit.org.nalby.yobatis.core.mybatis;
 
 import org.junit.Before;
 import org.junit.Test;

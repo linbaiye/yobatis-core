@@ -13,17 +13,19 @@
  *    License for the specific language governing permissions and limitations under
  *    the License.
  */
-package org.nalby.yobatis.core.database.mysql;
+package org.nalby.yobatis.core.database;
 
 
-import org.nalby.yobatis.core.database.DatabaseMetadataProvider;
-import org.nalby.yobatis.core.database.Table;
 import org.nalby.yobatis.core.exception.InvalidSqlConfigException;
 import org.nalby.yobatis.core.exception.ProjectException;
-import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.log.LoggerFactory;
+import org.nalby.yobatis.core.util.TextUtil;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -31,85 +33,36 @@ import java.util.regex.Pattern;
 
 public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 	
-	private String timedoutUrl;
-	
 	private final static Logger LOGGER = LoggerFactory.getLogger(MysqlDatabaseMetadataProvider.class);
-
-	private List<Table> tableList;
 
 	private MysqlDatabaseMetadataProvider(String username, String password,
 			String url, String driverClassName, String jdbcJarPath) {
-		try {
-			this.username = username;
-			this.password = password;
-			this.url = url;
-			this.driverClassName = driverClassName;
-			this.connectorJarPath = jdbcJarPath;
-			LOGGER.info("Detected database configuration:[username:{}, password:{}, url:{}].", username, password, url);
-			timedoutUrl = this.url;
-			if (!this.timedoutUrl.contains("socketTimeout")) {
-				if (this.timedoutUrl.contains("?")) {
-					this.timedoutUrl = this.timedoutUrl + "&socketTimeout=10000";
-				} else {
-					this.timedoutUrl = this.timedoutUrl + "?socketTimeout=10000";
-				}
-			}
-			if (!this.timedoutUrl.contains("connectTimeout")) {
-				this.timedoutUrl = this.timedoutUrl + "&connectTimeout=2000";
-			}
-		} catch (Exception e) {
-		    //Ignore.
-		}
+		this.username = username;
+		this.password = password;
+		this.url = url;
+		this.driverClassName = driverClassName;
+		this.connectorJarPath = jdbcJarPath;
 	}
-	
-	private Table makeTable(String name, DatabaseMetaData metaData) {
-		Table table = new Table(name);
-		// Fetch column metadata.
-		try (ResultSet resultSet =
-					 metaData.getColumns(null, null, name, null)) {
-			while (resultSet.next()) {
-				String columnName = resultSet.getString("COLUMN_NAME");
-				String autoIncrment = resultSet.getString("IS_AUTOINCREMENT");
-				if (autoIncrment.toLowerCase().contains("true") ||
-						autoIncrment.toLowerCase().contains("yes")) {
-					table.addAutoIncColumn(columnName);
-				}
-			}
-		} catch (Exception e) {
-		    LOGGER.error("Failed to fetch metadata for {}.", name);
-		    throw new InvalidSqlConfigException(e.getMessage());
-		}
-		try (ResultSet resultSet = metaData.getPrimaryKeys(null,null, name)) {
-			while(resultSet.next()) {
-				table.addPrimaryKey(resultSet.getString("COLUMN_NAME"));
-			}
-		} catch (SQLException e) {
-		    throw new InvalidSqlConfigException("Unable to fetch primary key meta for " + name);
-		}
-		return table;
-	}
-	
+
 	/**
 	 * Get all tables according to the configuration.
 	 * @return tables.
 	 * @throws ProjectException, if any configuration value is not valid.
 	 */
 	@Override
-	public List<Table> getTables() {
-	    if (tableList != null) {
-	    	return tableList;
-		}
-		tableList = new LinkedList<>();
-		try (Connection connection = DriverManager.getConnection(this.timedoutUrl, username, password)) {
+	public List<Table> fetchTables() {
+		List<Table> tableList = new LinkedList<>();
+		try (Connection connection = DriverManager.getConnection(this.url, username, password)) {
 			DatabaseMetaData meta = connection.getMetaData();
 			ResultSet res = meta.getTables(null, null, null, new String[] {"TABLE"});
 			while (res.next()) {
 				String tmp = res.getString("TABLE_NAME");
-				tableList.add(makeTable(tmp, meta));
+				tableList.add(new Table(tmp));
 			}
 			res.close();
 		} catch (Exception e) {
-			LOGGER.info("Yobatis is unable to list tables, please configure table element manually.");
+			LOGGER.error("Caught exception:", e);
+			throw new InvalidSqlConfigException("Yobatis is unable to fetch tables, please check your configuration and retry.");
 		}
 		return tableList;
 	}
@@ -120,7 +73,7 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 		private String url;
 		private String connectorJarPath;
 		private String driverClassName;
-		private Builder(){}
+		private Builder(){ }
 		public Builder setUsername(String username) {
 			this.username = username;
 			return this;
@@ -142,9 +95,36 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 			return this;
 		}
 		public MysqlDatabaseMetadataProvider build() {
+			if (TextUtil.isEmpty(username)) {
+				throw new InvalidSqlConfigException("username for db not configured");
+			}
+			if (TextUtil.isEmpty(password)) {
+				throw new InvalidSqlConfigException("password for db not configured");
+			}
+			if (TextUtil.isEmpty(connectorJarPath)) {
+				throw new InvalidSqlConfigException("connector for db not configured");
+			}
+			if (TextUtil.isEmpty(url)) {
+				throw new InvalidSqlConfigException("url for db not configured");
+			}
+			if (TextUtil.isEmpty(driverClassName)) {
+				throw new InvalidSqlConfigException("driverClassName for db not configured");
+			}
+
 			try {
 				Class.forName(driverClassName);
-				return new MysqlDatabaseMetadataProvider(username, password, url, driverClassName, connectorJarPath);
+				String timedoutUrl = url;
+				if (!timedoutUrl.contains("socketTimeout")) {
+					if (timedoutUrl.contains("?")) {
+						timedoutUrl = timedoutUrl + "&socketTimeout=10000";
+					} else {
+						timedoutUrl = timedoutUrl + "?socketTimeout=10000";
+					}
+				}
+				if (!timedoutUrl.contains("connectTimeout")) {
+					timedoutUrl = timedoutUrl + "&connectTimeout=2000";
+				}
+				return new MysqlDatabaseMetadataProvider(username, password, timedoutUrl, driverClassName, connectorJarPath);
 			} catch (Exception e) {
 				throw new InvalidSqlConfigException(e);
 			}

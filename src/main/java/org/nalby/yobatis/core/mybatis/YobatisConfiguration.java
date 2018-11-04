@@ -5,6 +5,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
+import org.nalby.yobatis.core.database.Table;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.log.Logger;
@@ -74,12 +75,38 @@ public class YobatisConfiguration {
 
     public void update(List<TableElement> tableElementList) {
         Node context = document.selectSingleNode("//context");
-        if (context == null) {
-            throw new InvalidMybatisGeneratorConfigException("Invalid config file, please delete " + FILE_NAME + "and retry.");
-        }
         List<Node> nodeList = document.selectNodes("//context/table");
         nodeList.forEach(Node::detach);
         tableElementList.forEach(e -> ((Element)context).add(e.asElement()));
+    }
+
+
+    /**
+     * Sync table presence with database, dropping tables no longer exist, and adding new tables.
+     * @param tableList current tables that exist in db.
+     */
+    public void sync(List<Table> tableList) {
+        if (tableList == null || tableList.isEmpty()) {
+            return;
+        }
+        Element context = (Element)document.selectSingleNode("//context");
+        Set<String> names = tableList.stream().map(Table::getName).collect(Collectors.toSet());
+        List<Node> nodeList = document.selectNodes("//context/table");
+        Set<String> presence = new HashSet<>();
+        // Drop tables that no longer exist.
+        nodeList.forEach(e -> {
+            if (!names.contains(((Element)e).attributeValue("tableName"))) {
+                e.detach();
+            } else {
+                presence.add(((Element) e).attributeValue("tableName"));
+            }
+        });
+        // Grab tables that we don't have.
+        names.forEach(e -> {
+            if (!presence.contains(e)) {
+                context.add(new TableElement(e, false).asElement());
+            }
+        });
     }
 
 
@@ -144,10 +171,17 @@ public class YobatisConfiguration {
 
     private static SAXReader buildSaxReader( ) {
         SAXReader saxReader = new SAXReader();
+        saxReader.setValidation(true);
         saxReader.setEntityResolver(GeneratorEntityResolver.ENTITY_RESOLVER);
         return saxReader;
     }
 
+    /**
+     * Open MybatisGenerator/Yobatis configuration if exists, or create a new one if not.
+     * @param project
+     * @return YobatisConfiguration
+     * @throws InvalidMybatisGeneratorConfigException if current configuration file is invalid.
+     */
     public static YobatisConfiguration open(Project project) {
         SAXReader saxReader = buildSaxReader();
         File file = project.findFile(FILE_NAME);
@@ -160,7 +194,7 @@ public class YobatisConfiguration {
                 return new YobatisConfiguration(saxReader.read(inputStream), project);
             }
         } catch (DocumentException | IOException e) {
-            LOGGER.error("Invalid configuration file:", e);
+            LOGGER.error("Invalid configuration file:{}", e);
             throw new InvalidMybatisGeneratorConfigException(FILE_NAME + " is misconfigured, please delete or correct it first.");
         }
     }

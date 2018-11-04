@@ -1,7 +1,10 @@
 package unit.org.nalby.yobatis.core.mybatis;
 
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
 import org.junit.Before;
 import org.junit.Test;
+import org.nalby.yobatis.core.database.Table;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.mybatis.Settings;
 import org.nalby.yobatis.core.mybatis.TableElement;
@@ -10,8 +13,11 @@ import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Project;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -220,6 +226,68 @@ public class YobatisConfigurationTests {
         String content = configure.asStringWithoutDisabledTables();
         assertFalse(content.contains("<table tableName=\"table2\" modelType=\"flat\"><property name=\"enable\" value=\"true\"/></table>"));
         assertTrue(content.contains("<table tableName=\"table1\" modelType=\"flat\"><property name=\"enable\" value=\"true\"/></table>"));
+    }
+
+    @Test(expected = InvalidMybatisGeneratorConfigException.class)
+    public void openInvalidConfiguration() throws DocumentException {
+        String invalidConfig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<!DOCTYPE generatorConfiguration PUBLIC \"-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN\" \"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd\">\n" +
+                "<generatorConfiguration>\n" +
+                "  <classPathEntry location=\"/mysql-connector-java.jar\"/>\n" +
+                "    <plugin type=\"org.nalby.yobatis.core.mybatis.YobatisDaoPlugin\"/>\n" +
+                "    <jdbcConnection driverClass=\"com.mysql.jdbc.Driver\" connectionURL=\"jdbc:mysql://localhost:3306/yobatis?characterEncoding=utf-8\" userId=\"yobatis\" password=\"yobatis\"/>\n" +
+                "    <javaTypeResolver>\n" +
+                "      <property name=\"forceBigDecimals\" value=\"true\"/>\n" +
+                "    </javaTypeResolver>\n" +
+                "    <javaModelGenerator targetPackage=\"org.yobatis.entity\" targetProject=\"/yobatis/src/main/java\"/>\n" +
+                "    <sqlMapGenerator targetPackage=\"mybatis-mappers\" targetProject=\"/yobatis/src/main/resources\"/>\n" +
+                "    <javaClientGenerator type=\"XMLMAPPER\" targetPackage=\"org.yobatis.dao\" targetProject=\"/yobatis1/src/main/java\"/>\n" +
+                "</generatorConfiguration>";
+        when(file.open()).thenReturn(new ByteArrayInputStream(invalidConfig.getBytes()));
+        YobatisConfiguration.open(project);
+    }
+
+    @Test
+    public void syncMultiple() {
+        YobatisConfiguration configuration = YobatisConfiguration.open(project);
+        List<Table> tableList = Arrays.asList(new Table("table1"), new Table("tabl2"));
+        Set<String> names = tableList.stream().map(Table::getName).collect(Collectors.toSet());
+        configuration.sync(tableList);
+        List<TableElement> list = configuration.listTableElementAsc();
+        assertEquals(2, list.size());
+        list.forEach(e -> {
+            assertFalse(e.isEnabled());
+            assertTrue(names.contains(e.getName()));
+        });
+
+        configuration.sync(tableList);
+        list = configuration.listTableElementAsc();
+        assertEquals(2, list.size());
+        list.forEach(e -> {
+            assertFalse(e.isEnabled());
+            assertTrue(names.contains(e.getName()));
+        });
+    }
+
+    @Test
+    public void syncAfterChanged() {
+        addTable("table1", true);
+        addTable("table2", false);
+        YobatisConfiguration configuration = YobatisConfiguration.open(project);
+        configuration.update(tableElementList);
+        List<Table> tableList = Arrays.asList(new Table("table1"), new Table("table3"));
+        configuration.sync(tableList);
+        Set<String> names = tableList.stream().map(Table::getName).collect(Collectors.toSet());
+        List<TableElement> list = configuration.listTableElementAsc();
+        assertEquals(2, list.size());
+        list.forEach(e -> {
+            if (e.getName().equals("table1")) {
+                assertTrue(e.isEnabled());
+            } else {
+                assertFalse(e.isEnabled());
+            }
+            assertTrue(names.contains(e.getName()));
+        });
     }
 
 }

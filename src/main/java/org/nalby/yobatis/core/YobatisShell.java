@@ -1,5 +1,7 @@
 package org.nalby.yobatis.core;
 
+import org.nalby.yobatis.core.database.MysqlDatabaseMetadataProvider;
+import org.nalby.yobatis.core.database.Table;
 import org.nalby.yobatis.core.log.Logger;
 import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.mybatis.Settings;
@@ -21,13 +23,28 @@ public class YobatisShell {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(YobatisShell.class);
 
-
     private YobatisShell(YobatisConfiguration configuration, Project project) {
         this.configuration = configuration;
         this.project = project;
     }
 
+    public List<TableElement> onRefreshClicked() {
+        Settings settings = this.configuration.getSettings();
+        MysqlDatabaseMetadataProvider.Builder builder = MysqlDatabaseMetadataProvider.builder();
+        builder.setConnectorJarPath(settings.getConnectorPath());
+        builder.setDriverClassName("com.mysql.jdbc.Driver");
+        builder.setUrl(settings.getUrl());
+        builder.setUsername(settings.getUser());
+        builder.setPassword(settings.getPassword());
+        MysqlDatabaseMetadataProvider provider = builder.build();
+        List<Table> tableList = provider.fetchTables();
+        this.configuration.sync(tableList);
+        return this.configuration.listTableElementAsc();
+    }
+
     public void onSaveClicked(Settings settings) {
+        this.configuration.update(settings);
+        this.configuration.flush();
     }
 
     public void onGenerateClicked(List<TableElement> tableElementList) {
