@@ -40,12 +40,21 @@ public class Criteria extends TopLevelClass implements YobatisUnit {
         for (IntrospectedColumn column : table.getColumns()) {
             criteria.addImportedType(column.getFullyQualifiedJavaType());
             for (CriteriaMethodType methodType : CriteriaMethodType.values()) {
-                if (!methodType.isColumnRelevant()) {
-                    continue;
+                if (methodType.isColumnRelevant() && !methodType.isStatic()) {
+                    Method method = methodFactory.create(methodType.getType(), column);
+                    if (method != null) {
+                        criteria.addMethod(method);
+                    }
                 }
-                Method method = methodFactory.create(methodType.getType(), column);
-                if (method != null) {
-                    criteria.addMethod(method);
+            }
+        }
+        for (IntrospectedColumn column : table.getColumns()) {
+            for (CriteriaMethodType methodType : CriteriaMethodType.values()) {
+                if  (methodType.isStatic()) {
+                    Method method = methodFactory.create(methodType.getType(), column);
+                    if (method != null) {
+                        criteria.addMethod(method);
+                    }
                 }
             }
         }

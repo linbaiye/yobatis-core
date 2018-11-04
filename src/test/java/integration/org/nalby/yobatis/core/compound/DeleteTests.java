@@ -2,11 +2,13 @@ package integration.org.nalby.yobatis.core.compound;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mybatis.spring.MyBatisSystemException;
 import sandbox.alltype.entity.CompoundKeyTable;
 import sandbox.alltype.entity.criteria.CompoundKeyTableCriteria;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DeleteTests extends SetupClass {
@@ -16,17 +18,17 @@ public class DeleteTests extends SetupClass {
         clearTable("compound_key_table");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void deleteByNullPk() {
-        compoundKeyTableDao.delete((CompoundKeyTable)null);
+        assertEquals(0, compoundKeyTableDao.delete((CompoundKeyTable)null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = MyBatisSystemException.class)
     public void deleteByNullCriteria() {
         compoundKeyTableDao.delete((CompoundKeyTableCriteria)null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = MyBatisSystemException.class)
     public void deleteByEmptyCriteria() {
         compoundKeyTableDao.delete(new CompoundKeyTableCriteria());
     }

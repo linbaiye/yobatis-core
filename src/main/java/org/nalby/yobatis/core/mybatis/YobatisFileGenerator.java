@@ -24,8 +24,8 @@ import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.nalby.yobatis.core.exception.InvalidMybatisGeneratorConfigException;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
-import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Project;
 import org.nalby.yobatis.core.util.TextUtil;
@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 

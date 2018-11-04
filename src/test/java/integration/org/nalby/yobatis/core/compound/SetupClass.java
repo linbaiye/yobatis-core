@@ -32,7 +32,6 @@ public abstract class SetupClass extends AbstractSpringSetup {
         return table;
     }
 
-
     protected void insertViaConnection(int pk1, String pk2, String f3) {
         try (Connection connection = masterDataSource.getConnection()) {
             connection.prepareStatement("insert into compound_key_table(pk1, pk2, f3) values ( " + pk1 +
@@ -59,7 +58,6 @@ public abstract class SetupClass extends AbstractSpringSetup {
             throw new RuntimeException(e);
         }
     }
-
 
 
     protected void assertRecord(CompoundKeyTable table, Integer pk1, String pk2, String f3) {

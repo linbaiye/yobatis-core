@@ -45,8 +45,9 @@ public class Dao extends Interface implements YobatisUnit {
         MethodFactory methodFactory = DaoMethodFactory.getInstance(yobatisTable);
         Dao dao = new Dao(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.DAO),
                 yobatisTable.getPathForGeneratedFile(YobatisIntrospectedTable.ClassType.DAO));
-        for (String name : DaoMethodName.listMethodNamesByGroup(DaoMethodName.DAO_GROUP)) {
-            dao.addMethod(methodFactory.create(name));
+
+        for (DaoMethodName daoMethodName : DaoMethodName.values()) {
+            dao.addMethod(methodFactory.create(daoMethodName.getName()));
         }
         dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY));
         dao.addImportedType(yobatisTable.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY));

@@ -19,7 +19,7 @@ public enum ConstantMethod {
             new String[] {"if (oredCriteria.size() > 0) {",
                 "return true;",
                 "}",
-                "throw new IllegalArgumentException(\"Empty criteria is not allowed.\");",
+                "throw new RuntimeException(\"Empty criteria is not allowed.\");",
             },
             new Parameter[] {}
     ),

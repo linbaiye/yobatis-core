@@ -1,6 +1,5 @@
 package org.nalby.yobatis.core.mybatis.method;
 
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
@@ -44,27 +43,14 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
             return deleteByCriteria();
         } else if (DaoMethodName.INSERT.nameEquals(name)) {
             return insert();
-        } else if (DaoMethodName.NOT_NULL.nameEquals(name)) {
-            return notNull();
         }
         throw new IllegalArgumentException("Unknown name.");
     }
 
-    private Method notNull() {
-        Method method = new Method("notNull");
-        method.setVisibility(JavaVisibility.PRIVATE);
-        method.addParameter(makeParam(new FullyQualifiedJavaType("Object"), "obj"));
-        method.addParameter(makeParam(new FullyQualifiedJavaType("String"), "msg"));
-        method.addBodyLine("if (obj == null) {");
-        method.addBodyLine("throw new IllegalArgumentException(msg);");
-        method.addBodyLine("}");
-        return method;
-    }
 
     private Method insert() {
         Method method = signatureFactory.create(DaoMethodName.INSERT.getName());
         return completeMethod(method, new String[]{
-                "notNull(record, \"record must not be null.\");",
                 "return sqlSessionTemplate.insert(NAMESPACE + \"" + DaoMethodName.INSERT.getName() + "\", record);"
         });
     }
@@ -72,7 +58,6 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
     private Method selectOne() {
         Method method = signatureFactory.create(DaoMethodName.SELECT_BY_PK.getName());
         return completeMethod(method, new String[]{
-                "notNull(pk, \"pk must not be null.\");",
                 "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + DaoMethodName.SELECT_BY_PK.getName() + "\", pk);"
         });
     }
@@ -81,7 +66,6 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
     private Method selectOneByCriteria() {
         Method method = signatureFactory.create(DaoMethodName.SELECT_BY_CRITERIA.getName());
         return completeMethod(method, new String[]{
-                "notNull(criteria, \"criteria must not be null.\");",
                 "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + DaoMethodName.SELECT_BY_CRITERIA.getName() + "\", criteria);"
         });
     }
@@ -89,15 +73,13 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
     private Method selectList() {
         Method method = signatureFactory.create(DaoMethodName.SELECT_LIST.getName());
         return completeMethod(method, new String[]{
-                "notNull(criteria, \"criteria must not be null.\");",
-                "return sqlSessionTemplate.selectList(NAMESPACE + \"" + DaoMethodName.SELECT_BY_CRITERIA.getName() + "\", criteria);"
+                "return sqlSessionTemplate.selectList(NAMESPACE + \"" + DaoMethodName.SELECT_LIST.getName() + "\", criteria);"
         });
     }
 
     private Method count() {
         Method method = signatureFactory.create(DaoMethodName.COUNT.getName());
         return completeMethod(method, new String[]{
-                "notNull(criteria, \"criteria must not be null.\");",
                 "return sqlSessionTemplate.selectOne(NAMESPACE + \"" + DaoMethodName.COUNT.getName() + "\", criteria);"
         });
     }
@@ -106,7 +88,6 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
     private Method update() {
         Method method = signatureFactory.create(DaoMethodName.UPDATE_BY_PK.getName());
         return completeMethod(method, new String[]{
-                "notNull(record, \"record must not be null.\");",
                 "return sqlSessionTemplate.update(NAMESPACE + \"" + DaoMethodName.UPDATE_BY_PK.getName() + "\", record);"
         });
     }
@@ -114,8 +95,6 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
     private Method updateByCriteria() {
         Method method = signatureFactory.create(DaoMethodName.UPDATE_BY_CRITERIA.getName());
         return completeMethod(method, new String[]{
-                "notNull(record, \"record must not be null.\");",
-                "notNull(criteria, \"criteria must not be null.\");",
                 "Map<String, Object> param = new HashMap<>();",
                 "param.put(\"record\", record);",
                 "param.put(\"criteria\", criteria);",
@@ -126,7 +105,6 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
     private Method delete() {
         Method method = signatureFactory.create(DaoMethodName.DELETE_BY_PK.getName());
         return completeMethod(method, new String[]{
-                "notNull(pk, \"pk must not be null.\");",
                 "return sqlSessionTemplate.delete(NAMESPACE + \"" + DaoMethodName.DELETE_BY_PK.getName() + "\", pk);"
         });
     }
@@ -134,7 +112,6 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
     private Method deleteByCriteria() {
         Method method = signatureFactory.create(DaoMethodName.DELETE_BY_CRITERIA.getName());
         return completeMethod(method, new String[]{
-                "notNull(criteria, \"criteria must not be null.\");",
                 "return sqlSessionTemplate.delete(NAMESPACE + \"" + DaoMethodName.DELETE_BY_CRITERIA.getName() + "\", criteria);"
         });
     }

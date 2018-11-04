@@ -60,8 +60,8 @@ public class DaoImpl extends TopLevelClass implements YobatisUnit {
         daoImpl.addAnnotation("@Component(\"" + beanName + "\")");
 
         DaoImplMethodFactory methodFactory = DaoImplMethodFactory.getInstance(tableItem);
-        for (String name: DaoMethodName.listMethodNamesByGroup(DaoMethodName.DAO_IMPL_GROUP)) {
-            daoImpl.addMethod(methodFactory.create(name));
+        for (DaoMethodName daoMethodName : DaoMethodName.values()) {
+            daoImpl.addMethod(methodFactory.create(daoMethodName.getName()));
         }
 
 

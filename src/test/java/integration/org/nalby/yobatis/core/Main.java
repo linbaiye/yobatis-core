@@ -15,7 +15,7 @@ import org.nalby.yobatis.core.structure.Project;
 import java.util.LinkedList;
 import java.util.List;
 
-public class YobatisShellTests {
+public class Main {
 
     private Project project;
 
