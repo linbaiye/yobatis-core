@@ -3,6 +3,7 @@ package integration.org.nalby.yobatis.core.compound;
 import org.junit.Before;
 import org.junit.Test;
 import org.mybatis.spring.MyBatisSystemException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import sandbox.alltype.entity.CompoundKeyTable;
 import sandbox.alltype.entity.criteria.CompoundKeyTableCriteria;
 
@@ -18,7 +19,7 @@ public class DeleteTests extends SetupClass {
         clearTable("compound_key_table");
     }
 
-    @Test
+    @Test(expected = BadSqlGrammarException.class)
     public void deleteByNullPk() {
         assertEquals(0, compoundKeyTableDao.delete((CompoundKeyTable)null));
     }

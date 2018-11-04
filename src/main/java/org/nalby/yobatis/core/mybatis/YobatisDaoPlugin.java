@@ -49,6 +49,8 @@ public class YobatisDaoPlugin extends PluginAdapter {
     public void initialized(IntrospectedTable introspectedTable) {
         Expect.asTrue(introspectedTable.hasPrimaryKeyColumns(),
                 "table " + introspectedTable.getFullyQualifiedTableNameAtRuntime() + " has no primary key.");
+        generatedXmlFileList.clear();
+        additionalJavaFiles.clear();
         if (introspectedTable.hasBLOBColumns()) {
             introspectedTable.getBaseColumns().addAll(introspectedTable.getBLOBColumns());
             introspectedTable.getBLOBColumns().clear();

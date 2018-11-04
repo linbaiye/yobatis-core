@@ -71,8 +71,11 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
             xmlElement.addAttribute(new Attribute("id", XmlElementName.WHERE_CLAUSE.getName()));
         }
         addXmlComment(xmlElement);
-
-        xmlElement.addElement(ifElement("valid"));
+        if (forUpdate) {
+            xmlElement.addElement(ifElement("criteria.valid"));
+        } else {
+            xmlElement.addElement(ifElement("valid"));
+        }
 
         XmlElement choose = new XmlElement("choose");
         choose.addElement(whenElement("criterion.noValue", "and ${criterion.condition}"));
@@ -129,13 +132,14 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
         XmlElement xmlElement = new XmlElement("sql");
         xmlElement.addAttribute(new Attribute("id", XmlElementName.PAGING.getName()));
         addXmlComment(xmlElement);
-        XmlElement ifElement = ifElement("offset != null");
+        XmlElement ifElement = ifElement("limit != null");
+        ifElement.addElement(new TextElement("limit #{limit}"));
+        xmlElement.addElement(ifElement);
+
+        ifElement = ifElement("offset != null");
         ifElement.addElement(new TextElement("offset #{offset}"));
         xmlElement.addElement(ifElement);
 
-        ifElement = ifElement("limit != null");
-        ifElement.addElement(new TextElement("limit #{limit}"));
-        xmlElement.addElement(ifElement);
         return xmlElement;
     }
 
@@ -186,29 +190,26 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
     }
 
 
-    private void appendByPkClause(StringBuilder stringBuilder) {
+    private void appendByPkClause(XmlElement container) {
         List<IntrospectedColumn> pkColumns = table.getPrimaryKeyColumns();
         for (int i = 0; i < pkColumns.size(); i++) {
             IntrospectedColumn column = pkColumns.get(i);
             if (i > 0) {
-                stringBuilder.append("    and ");
-            }
-            stringBuilder.append(column.getActualColumnName());
-            stringBuilder.append(" = ");
-            stringBuilder.append(columnAsRightOperand(column));
-            if (i != pkColumns.size() - 1) {
-                stringBuilder.append("\n");
+                container.addElement(new TextElement("and " + column.getActualColumnName() + " = " + columnAsRightOperand(column)));
+            } else {
+                container.addElement(new TextElement(column.getActualColumnName() + " = " + columnAsRightOperand(column)));
             }
         }
     }
 
     private XmlElement selectByPk() {
         XmlElement xmlElement = selectElementTemplate(XmlElementName.SELECT_BY_PK.getName(), table.getPrimaryKey().getFullyQualifiedName());
-        xmlElement.addElement(new TextElement("select"));
-        xmlElement.addElement(includeElement(XmlElementName.BASE_COLUMN_LIST.getName()));
-        StringBuilder stringBuilder = new StringBuilder("from " + table.getTableName() + " where\n    ");
-        appendByPkClause(stringBuilder);
-        xmlElement.addElement(new TextElement(stringBuilder.toString()));
+        XmlElement ifelement = ifElement("_parameter != null");
+        ifelement.addElement(new TextElement("select"));
+        ifelement.addElement(includeElement(XmlElementName.BASE_COLUMN_LIST.getName()));
+        ifelement.addElement(new TextElement("from " + table.getTableName() + " where"));
+        appendByPkClause(ifelement);
+        xmlElement.addElement(ifelement);
         return xmlElement;
     }
 
@@ -273,9 +274,8 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
                 set.addElement(ifForUpdate(column, null));
             }
         }
-        StringBuilder stringBuilder = new StringBuilder("where ");
-        appendByPkClause(stringBuilder);
-        update.addElement(new TextElement(stringBuilder.toString()));
+        update.addElement(new TextElement("where"));
+        appendByPkClause(update);
         return update;
     }
 
@@ -337,25 +337,20 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
         return xmlElement;
     }
 
-    private XmlElement deleteTemplate(String id, String param) {
-        XmlElement delete = xmlTemplate("delete", id);
-        delete.addAttribute(new Attribute("parameterType", param));
-        delete.addElement(new TextElement("delete from " + table.getTableName()));
-        return delete;
-    }
-
     private XmlElement deleteByPk() {
-        XmlElement delete = deleteTemplate(XmlElementName.DELETE_BY_PK.getName(),
-                table.getPrimaryKey().getFullyQualifiedName());
-        StringBuilder stringBuilder = new StringBuilder("where ");
-        appendByPkClause(stringBuilder);
-        delete.addElement(new TextElement(stringBuilder.toString()));
+        XmlElement delete = xmlTemplate("delete", XmlElementName.DELETE_BY_PK.getName());
+        delete.addAttribute(new Attribute("parameterType", table.getPrimaryKey().getFullyQualifiedName()));
+        XmlElement ifElement = ifElement("_parameter != null");
+        ifElement.addElement(new TextElement("delete from " + table.getTableName() + " where"));
+        appendByPkClause(ifElement);
+        delete.addElement(ifElement);
         return delete;
     }
 
     private XmlElement deleteByCriteria() {
-        XmlElement delete = deleteTemplate(XmlElementName.DELETE_BY_CRITERIA.getName(),
-                table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA).getFullyQualifiedName());
+        XmlElement delete = xmlTemplate("delete", XmlElementName.DELETE_BY_CRITERIA.getName());
+        delete.addAttribute(new Attribute("parameterType", table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA).getFullyQualifiedName()));
+        delete.addElement(new TextElement("delete from " + table.getTableName()));
         delete.addElement(includeElement("WHERE_CLAUSE"));
         return delete;
     }

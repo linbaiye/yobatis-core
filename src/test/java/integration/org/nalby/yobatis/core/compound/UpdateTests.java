@@ -1,7 +1,9 @@
 package integration.org.nalby.yobatis.core.compound;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mybatis.spring.MyBatisSystemException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import sandbox.alltype.entity.CompoundKeyTable;
 import sandbox.alltype.entity.criteria.CompoundKeyTableCriteria;
 
@@ -10,9 +12,14 @@ import static org.junit.Assert.assertTrue;
 
 public class UpdateTests extends SetupClass {
 
-    @Test
+    @Before
+    public void setup() {
+        clearTable("compound_key_table");
+    }
+
+    @Test(expected = BadSqlGrammarException.class)
     public void updateByNullPk() {
-        assertEquals(0, compoundKeyTableDao.update(null));
+        compoundKeyTableDao.update(null);
     }
 
     @Test(expected = MyBatisSystemException.class)

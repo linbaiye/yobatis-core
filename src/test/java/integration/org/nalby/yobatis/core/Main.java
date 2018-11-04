@@ -39,13 +39,7 @@ public class Main {
         TableElement tableElement = new TableElement("all_data_types", true);
         tableElementList.add(tableElement);
         tableElementList.add(new TableElement("compound_key_table", true));
+        tableElementList.add(new TableElement("autoinc_pk_table", true));
         yobatisShell.onGenerateClicked(tableElementList);
-
-//        project.listFolders().forEach(e -> {
-//            System.out.println(e.path());
-//        });
-//        project.listFiles().forEach(e -> {
-//            System.out.println(e.path());
-//        });
     }
 }

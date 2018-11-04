@@ -8,6 +8,8 @@ import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.XmlFormatter;
 import org.mybatis.generator.api.dom.DefaultXmlFormatter;
 import org.mybatis.generator.api.dom.xml.*;
+import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.GeneratorEntityResolver;
@@ -34,6 +36,9 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit  {
         this.pathToPut = pathToPut;
     }
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlMapper.class);
+
+
     @Override
     public String getPathToPut() {
         return pathToPut;
@@ -44,8 +49,7 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit  {
             if (el instanceof XmlElement) {
                 for (Attribute attribute : ((XmlElement) el).getAttributes()) {
                     if ("id".equals(attribute.getName()) && attribute.getValue() != null &&
-                            element.attribute("id") != null &&
-                            attribute.getValue().equals(element.attribute("id").getValue())) {
+                            attribute.getValue().equals(element.attributeValue("id"))) {
                         return true;
                     }
                 }
@@ -56,6 +60,7 @@ public class XmlMapper extends GeneratedXmlFile implements YobatisUnit  {
 
     @Override
     public void merge(String fileContent) throws InvalidUnitException {
+        LOGGER.debug("Merging :{}.", this.pathToPut);
         try (InputStream inputStream = new ByteArrayInputStream(fileContent.getBytes())) {
             SAXReader saxReader = new SAXReader();
             saxReader.setEntityResolver(GeneratorEntityResolver.ENTITY_RESOLVER);
