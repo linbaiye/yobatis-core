@@ -11,6 +11,7 @@ import org.nalby.yobatis.core.mybatis.YobatisFileGenerator;
 import org.nalby.yobatis.core.structure.Project;
 
 import java.io.ByteArrayInputStream;
+import java.util.Collections;
 import java.util.List;
 
 public class YobatisShell {
@@ -28,8 +29,11 @@ public class YobatisShell {
         this.project = project;
     }
 
-    public List<TableElement> onRefreshClicked() {
+    public List<TableElement> loadTables() {
         Settings settings = this.configuration.getSettings();
+        if (!settings.isDatabaseConfigured()) {
+            return Collections.emptyList();
+        }
         MysqlDatabaseMetadataProvider.Builder builder = MysqlDatabaseMetadataProvider.builder();
         builder.setConnectorJarPath(settings.getConnectorPath());
         builder.setDriverClassName("com.mysql.jdbc.Driver");
@@ -42,12 +46,16 @@ public class YobatisShell {
         return this.configuration.listTableElementAsc();
     }
 
-    public void onSaveClicked(Settings settings) {
+    public void save(Settings settings) {
         this.configuration.update(settings);
         this.configuration.flush();
     }
 
-    public void onGenerateClicked(List<TableElement> tableElementList) {
+    public Settings loadSettings() {
+        return this.configuration.getSettings();
+    }
+
+    public void generate(List<TableElement> tableElementList) {
         configuration.update(tableElementList);
         String config = configuration.asStringWithoutDisabledTables();
         LOGGER.debug("Got config:{}.", config);

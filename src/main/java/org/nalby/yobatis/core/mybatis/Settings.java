@@ -1,5 +1,7 @@
 package org.nalby.yobatis.core.mybatis;
 
+import org.nalby.yobatis.core.util.TextUtil;
+
 public class Settings {
     private String url;
     private String user;
@@ -82,4 +84,9 @@ public class Settings {
     public void setConnectorPath(String connectorPath) {
         this.connectorPath = connectorPath;
     }
+
+    public boolean isDatabaseConfigured() {
+        return !TextUtil.isEmpty(url) && !TextUtil.isEmpty(password) && !TextUtil.isEmpty(user) && !TextUtil.isEmpty(connectorPath);
+    }
+
 }

@@ -34,12 +34,12 @@ public class Main {
     }
 
     @Test
-    public void all() {
+    public void generate() {
         TableElement tableElement = new TableElement("all_data_types", true);
         tableElementList.add(tableElement);
         tableElementList.add(new TableElement("compound_key_table", true));
         tableElementList.add(new TableElement("autoinc_pk_table", true));
-        yobatisShell.onGenerateClicked(tableElementList);
+        yobatisShell.generate(tableElementList);
     }
 
     @Test
@@ -57,8 +57,8 @@ public class Main {
     }
 
     @Test
-    public void onRefresh() {
-        List<TableElement> list = yobatisShell.onRefreshClicked();
+    public void loadTables() {
+        List<TableElement> list = yobatisShell.loadTables();
         list.forEach(e -> {
             System.out.println(e.getName());
         });
