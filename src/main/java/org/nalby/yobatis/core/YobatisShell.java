@@ -35,7 +35,7 @@ public class YobatisShell {
             return Collections.emptyList();
         }
         MysqlDatabaseMetadataProvider.Builder builder = MysqlDatabaseMetadataProvider.builder();
-        builder.setConnectorJarPath(settings.getConnectorPath());
+        builder.setConnectorJarPath(project.getAbsPathOfSqlConnector());
         builder.setDriverClassName("com.mysql.jdbc.Driver");
         builder.setUrl(settings.getUrl());
         builder.setUsername(settings.getUser());

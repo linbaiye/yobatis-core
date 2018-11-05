@@ -86,7 +86,7 @@ public class Settings {
     }
 
     public boolean isDatabaseConfigured() {
-        return !TextUtil.isEmpty(url) && !TextUtil.isEmpty(password) && !TextUtil.isEmpty(user) && !TextUtil.isEmpty(connectorPath);
+        return !TextUtil.isEmpty(url) && !TextUtil.isEmpty(password) && !TextUtil.isEmpty(user);
     }
 
 }

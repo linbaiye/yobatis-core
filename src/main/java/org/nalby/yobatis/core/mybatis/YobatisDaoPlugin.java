@@ -22,6 +22,8 @@ import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Document;
+import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactory;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactoryImpl;
 import org.nalby.yobatis.core.mybatis.mapper.XmlMapperProxy;
@@ -38,6 +40,9 @@ public class YobatisDaoPlugin extends PluginAdapter {
 
     private JavaFileFactory javaFileFactory = JavaFileFactoryImpl.getInstance();
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(YobatisDaoPlugin.class);
+
+
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
         YobatisIntrospectedTable yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
@@ -51,11 +56,12 @@ public class YobatisDaoPlugin extends PluginAdapter {
                 "table " + introspectedTable.getFullyQualifiedTableNameAtRuntime() + " has no primary key.");
         generatedXmlFileList.clear();
         additionalJavaFiles.clear();
+        YobatisIntrospectedTable yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
+        LOGGER.info("Generating files for table: {}.", yobatisIntrospectedTable.getTableName());
         if (introspectedTable.hasBLOBColumns()) {
             introspectedTable.getBaseColumns().addAll(introspectedTable.getBLOBColumns());
             introspectedTable.getBLOBColumns().clear();
         }
-        YobatisIntrospectedTable yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
         additionalJavaFiles.add(javaFileFactory.baseCriteria(yobatisIntrospectedTable));
         additionalJavaFiles.add(javaFileFactory.criteria(yobatisIntrospectedTable));
         additionalJavaFiles.add(javaFileFactory.dao(yobatisIntrospectedTable));
@@ -70,11 +76,13 @@ public class YobatisDaoPlugin extends PluginAdapter {
 
     @Override
     public List<GeneratedXmlFile> contextGenerateAdditionalXmlFiles(IntrospectedTable introspectedTable) {
+        LOGGER.debug("Generated {} xml files for this run.", generatedXmlFileList.size());
         return generatedXmlFileList;
     }
 
     @Override
-    public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles() {
+    public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
+        LOGGER.debug("Generated {} java files for this run.", additionalJavaFiles.size());
         return additionalJavaFiles;
     }
 

@@ -5,7 +5,6 @@
     <context id="yobatis" targetRuntime="MyBatis3">
         <plugin type="org.nalby.yobatis.core.mybatis.YobatisDaoPlugin"/>
         <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/mybatis?characterEncoding=utf-8" userId="root" password="root"/>
-        <!--<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/mybatis?characterEncoding=utf-8" userId="root" password="root"/>-->
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>

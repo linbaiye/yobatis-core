@@ -20,10 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(MysqlDatabaseMetadataProvider.class)
@@ -92,4 +90,12 @@ public class YobatisShellTests {
         when(yobatisShell.loadTables()).thenReturn(tableElementList);
         assertEquals(1, ret.size());
     }
+
+    @Test
+    public void save() {
+        yobatisShell.save(settings);
+        verify(yobatisConfiguration, timeout(1)).update(settings);
+        verify(yobatisConfiguration, timeout(1)).flush();
+    }
+
 }

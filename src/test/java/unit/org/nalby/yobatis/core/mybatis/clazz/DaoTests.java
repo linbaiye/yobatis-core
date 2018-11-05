@@ -26,8 +26,6 @@ public class DaoTests extends AbstractYobatisTableSetup {
         String current = "current";
         dao.merge(current);
         assertEquals(current, dao.getFormattedContent());
-
         assertEquals("/yobatisdao.java", dao.getPathToPut());
-
     }
 }

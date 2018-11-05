@@ -34,6 +34,16 @@ public class Main {
     }
 
     @Test
+    public void debug() {
+        TableElement tableElement = new TableElement("operate_record", true);
+        tableElementList.add(tableElement);
+        tableElementList.add(new TableElement("overdue_order", true));
+        tableElementList.add(new TableElement("payout_bank", true));
+        yobatisShell.generate(tableElementList);
+    }
+
+
+    @Test
     public void generate() {
         TableElement tableElement = new TableElement("all_data_types", true);
         tableElementList.add(tableElement);
