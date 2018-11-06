@@ -36,4 +36,12 @@ public class TextUtilTests {
 		String str = TextUtil.asString(new ByteArrayInputStream(tmp.getBytes()));
 		assertEquals(tmp, str);
 	}
+
+	@Test
+	public void appendTest() {
+		assertEquals("hello?socketTimeout=3000&connectTimeout=1000", TextUtil.addTimeoutToUrlIfAbsent("hello"));
+		assertEquals("hello?param1=ss&socketTimeout=3000&connectTimeout=1000", TextUtil.addTimeoutToUrlIfAbsent("hello?param1=ss"));
+		assertEquals("hello?socketTimeout=4000&connectTimeout=1000", TextUtil.addTimeoutToUrlIfAbsent("hello?socketTimeout=4000"));
+		assertEquals("hello?socketTimeout=4000&connectTimeout=5000", TextUtil.addTimeoutToUrlIfAbsent("hello?socketTimeout=4000&connectTimeout=5000"));
+	}
 }

@@ -218,6 +218,14 @@ public class YobatisConfigurationTests {
     }
 
     @Test
+    public void appendTimeout() {
+        YobatisConfiguration configure = YobatisConfiguration.open(project);
+        String content = configure.asStringWithoutDisabledTables();
+        assertTrue(content.contains("socketTimeout=3000"));
+        assertTrue(content.contains("connectTimeout=1000"));
+    }
+
+    @Test
     public void asStringWithoutDisabledTables() {
         addTable("table2", false);
         addTable("table1", true);
@@ -290,4 +298,26 @@ public class YobatisConfigurationTests {
         });
     }
 
+    @Test
+    public void disableAllWhenNoTables() {
+        YobatisConfiguration configuration = YobatisConfiguration.open(project);
+        // Should work without tables;
+        List<TableElement> ret = configuration.disableAll();
+        assertEquals(0, ret.size());
+    }
+
+    @Test
+    public void disableAll() {
+        YobatisConfiguration configuration = YobatisConfiguration.open(project);
+        addTable("table1", true);
+        addTable("table2", false);
+        addTable("table3", true);
+        configuration.update(tableElementList);
+        // Should work without tables;
+        List<TableElement> ret = configuration.disableAll();
+        ret.forEach(e -> assertFalse(e.isEnabled()));
+
+        ret = configuration.disableAll();
+        ret.forEach(e -> assertFalse(e.isEnabled()));
+    }
 }

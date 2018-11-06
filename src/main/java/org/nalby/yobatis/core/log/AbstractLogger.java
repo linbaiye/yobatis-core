@@ -39,7 +39,7 @@ public abstract class AbstractLogger implements Logger {
 
 	abstract protected void wirteToConsole(String msg);
 
-	protected String formatArgs (String format, Object ... args) {
+	protected String formatArgs(String format, Object ... args) {
 		if (format == null) {
 			return "";
 		}
@@ -77,13 +77,15 @@ public abstract class AbstractLogger implements Logger {
 		return String.format(format, (Object[])strings);
 	}
 
-
-	private void formatAndWrite(String level, String format, Object ... args) {
+	protected String format(String level, String format, Object ... args) {
 		String tmp = formatArgs(format, args);
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
 		String timestamp = simpleDateFormat.format(new Date());
-		String msg =  timestamp + " " + level + " " + className + " - " + tmp + "\n";
-		wirteToConsole(msg);
+		return  timestamp + " " + level + " " + className + " - " + tmp + "\n";
+	}
+
+	private void formatAndWrite(String level, String format, Object ... args) {
+		wirteToConsole(format(level, format, args));
 	}
 
 	@Override

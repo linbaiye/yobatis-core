@@ -140,6 +140,17 @@ public class YobatisConfiguration {
         return list;
     }
 
+    public List<TableElement> disableAll() {
+        List<Node> nodeList = document.selectNodes("//context/table/property[@name='enable']");
+        nodeList.forEach(e -> {
+            Node node = e.selectSingleNode("@value");
+            if (node != null) {
+                node.setText("false");
+            }
+        });
+        return listTableElementAsc();
+    }
+
     public void flush() {
         File file = project.createFile(FILE_NAME);
         file.write(document.asXML());
@@ -157,8 +168,17 @@ public class YobatisConfiguration {
         upsert("//classPathEntry/@location", setting.getConnectorPath());
     }
 
+    private String appendTimeoutIfAbsent() {
+        String origin = getValue("//context/jdbcConnection/@connectionURL");
+        String newUrl = TextUtil.addTimeoutToUrlIfAbsent(origin);
+        upsert("//context/jdbcConnection/@connectionURL", newUrl);
+        return origin;
+    }
+
     public String asStringWithoutDisabledTables() {
+        String orginUrl = appendTimeoutIfAbsent();
         String content = this.document.asXML();
+        upsert("//context/jdbcConnection/@connectionURL", orginUrl);
         try {
             Document document = buildSaxReader().read(new ByteArrayInputStream(content.getBytes()));
             List<Node> nodeList = document.selectNodes("//context/table/property[@name='enable' and @value='false']");

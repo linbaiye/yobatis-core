@@ -28,7 +28,7 @@ public class Main {
     public void setup() {
         root = LocalFolder.openRoot();
         project = new LocalProject(root);
-        yobatisShell = YobatisShell.open(project);
+        yobatisShell = YobatisShell.newInstance(project);
         tableElementList = new LinkedList<>();
         AbstractLogger.defaultLevel = AbstractLogger.LogLevel.DEBUG;
     }
@@ -68,7 +68,7 @@ public class Main {
 
     @Test
     public void loadTables() {
-        List<TableElement> list = yobatisShell.loadTables();
+        List<TableElement> list = yobatisShell.syncWithDatabase();
         list.forEach(e -> {
             System.out.println(e.getName());
         });

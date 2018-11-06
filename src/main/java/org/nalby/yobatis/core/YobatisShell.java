@@ -16,8 +16,6 @@ import java.util.List;
 
 public class YobatisShell {
 
-    private static YobatisShell shell = null;
-
     private YobatisConfiguration configuration;
 
     private Project project;
@@ -29,7 +27,24 @@ public class YobatisShell {
         this.project = project;
     }
 
+    /**
+     * Load tables from current configuration.
+     * @return
+     */
     public List<TableElement> loadTables() {
+        return this.configuration.listTableElementAsc();
+    }
+
+    public List<TableElement> disableAll() {
+        return this.configuration.disableAll();
+    }
+
+    /**
+     * Sync tables' presence with current configuration, existent 'enable' values will be
+     * preserved.
+     * @return tables after combining.
+     */
+    public List<TableElement> syncWithDatabase() {
         Settings settings = this.configuration.getSettings();
         if (!settings.isDatabaseConfigured()) {
             return Collections.emptyList();
@@ -46,16 +61,37 @@ public class YobatisShell {
         return this.configuration.listTableElementAsc();
     }
 
+    /**
+     * Save settings.
+     * @param settings
+     */
     public void save(Settings settings) {
-        this.configuration.update(settings);
-        this.configuration.flush();
+        if (settings != null) {
+            this.configuration.update(settings);
+            this.configuration.flush();
+        }
     }
 
     public Settings loadSettings() {
         return this.configuration.getSettings();
     }
 
+    /**
+     * Generate files according to tables in tableElementList,
+     * only enabled table will take effect.
+     * @param tableElementList
+     */
     public void generate(List<TableElement> tableElementList) {
+        if (tableElementList == null || tableElementList.isEmpty()) {
+            LOGGER.info("No table selected.");
+            return;
+        }
+        final int[] count = {0};
+        tableElementList.forEach(e -> count[0] += e.isEnabled() ? 1 : 0);
+        if (count[0] == 0) {
+            LOGGER.info("No table selected.");
+            return;
+        }
         configuration.update(tableElementList);
         String config = configuration.asStringWithoutDisabledTables();
         LOGGER.debug("Got config:{}.", config);
@@ -64,11 +100,7 @@ public class YobatisShell {
         generator.mergeAndWrite();
     }
 
-    public static synchronized YobatisShell open(Project project) {
-        if (shell != null) {
-            return shell;
-        }
-        shell = new YobatisShell(YobatisConfiguration.open(project), project);
-        return shell;
+    public static synchronized YobatisShell newInstance(Project project) {
+        return new YobatisShell(YobatisConfiguration.open(project), project);
     }
 }

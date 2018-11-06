@@ -113,17 +113,7 @@ public class MysqlDatabaseMetadataProvider extends DatabaseMetadataProvider {
 
 			try {
 				Class.forName(driverClassName);
-				String timedoutUrl = url;
-				if (!timedoutUrl.contains("socketTimeout")) {
-					if (timedoutUrl.contains("?")) {
-						timedoutUrl = timedoutUrl + "&socketTimeout=10000";
-					} else {
-						timedoutUrl = timedoutUrl + "?socketTimeout=10000";
-					}
-				}
-				if (!timedoutUrl.contains("connectTimeout")) {
-					timedoutUrl = timedoutUrl + "&connectTimeout=2000";
-				}
+				String timedoutUrl = TextUtil.addTimeoutToUrlIfAbsent(url);
 				return new MysqlDatabaseMetadataProvider(username, password, timedoutUrl, driverClassName, connectorJarPath);
 			} catch (Exception e) {
 				throw new InvalidSqlConfigException(e);

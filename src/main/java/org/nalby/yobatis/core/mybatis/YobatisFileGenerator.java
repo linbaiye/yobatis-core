@@ -83,6 +83,9 @@ public class YobatisFileGenerator {
         });
     }
 
+    /**
+     * Merge current files with generated files and write to disk.
+     */
     public void mergeAndWrite() {
         mergeFiles();
         writeFiles();

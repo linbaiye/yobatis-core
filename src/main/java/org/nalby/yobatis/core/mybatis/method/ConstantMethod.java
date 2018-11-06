@@ -299,7 +299,7 @@ public enum ConstantMethod {
     ),
     HAS_COLUMN(
             "hasColumn", "boolean", JavaVisibility.PROTECTED,
-            new String[] {},
+            new String[] {"return false;"},
             new Parameter[] {new Parameter(new FullyQualifiedJavaType("String"), "column")}
     ),
     ADD_ORDER_BY(

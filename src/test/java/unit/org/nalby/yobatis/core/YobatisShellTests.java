@@ -39,8 +39,8 @@ public class YobatisShellTests {
 
     private Settings settings;
 
-    List<TableElement> tableElementList;
-    List<Table> tableList;
+    private List<TableElement> tableElementList;
+    private List<Table> tableList;
 
     private void constructShell() {
         Constructor[] constructors = YobatisShell.class.getDeclaredConstructors();
@@ -62,6 +62,7 @@ public class YobatisShellTests {
         Mockito.when(MysqlDatabaseMetadataProvider.builder()).thenReturn(builder);
         databaseMetadataProvider = mock(MysqlDatabaseMetadataProvider.class);
         when(builder.build()).thenReturn(databaseMetadataProvider);
+
         settings = new Settings();
         when(yobatisConfiguration.getSettings()).thenReturn(settings);
         constructShell();
@@ -72,7 +73,7 @@ public class YobatisShellTests {
     @Test
     public void dbNotConfigured() {
         when(yobatisConfiguration.getSettings()).thenReturn(settings);
-        List<TableElement> tableElementList = yobatisShell.loadTables();
+        List<TableElement> tableElementList = yobatisShell.syncWithDatabase();
         assertTrue(tableElementList.isEmpty());
     }
 
@@ -86,14 +87,18 @@ public class YobatisShellTests {
         when(yobatisConfiguration.listTableElementAsc()).thenReturn(tableElementList);
         TableElement tableElement = new TableElement("table1", true);
         tableElementList.add(tableElement);
-        List<TableElement> ret = yobatisShell.loadTables();
-        when(yobatisShell.loadTables()).thenReturn(tableElementList);
+        List<TableElement> ret = yobatisShell.syncWithDatabase();
+        when(yobatisShell.syncWithDatabase()).thenReturn(tableElementList);
         assertEquals(1, ret.size());
     }
 
     @Test
     public void save() {
         yobatisShell.save(settings);
+        verify(yobatisConfiguration, timeout(1)).update(settings);
+        verify(yobatisConfiguration, timeout(1)).flush();
+
+        yobatisShell.save(null);
         verify(yobatisConfiguration, timeout(1)).update(settings);
         verify(yobatisConfiguration, timeout(1)).flush();
     }
