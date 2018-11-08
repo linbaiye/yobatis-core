@@ -49,6 +49,7 @@ public class Main {
         tableElementList.add(tableElement);
         tableElementList.add(new TableElement("compound_key_table", true));
         tableElementList.add(new TableElement("autoinc_pk_table", true));
+        tableElementList.add(new TableElement("all_key_table", true));
         yobatisShell.generate(tableElementList);
     }
 

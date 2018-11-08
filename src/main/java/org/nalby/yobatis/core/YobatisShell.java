@@ -39,6 +39,7 @@ public class YobatisShell {
         return this.configuration.disableAll();
     }
 
+
     /**
      * Sync tables' presence with current configuration, existent 'enable' values will be
      * preserved.
@@ -57,6 +58,7 @@ public class YobatisShell {
         builder.setPassword(settings.getPassword());
         MysqlDatabaseMetadataProvider provider = builder.build();
         List<Table> tableList = provider.fetchTables();
+        LOGGER.info("Found {} table{}.", tableList.size(), tableList.size() > 0 ? "s" : "");
         this.configuration.sync(tableList);
         return this.configuration.listTableElementAsc();
     }
@@ -67,6 +69,7 @@ public class YobatisShell {
      */
     public void save(Settings settings) {
         if (settings != null) {
+            settings.setConnectorPath(project.getAbsPathOfSqlConnector());
             this.configuration.update(settings);
             this.configuration.flush();
         }
@@ -97,6 +100,7 @@ public class YobatisShell {
         LOGGER.debug("Got config:{}.", config);
         YobatisFileGenerator generator = YobatisFileGenerator.parse(
                 new ByteArrayInputStream(config.getBytes()), project);
+        LOGGER.info("Merging files.");
         generator.mergeAndWrite();
     }
 

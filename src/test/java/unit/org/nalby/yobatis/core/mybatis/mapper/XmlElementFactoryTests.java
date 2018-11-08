@@ -463,6 +463,11 @@ public class XmlElementFactoryTests {
         assertEquals(result.replaceAll("\\s+", ""), element.getFormattedContent(0).replaceAll("\\s+", ""));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void nullCase() {
+        factory.create(null);
+    }
+
     @Test
     public void whereForUpdate() {
         String result = "<sql id=\"WHERE_CLAUSE_FOR_UPDATE\">\n" +

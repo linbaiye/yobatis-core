@@ -264,13 +264,22 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
         return ifElement;
     }
 
+    private boolean isPk(IntrospectedColumn column, List<IntrospectedColumn> pkColumns) {
+        for (IntrospectedColumn e : pkColumns) {
+            if (e.getActualColumnName().equals(column.getActualColumnName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private XmlElement updateByPk() {
         XmlElement update = updateTemplate(XmlElementName.UPDATE_BY_PK.getName(), table.getPrimaryKey().getFullyQualifiedName());
         XmlElement set = new XmlElement("set");
         update.addElement(set);
         boolean isAllKeyTable = table.getPrimaryKeyColumns().size() == table.getColumns().size();
         for (IntrospectedColumn column : table.getColumns()) {
-            if (!column.isIdentity() || isAllKeyTable) {
+            if (!isPk(column, table.getPrimaryKeyColumns()) || isAllKeyTable) {
                 set.addElement(ifForUpdate(column, null));
             }
         }
@@ -357,37 +366,42 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
 
     @Override
     public XmlElement create(String name) {
-        if (XmlElementName.WHERE_CLAUSE.nameEquals(name)) {
-            return whereClause(false);
-        } else if (XmlElementName.WHERE_CLAUSE_FOR_UPDATE.nameEquals(name)) {
-            return whereClause(true);
-        } else if (XmlElementName.PAGING.nameEquals(name)) {
-            return paging();
-        } else if (XmlElementName.BASE_RESULT_MAP.nameEquals(name)) {
-            return baseResultMap();
-        } else if (XmlElementName.BASE_COLUMN_LIST.nameEquals(name)) {
-            return baseColumnList();
-        } else if (XmlElementName.PRIVATE_SELECT_BY_CRITERIA.nameEquals(name)) {
-            return privateSelectByCriteria();
-        } else if (XmlElementName.SELECT_BY_PK.nameEquals(name)) {
-            return selectByPk();
-        } else if (XmlElementName.SELECT_BY_CRITERIA.nameEquals(name)) {
-            return selectByCriteria(XmlElementName.SELECT_BY_CRITERIA);
-        } else if (XmlElementName.SELECT_LIST.nameEquals(name)) {
-            return selectByCriteria(XmlElementName.SELECT_LIST);
-        } else if (XmlElementName.INSERT.nameEquals(name)) {
-            return insert();
-        } else if (XmlElementName.UPDATE_BY_PK.nameEquals(name)) {
-            return updateByPk();
-        } else if (XmlElementName.UPDATE_BY_CRITERIA.nameEquals(name)) {
-            return updateByCriteria();
-        } else if (XmlElementName.COUNT.nameEquals(name)) {
-            return count();
-        } else if (XmlElementName.DELETE_BY_PK.nameEquals(name)) {
-            return deleteByPk();
-        } else if (XmlElementName.DELETE_BY_CRITERIA.nameEquals(name)) {
-            return deleteByCriteria();
+        XmlElementName elementName = XmlElementName.findByVal(name);
+        if (elementName == null) {
+            throw new IllegalArgumentException("Unknown name:" + name);
         }
-        throw new IllegalArgumentException("Unknown name:" + name);
+        switch (elementName) {
+            case WHERE_CLAUSE:
+                return whereClause(false);
+            case WHERE_CLAUSE_FOR_UPDATE:
+                return whereClause(true);
+            case PAGING:
+                return paging();
+            case BASE_RESULT_MAP:
+                return baseResultMap();
+            case BASE_COLUMN_LIST:
+                return baseColumnList();
+            case PRIVATE_SELECT_BY_CRITERIA:
+                return privateSelectByCriteria();
+            case SELECT_BY_PK:
+                return selectByPk();
+            case SELECT_BY_CRITERIA:
+                return selectByCriteria(XmlElementName.SELECT_BY_CRITERIA);
+            case SELECT_LIST:
+                return selectByCriteria(XmlElementName.SELECT_LIST);
+            case INSERT:
+                return insert();
+            case UPDATE_BY_PK:
+                return updateByPk();
+            case UPDATE_BY_CRITERIA:
+                return updateByCriteria();
+            case COUNT:
+                return count();
+            case DELETE_BY_PK:
+                return deleteByPk();
+            case DELETE_BY_CRITERIA:
+                return deleteByCriteria();
+        }
+        throw new IllegalArgumentException("Should never happen.");
     }
 }

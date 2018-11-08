@@ -94,7 +94,9 @@ public class YobatisShellTests {
 
     @Test
     public void save() {
+        when(project.getAbsPathOfSqlConnector()).thenReturn("fakeurl");
         yobatisShell.save(settings);
+        assertEquals("fakeurl", settings.getConnectorPath());
         verify(yobatisConfiguration, timeout(1)).update(settings);
         verify(yobatisConfiguration, timeout(1)).flush();
 

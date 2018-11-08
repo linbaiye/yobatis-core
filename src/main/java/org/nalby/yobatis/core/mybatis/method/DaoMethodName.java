@@ -19,8 +19,13 @@ public enum DaoMethodName {
         return name;
     }
 
-    public boolean nameEquals(String str) {
-        return getName().equals(str);
+    public static DaoMethodName findByVal(String str) {
+        for (DaoMethodName tmp : values()) {
+            if (tmp.name.equals(str)) {
+                return tmp;
+            }
+        }
+        throw new IllegalArgumentException("unknown name");
     }
 
 }

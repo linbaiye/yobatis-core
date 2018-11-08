@@ -165,6 +165,7 @@ public class YobatisConfiguration {
         upsert("//context/javaClientGenerator/@targetPackage", setting.getDaoPackage());
         upsert("//context/javaClientGenerator/@targetProject", setting.getDaoPath());
         upsert("//context/sqlMapGenerator/@targetProject", setting.getXmlPath());
+        upsert("//context/sqlMapGenerator/@targetPackage", "mybatis-mappers");
         upsert("//classPathEntry/@location", setting.getConnectorPath());
     }
 

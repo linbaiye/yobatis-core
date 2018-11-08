@@ -71,22 +71,24 @@ public class CriteriaMethodFactory extends AbstractMethodFactory {
 
     @Override
     public Method create(String type) {
-        if (CriteriaMethodType.OR.getType().equals(type)) {
-            return or();
-        } else if (CriteriaMethodType.ASC_ORDER_BY.getType().equals(type)) {
-            return order(true);
-        } else if (CriteriaMethodType.DESC_ORDER_BY.getType().equals(type)) {
-            return order(false);
-        } else if (CriteriaMethodType.SET_LIMIT.getType().equals(type)) {
-            return setLimit();
-        } else if (CriteriaMethodType.SET_FOR_UPDATE.getType().equals(type)) {
-            return setForUpdate();
-        } else if (CriteriaMethodType.SET_OFFSET.getType().equals(type)) {
-            return setOffset();
-        } else if (CriteriaMethodType.HAS_COLUMN.getType().equals(type)) {
-            return hasColumn();
+        CriteriaMethodType methodType = CriteriaMethodType.findByType(type);
+        switch (methodType) {
+            case OR:
+                return or();
+            case ASC_ORDER_BY:
+                return order(true);
+            case DESC_ORDER_BY:
+                return order(false);
+            case SET_LIMIT:
+                return setLimit();
+            case SET_OFFSET:
+                return setOffset();
+            case SET_FOR_UPDATE:
+                return setForUpdate();
+            case HAS_COLUMN:
+                return hasColumn();
         }
-        throw new IllegalArgumentException("Unknown type.");
+        throw new IllegalArgumentException("Should never happen.");
     }
 
     private Method publicMethod(String name) {
@@ -195,42 +197,18 @@ public class CriteriaMethodFactory extends AbstractMethodFactory {
 
     @Override
     public Method create(String type, IntrospectedColumn column) {
-        CriteriaMethodType methodType = null;
-        for (CriteriaMethodType e: CriteriaMethodType.values()) {
-            if (e.getType().equals(type)) {
-                methodType = e;
-                break;
-            }
-        }
-        if (methodType == null) {
-            throw new IllegalArgumentException("Unknown type.");
-        }
+        CriteriaMethodType methodType = CriteriaMethodType.findByType(type);
         if (!methodType.isJavaTypeSupported(column.getFullyQualifiedJavaType().getShortName())) {
             return null;
         }
         if (methodType.isListValue()) {
-            if (methodType.isStatic()) {
-                return staticInValueMethod(column, methodType);
-            }
-            return inValueMethod(column, methodType);
-        }
-        if (methodType.isNoValue()) {
-            if (methodType.isStatic()) {
-                return staticNoValueMethod(column, methodType);
-            }
-            return noValueMethod(column, methodType);
-        }
-        if (methodType.isSingleValue()) {
-            if (methodType.isStatic()) {
-                return staticSingleValueMethod(column, methodType);
-            }
-            return singleValueMethod(column, methodType);
-        }
-        if (methodType.isBetweenValue())  {
-            if (methodType.isStatic()) {
-                return staticBetweenValueMethod(column, methodType);
-            }
-            return betweenValueMethod(column, methodType);
+            return  methodType.isStatic() ? staticInValueMethod(column, methodType) : inValueMethod(column, methodType);
+        } else if (methodType.isNoValue()) {
+            return  methodType.isStatic() ? staticNoValueMethod(column, methodType) : noValueMethod(column, methodType);
+        } else if (methodType.isSingleValue()) {
+            return  methodType.isStatic() ? staticSingleValueMethod(column, methodType) : singleValueMethod(column, methodType);
+        } else if (methodType.isBetweenValue())  {
+            return  methodType.isStatic() ? staticBetweenValueMethod(column, methodType) : betweenValueMethod(column, methodType);
         }
         throw new IllegalArgumentException("Unknown type.");
     }

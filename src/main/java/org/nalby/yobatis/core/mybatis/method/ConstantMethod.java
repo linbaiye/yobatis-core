@@ -4,6 +4,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
+import org.nalby.yobatis.core.mybatis.mapper.legacy.NamespaceSuffix;
 import org.nalby.yobatis.core.util.MethodUtil;
 
 public enum ConstantMethod {

@@ -25,24 +25,25 @@ public class DaoImplMethodFactory extends AbstractMethodFactory {
 
     @Override
     public Method create(String name) {
-        if (DaoMethodName.COUNT.nameEquals(name)) {
-            return count();
-        } else if (DaoMethodName.SELECT_BY_PK.nameEquals(name)) {
-            return selectOne();
-        } else if (DaoMethodName.SELECT_BY_CRITERIA.nameEquals(name)) {
-            return selectOneByCriteria();
-        } else if (DaoMethodName.SELECT_LIST.nameEquals(name)) {
-            return selectList();
-        } else if (DaoMethodName.UPDATE_BY_PK.nameEquals(name)) {
-            return update();
-        } else if (DaoMethodName.UPDATE_BY_CRITERIA.nameEquals(name)) {
-            return updateByCriteria();
-        } else if (DaoMethodName.DELETE_BY_PK.nameEquals(name)) {
-            return delete();
-        } else if (DaoMethodName.DELETE_BY_CRITERIA.nameEquals(name)) {
-            return deleteByCriteria();
-        } else if (DaoMethodName.INSERT.nameEquals(name)) {
-            return insert();
+        switch (DaoMethodName.findByVal(name)) {
+            case COUNT:
+                return count();
+            case SELECT_BY_CRITERIA:
+                return selectOneByCriteria();
+            case SELECT_BY_PK:
+                return selectOne();
+            case SELECT_LIST:
+                return selectList();
+            case INSERT:
+                return insert();
+            case UPDATE_BY_PK:
+                return update();
+            case UPDATE_BY_CRITERIA:
+                return updateByCriteria();
+            case DELETE_BY_PK:
+                return delete();
+            case DELETE_BY_CRITERIA:
+                return deleteByCriteria();
         }
         throw new IllegalArgumentException("Unknown name.");
     }

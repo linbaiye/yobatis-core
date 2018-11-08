@@ -3,6 +3,7 @@ package org.nalby.yobatis.core.mybatis.method;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Method;
 import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
+import org.nalby.yobatis.core.mybatis.clazz.Dao;
 
 public class DaoMethodFactory extends AbstractMethodFactory {
 
@@ -19,24 +20,26 @@ public class DaoMethodFactory extends AbstractMethodFactory {
 
     @Override
     public Method create(String name) {
-        if (DaoMethodName.COUNT.nameEquals(name)) {
-            return count();
-        } else if (DaoMethodName.SELECT_BY_PK.nameEquals(name)) {
-            return selectOne();
-        } else if (DaoMethodName.SELECT_BY_CRITERIA.nameEquals(name)) {
-            return selectOneByCriteria();
-        } else if (DaoMethodName.SELECT_LIST.nameEquals(name)) {
-            return selectList();
-        } else if (DaoMethodName.INSERT.nameEquals(name)) {
-            return insert();
-        } else if (DaoMethodName.UPDATE_BY_PK.nameEquals(name)) {
-            return update();
-        } else if (DaoMethodName.UPDATE_BY_CRITERIA.nameEquals(name)) {
-            return updateByCriteria();
-        } else if (DaoMethodName.DELETE_BY_PK.nameEquals(name)) {
-            return delete();
-        } else if (DaoMethodName.DELETE_BY_CRITERIA.nameEquals(name)) {
-            return deleteByCriteria();
+        DaoMethodName methodName = DaoMethodName.findByVal(name);
+        switch (methodName) {
+            case COUNT:
+                return count();
+            case SELECT_BY_PK:
+                return selectOne();
+            case SELECT_BY_CRITERIA:
+                return selectOneByCriteria();
+            case SELECT_LIST:
+                return selectList();
+            case INSERT:
+                return insert();
+            case UPDATE_BY_PK:
+                return update();
+            case UPDATE_BY_CRITERIA:
+                return updateByCriteria();
+            case DELETE_BY_PK:
+                return delete();
+            case DELETE_BY_CRITERIA:
+                return deleteByCriteria();
         }
         throw new IllegalArgumentException("Unknown name.");
     }

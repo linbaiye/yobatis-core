@@ -131,4 +131,14 @@ public enum CriteriaMethodType {
         }
         return null;
     }
+
+    public static CriteriaMethodType findByType(String type) {
+        for (CriteriaMethodType e: CriteriaMethodType.values()) {
+            if (e.getType().equals(type)) {
+                return e;
+            }
+        }
+        throw new IllegalArgumentException("Unkown type value.");
+    }
+
 }

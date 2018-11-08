@@ -21,7 +21,12 @@ public enum XmlElementName {
         return name;
     }
 
-    public boolean nameEquals(String str) {
-        return getName().equals(str);
+    public static XmlElementName findByVal(String str) {
+        for (XmlElementName tmp : values()) {
+            if (tmp.name.equals(str)) {
+                return tmp;
+            }
+        }
+        return null;
     }
 }

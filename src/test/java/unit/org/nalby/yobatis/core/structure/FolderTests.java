@@ -1,12 +1,5 @@
 package unit.org.nalby.yobatis.core.structure;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.nalby.yobatis.core.exception.ResourceNotAvailableExeception;
@@ -14,6 +7,15 @@ import org.nalby.yobatis.core.structure.AbstractFolder;
 import org.nalby.yobatis.core.structure.File;
 import org.nalby.yobatis.core.structure.Folder;
 import unit.org.nalby.yobatis.core.util.TestUtil;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FolderTests {
 	
@@ -33,8 +35,13 @@ public class FolderTests {
 		
 		private CreateFolderHandler createFolderHandler;
 
+		private List<Folder> folders;
+		private List<File> files;
+
 		public TestFolder(String path, String name) {
 			super(path, name);
+			folders = new LinkedList<>();
+			files = new LinkedList<>();
 		}
 
 		@Override
@@ -61,12 +68,16 @@ public class FolderTests {
 
 		@Override
 		protected Folder doCreateFolder(String name) {
-			return createFolderHandler.handle(name);
+			Folder folder = createFolderHandler.handle(name);
+			folders.add(folder);
+			return folder;
 		}
 
 		@Override
 		protected File doCreateFile(String name) {
-			return createFileHandler.handle(name);
+			File file = createFileHandler.handle(name);
+			files.add(file);
+			return file;
 		}
 	}
 	

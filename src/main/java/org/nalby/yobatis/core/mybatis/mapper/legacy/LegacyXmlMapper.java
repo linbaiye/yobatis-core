@@ -13,7 +13,6 @@ import org.nalby.yobatis.core.exception.InvalidUnitException;
 import org.nalby.yobatis.core.mybatis.NamingHelper;
 import org.nalby.yobatis.core.mybatis.YobatisUnit;
 import org.nalby.yobatis.core.mybatis.mapper.MapperEntityResolver;
-import org.nalby.yobatis.core.mybatis.method.NamespaceSuffix;
 import org.xml.sax.EntityResolver;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

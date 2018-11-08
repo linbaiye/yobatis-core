@@ -1,4 +1,4 @@
-package org.nalby.yobatis.core.mybatis.method;
+package org.nalby.yobatis.core.mybatis.mapper.legacy;
 
 public final class NamespaceSuffix {
 
