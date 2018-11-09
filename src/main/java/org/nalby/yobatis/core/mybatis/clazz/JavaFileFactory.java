@@ -3,31 +3,9 @@ package org.nalby.yobatis.core.mybatis.clazz;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 
 public interface JavaFileFactory {
-
-    /**
-     * Create the base dao interface which is extended by table specific DAOs.
-     * @param introspectedTable the table.
-     * @return the base dao java file.
-     */
-    GeneratedJavaFile baseDaoInterface(IntrospectedTable introspectedTable);
-
-    /**
-     * Create implementing java file of the base dao.
-     * @param introspectedTable the table.
-     * @return the implementing java file
-     */
-    GeneratedJavaFile baseDaoImpl(IntrospectedTable introspectedTable);
-
-    /**
-     * Create dao interface for the table {@code introspectedTable}.
-     * @param introspectedTable the table.
-     * @return dao interface of the table.
-     */
-    GeneratedJavaFile tableSpecificDaoInterface(IntrospectedTable introspectedTable);
-
-    GeneratedJavaFile tableSpecificDaoImpl(IntrospectedTable introspectedTable);
 
     /**
      * Create base domain java file corresponding to the {@code introspectedTable}.
@@ -38,8 +16,12 @@ public interface JavaFileFactory {
 
     GeneratedJavaFile domain(IntrospectedTable introspectedTable);
 
-    GeneratedJavaFile baseCriteria(IntrospectedTable introspectedTable);
+    GeneratedJavaFile baseCriteria(YobatisIntrospectedTable introspectedTable);
 
-    GeneratedJavaFile criteria(TopLevelClass originalExample, IntrospectedTable introspectedTable);
+    GeneratedJavaFile criteria(YobatisIntrospectedTable introspectedTable);
+
+    GeneratedJavaFile dao(YobatisIntrospectedTable introspectedTable);
+
+    GeneratedJavaFile daoImpl(YobatisIntrospectedTable introspectedTable);
 
 }

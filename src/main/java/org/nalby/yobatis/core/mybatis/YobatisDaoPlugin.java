@@ -20,39 +20,33 @@ import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Document;
+import org.nalby.yobatis.core.log.Logger;
+import org.nalby.yobatis.core.log.LoggerFactory;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactory;
 import org.nalby.yobatis.core.mybatis.clazz.JavaFileFactoryImpl;
-import org.nalby.yobatis.core.mybatis.mapper.XmlMapper;
+import org.nalby.yobatis.core.mybatis.mapper.XmlMapperProxy;
 import org.nalby.yobatis.core.util.Expect;
 
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class YobatisDaoPlugin extends PluginAdapter {
 
-    private List<GeneratedJavaFile> additionalFiles = new LinkedList<>();
+    private List<GeneratedJavaFile> additionalJavaFiles = new LinkedList<>();
 
     private List<GeneratedXmlFile> generatedXmlFileList = new LinkedList<>();
 
     private JavaFileFactory javaFileFactory = JavaFileFactoryImpl.getInstance();
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(YobatisDaoPlugin.class);
 
-    @Override
-    public boolean clientGenerated(Interface interfaze,
-                                   TopLevelClass topLevelClass,
-                                   IntrospectedTable introspectedTable) {
-        additionalFiles.add(javaFileFactory.tableSpecificDaoInterface(introspectedTable));
-        additionalFiles.add(javaFileFactory.tableSpecificDaoImpl(introspectedTable));
-        return true;
-    }
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-        generatedXmlFileList.add(XmlMapper.wrap(document, introspectedTable));
+        YobatisIntrospectedTable yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
+        generatedXmlFileList.add(XmlMapperProxy.wrap(document, yobatisIntrospectedTable));
         return true;
     }
 
@@ -60,12 +54,19 @@ public class YobatisDaoPlugin extends PluginAdapter {
     public void initialized(IntrospectedTable introspectedTable) {
         Expect.asTrue(introspectedTable.hasPrimaryKeyColumns(),
                 "table " + introspectedTable.getFullyQualifiedTableNameAtRuntime() + " has no primary key.");
+        generatedXmlFileList.clear();
+        additionalJavaFiles.clear();
+        YobatisIntrospectedTable yobatisIntrospectedTable = YobatisIntrospectedTableImpl.wrap(introspectedTable);
+        LOGGER.info("Generating files for table: {}.", yobatisIntrospectedTable.getTableName());
         if (introspectedTable.hasBLOBColumns()) {
             introspectedTable.getBaseColumns().addAll(introspectedTable.getBLOBColumns());
             introspectedTable.getBLOBColumns().clear();
         }
-        additionalFiles.add(javaFileFactory.baseDaoInterface(introspectedTable));
-        additionalFiles.add(javaFileFactory.baseDaoImpl(introspectedTable));
+        additionalJavaFiles.add(javaFileFactory.baseCriteria(yobatisIntrospectedTable));
+        additionalJavaFiles.add(javaFileFactory.criteria(yobatisIntrospectedTable));
+        additionalJavaFiles.add(javaFileFactory.dao(yobatisIntrospectedTable));
+        additionalJavaFiles.add(javaFileFactory.daoImpl(yobatisIntrospectedTable));
+        additionalJavaFiles.add(javaFileFactory.domain(introspectedTable));
     }
 
     @Override
@@ -75,29 +76,21 @@ public class YobatisDaoPlugin extends PluginAdapter {
 
     @Override
     public List<GeneratedXmlFile> contextGenerateAdditionalXmlFiles(IntrospectedTable introspectedTable) {
+        LOGGER.debug("Generated {} xml files for this run.", generatedXmlFileList.size());
         return generatedXmlFileList;
     }
 
     @Override
-    public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles() {
-        return additionalFiles;
-    }
-
-    @Override
-    public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
-                                              IntrospectedTable introspectedTable) {
-        additionalFiles.add(javaFileFactory.criteria(topLevelClass, introspectedTable));
-        additionalFiles.add(javaFileFactory.baseCriteria(introspectedTable));
-        return true;
+    public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
+        LOGGER.debug("Generated {} java files for this run.", additionalJavaFiles.size());
+        return additionalJavaFiles;
     }
 
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
                                                  IntrospectedTable introspectedTable) {
         GeneratedJavaFile baseDomainJavaFile = javaFileFactory.baseDomain(topLevelClass, introspectedTable);
-        additionalFiles.add(baseDomainJavaFile);
-        GeneratedJavaFile domainJavaFile = javaFileFactory.domain(introspectedTable);
-        additionalFiles.add(domainJavaFile);
+        additionalJavaFiles.add(baseDomainJavaFile);
         return true;
     }
 }

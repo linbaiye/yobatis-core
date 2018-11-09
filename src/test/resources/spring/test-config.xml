@@ -8,8 +8,7 @@
      		http://www.springframework.org/schema/context/spring-context.xsd"
        default-autowire="byName">
 
-    <context:component-scan base-package="func.autoinckey.dao.impl, func.compoundkey.dao.impl,
-     func.alltype.dao.impl" />
+    <context:component-scan base-package="sandbox.alltype.dao" />
 
     <bean id="masterDataSource" class="com.alibaba.druid.pool.DruidDataSource"
           init-method="init" destroy-method="close">

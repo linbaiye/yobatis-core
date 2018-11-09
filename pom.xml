@@ -2,11 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nalby</groupId>
-	<artifactId>yobatis</artifactId>
-	<version>0.2.5-SNAPSHOT</version>
+	<artifactId>yobatis-core</artifactId>
+	<version>0.2.6-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
-        <libpath>lib/mybatis-generator-core-1.3.6-SNAPSHOT.jar</libpath>
 		<slf4j.version>1.6.4</slf4j.version>
 		<maven.war.plugin.version>2.5</maven.war.plugin.version>
 		<maven.compiler.plugin.version>3.2</maven.compiler.plugin.version>
@@ -32,8 +31,7 @@
             <groupId>org.mybatis.generator</groupId>
             <artifactId>mybatis-generator-core</artifactId>
             <version>1.3.6-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/${libpath}</systemPath>
+            <scope>provided</scope>
         </dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -54,7 +52,6 @@
 			<version>1.3</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-core -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-core</artifactId>
@@ -96,24 +93,6 @@
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>${org.mybatis.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/cglib/cglib-nodep -->
@@ -159,11 +138,12 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-        </dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
 	<build>
 		<plugins>

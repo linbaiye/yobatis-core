@@ -15,12 +15,12 @@
  */
 package org.nalby.yobatis.core.structure;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.nalby.yobatis.core.util.Expect;
 import org.nalby.yobatis.core.util.FolderUtil;
 import org.nalby.yobatis.core.util.TextUtil;
+
+import java.util.Collections;
+import java.util.List;
 
 
 public abstract class AbstractFolder implements Folder {
@@ -34,16 +34,6 @@ public abstract class AbstractFolder implements Folder {
 	 * The name of this folder, the implementer must set it.
 	 */
 	protected String name;
-	
-	/**
-	 * The folders that this folder contains directly.
-	 */
-	protected List<Folder> folders;
-	
-	/**
-	 * The files that this folder contains directly.
-	 */
-	protected List<File> files;
 
 	public AbstractFolder(String path, String name) {
 	    this.path = path;
@@ -54,12 +44,12 @@ public abstract class AbstractFolder implements Folder {
 
 
 	protected abstract List<File> doListFiles();
-	
+
 	/**
 	 * Create a folder based on the platform, throw a ResourceNotAvailableExeception if it is unable to create.
 	 * @param name the folder name.
 	 * @return the folder created.
-	 * @throws ResourceNotAvailableExeception if error.
+	 * @throws org.nalby.yobatis.core.exception.ResourceNotAvailableExeception if error.
 	 */
 	protected abstract Folder doCreateFolder(String name);
 
@@ -67,7 +57,7 @@ public abstract class AbstractFolder implements Folder {
 	 * Create a file based on the platform, throw a ResourceNotAvailableExeception if it is unable to create.
 	 * @param name the file name.
 	 * @return the file created.
-	 * @throws ResourceNotAvailableExeception if error.
+	 * @throws org.nalby.yobatis.core.exception.ResourceNotAvailableExeception if error.
 	 */
 	protected abstract File doCreateFile(String name);
 	
@@ -83,14 +73,10 @@ public abstract class AbstractFolder implements Folder {
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<Folder> listFolders() {
-		if (folders != null) {
-			return folders;
-		}
-		folders = doListFolders();
+		List<Folder> folders = doListFolders();
 		if (folders == null) {
-			folders = Collections.EMPTY_LIST;
+			folders = Collections.emptyList();
 		}
 		return folders;
 	}
@@ -98,6 +84,7 @@ public abstract class AbstractFolder implements Folder {
 	private void validatePath(String path) {
 		Expect.asTrue(!TextUtil.isEmpty(path) && !path.startsWith("/"), "A relative path is expected, but got:" + path);
 	}
+
 
 	@Override
 	public File findFile(String filepath) {
@@ -129,7 +116,6 @@ public abstract class AbstractFolder implements Folder {
 		File file = findFile(filepath);
 		if (file == null) {
 			file = doCreateFile(filepath);
-			files.add(file);
 		}
 		return file;
 	}
@@ -143,7 +129,6 @@ public abstract class AbstractFolder implements Folder {
 		Folder targetFolder = findFolder(thisName);
 		if (targetFolder == null) {
 			targetFolder = doCreateFolder(thisName);
-			folders.add(targetFolder);
 		}
 		if (tokens.length == 1) {
 			return targetFolder;
@@ -167,19 +152,14 @@ public abstract class AbstractFolder implements Folder {
 		return null;
 	}
 
-
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<File> listFiles() {
-		if (files != null) {
-			return files;
-		}
-		files = doListFiles();
+		List<File> files = doListFiles();
 		if (files == null) {
-			files = Collections.EMPTY_LIST;
+			files = Collections.emptyList();
 		}
 		return files;
 	}
-	
+
 }
 	

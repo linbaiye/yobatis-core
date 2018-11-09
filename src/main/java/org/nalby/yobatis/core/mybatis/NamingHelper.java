@@ -27,12 +27,6 @@ public final class NamingHelper {
         return new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
     }
 
-    public static FullyQualifiedJavaType getDaoType(IntrospectedTable introspectedTable) {
-        String packageName = introspectedTable.getContext().getJavaClientGeneratorConfiguration().getTargetPackage();
-        FullyQualifiedJavaType entityType = getEntityType(introspectedTable);
-        return new FullyQualifiedJavaType(packageName  + "." + entityType.getShortName() + "Dao");
-    }
-
     public static FullyQualifiedJavaType getPrimaryKey(IntrospectedTable introspectedTable) {
         List<IntrospectedColumn> pkColumns = introspectedTable.getPrimaryKeyColumns();
         if (pkColumns == null || pkColumns.isEmpty()) {
@@ -50,30 +44,10 @@ public final class NamingHelper {
         return new FullyQualifiedJavaType(packageName  + ".impl." + entityType.getShortName() + "DaoImpl");
     }
 
-    public static String getDaoPackageName(IntrospectedTable introspectedTable) {
-        return introspectedTable.getContext().getJavaClientGeneratorConfiguration().getTargetPackage();
-    }
-
-    public static FullyQualifiedJavaType getBaseDaoImplType(IntrospectedTable introspectedTable) {
-        return new FullyQualifiedJavaType(getDaoPackageName(introspectedTable) + ".impl.BaseDaoImpl");
-    }
-
-    public static FullyQualifiedJavaType getBaseDaoType(IntrospectedTable introspectedTable) {
-        return new FullyQualifiedJavaType(getDaoPackageName(introspectedTable) + ".BaseDao");
-    }
-
     public static FullyQualifiedJavaType getBaseCriteriaType(IntrospectedTable introspectedTable) {
         return new FullyQualifiedJavaType( introspectedTable.getContext().getJavaModelGeneratorConfiguration().getTargetPackage() + ".criteria.BaseCriteria");
     }
 
-    public static String glueDaoPath(IntrospectedTable table, String fullName) {
-        String project = table.getContext().getJavaClientGeneratorConfiguration().getTargetProject();
-        return project + "/" + fullName.replaceAll("\\.", "/") + ".java";
-    }
-
-    public static String glueDaoPath(IntrospectedTable table, FullyQualifiedJavaType type) {
-        return glueDaoPath(table, type.getFullyQualifiedName());
-    }
 
     public static String glueEntityPath(IntrospectedTable table, String fullname) {
         String project = table.getContext().getJavaModelGeneratorConfiguration().getTargetProject();
@@ -81,10 +55,6 @@ public final class NamingHelper {
     }
 
     public static String glueEntityPath(IntrospectedTable table, FullyQualifiedJavaType type) {
-        return glueEntityPath(table, type.getFullyQualifiedName());
-    }
-
-    public static String glueCriteriaPath(IntrospectedTable table, FullyQualifiedJavaType type) {
         return glueEntityPath(table, type.getFullyQualifiedName());
     }
 

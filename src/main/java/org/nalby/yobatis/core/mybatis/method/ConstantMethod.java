@@ -4,6 +4,8 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
+import org.nalby.yobatis.core.mybatis.mapper.legacy.NamespaceSuffix;
+import org.nalby.yobatis.core.util.MethodUtil;
 
 public enum ConstantMethod {
 
@@ -11,6 +13,15 @@ public enum ConstantMethod {
     IS_VALID(
             "isValid", "boolean", JavaVisibility.PUBLIC,
             new String[] {"return criteria.size() > 0;"},
+            new Parameter[] {}
+    ),
+    ASSERT_VALID(
+            "isValid", "boolean", JavaVisibility.PUBLIC,
+            new String[] {"if (oredCriteria.size() > 0) {",
+                "return true;",
+                "}",
+                "throw new RuntimeException(\"Empty criteria is not allowed.\");",
+            },
             new Parameter[] {}
     ),
     GET_CRITERIA(
@@ -182,7 +193,7 @@ public enum ConstantMethod {
             new Parameter[] {}
     ),
     CRITERION_CONDITION(
-            "Criterion", null, JavaVisibility.PROTECTED,
+            "Criterion", null, JavaVisibility.PUBLIC,
             new String[] {
                     "this.condition = condition;",
                     "this.noValue = true;"
@@ -192,7 +203,7 @@ public enum ConstantMethod {
             }
     ),
     CRITERION_CONDITION_VALUE(
-            "Criterion", null, JavaVisibility.PROTECTED,
+            "Criterion", null, JavaVisibility.PUBLIC,
             new String[] {
                     "this.condition = condition;",
                     "this.value = value;",
@@ -208,7 +219,7 @@ public enum ConstantMethod {
             }
     ),
     CRITERION_CONDITION_TWO_VALUES(
-            "Criterion", null, JavaVisibility.PROTECTED,
+            "Criterion", null, JavaVisibility.PUBLIC,
             new String[] {
                     "this.condition = condition;",
                     "this.value = value;",
@@ -286,6 +297,36 @@ public enum ConstantMethod {
                     "return oredCriteria.get(oredCriteria.size() - 1);"
             },
             null
+    ),
+    HAS_COLUMN(
+            "hasColumn", "boolean", JavaVisibility.PROTECTED,
+            new String[] {"return false;"},
+            new Parameter[] {new Parameter(new FullyQualifiedJavaType("String"), "column")}
+    ),
+    ADD_ORDER_BY(
+            "addOrderBy", "void", JavaVisibility.PROTECTED,
+            new String[] {
+                    "if (fields == null || fields.length == 0) {",
+                    "throw new IllegalArgumentException(\"Empty fields passed.\");",
+                    "}",
+                    "StringBuilder stringBuilder = new StringBuilder();",
+                    "if (orderByClause != null) {",
+                    "stringBuilder.append(orderByClause);",
+                    "stringBuilder.append(',');",
+                    "}",
+                    "for (String field : fields) {",
+                    "if (!hasColumn(field)) {",
+                    "throw new IllegalArgumentException(\"Unrecognizable field:\" + field);",
+                    "}",
+                    "stringBuilder.append(field).append(\" \").append(order).append(\",\");",
+                    "}",
+                    "stringBuilder.deleteCharAt(stringBuilder.length() - 1);",
+                    "orderByClause = stringBuilder.toString();",
+            },
+            new Parameter[] {
+                    new Parameter(new FullyQualifiedJavaType("String"), "order"),
+                    new Parameter(new FullyQualifiedJavaType("String"), "fields", true)
+            }
     ),
     ORDER_BY(
             "orderBy", "void", JavaVisibility.PRIVATE,
@@ -679,12 +720,11 @@ public enum ConstantMethod {
     }
 
     public Method get() {
-        CommonMethodFactory commonMethodFactory = CommonMethodFactoryImpl.getInstance();
         Method method;
         if (returnType != null) {
-            method = commonMethodFactory.publicMethod(name, returnType);
+            method = MethodUtil.publicMethod(name, returnType);
         } else {
-            method = commonMethodFactory.constructor(name);
+            method = MethodUtil.constructor(name);
         }
         if (javaVisibility != null) {
             method.setVisibility(javaVisibility);

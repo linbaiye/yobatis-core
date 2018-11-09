@@ -74,4 +74,5 @@ public interface Folder {
 	 * @return the files if any, or an empty list else.
 	 */
 	List<File> listFiles();
+
 }

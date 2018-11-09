@@ -1,50 +1,24 @@
 package org.nalby.yobatis.core.mybatis.mapper;
 
-import org.dom4j.Element;
 import org.mybatis.generator.api.IntrospectedColumn;
-import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.nalby.yobatis.core.mybatis.NamingHelper;
+import org.nalby.yobatis.core.mybatis.YobatisIntrospectedTable;
 
 import java.util.List;
 
 public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybatis.mapper.MapperXmlElementFactory {
 
-    private final static String PARAM_TYPE = "parameterType";
-
     private final static MapperXmlElementFactoryImpl instance = new MapperXmlElementFactoryImpl();
+
+    private YobatisIntrospectedTable table;
 
     private MapperXmlElementFactoryImpl() { }
 
-    public static MapperXmlElementFactoryImpl getInstance() {
+    public static MapperXmlElementFactoryImpl getInstance(YobatisIntrospectedTable table) {
+        instance.table = table;
         return instance;
-    }
-
-    private XmlElement updateElement(String name) {
-        XmlElement xmlElement = new XmlElement("update");
-        xmlElement.addAttribute(new Attribute("id", name));
-        return xmlElement;
-    }
-
-    private XmlElement insertElement(String name) {
-        XmlElement xmlElement = new XmlElement("insert");
-        xmlElement.addAttribute(new Attribute("id", name));
-        return xmlElement;
-    }
-
-    private XmlElement selectElement(String name) {
-        XmlElement xmlElement = new XmlElement("select");
-        xmlElement.addAttribute(new Attribute("id", name));
-        return xmlElement;
-    }
-
-    private XmlElement sqlElement(String name) {
-        XmlElement xmlElement = new XmlElement("sql");
-        xmlElement.addAttribute(new Attribute("id", name));
-        return xmlElement;
     }
 
     private void addXmlComment(XmlElement xmlElement) {
@@ -54,181 +28,380 @@ public class MapperXmlElementFactoryImpl implements org.nalby.yobatis.core.mybat
         xmlElement.addElement(new TextElement("-->"));
     }
 
-    @Override
-    public XmlElement ifElement(String testClause, String text) {
-        XmlElement xmlElement = new XmlElement("if");
-        Attribute attribute = new Attribute("test", testClause);
-        xmlElement.addAttribute(attribute);
-        TextElement textElement = new TextElement(text);
-        xmlElement.addElement(textElement);
+    private XmlElement baseResultMap() {
+        XmlElement xmlElement = xmlTemplate("resultMap", XmlElementName.BASE_RESULT_MAP.getName());
+        xmlElement.addAttribute(new Attribute("type", table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.ENTITY).getFullyQualifiedName()));
+        for (IntrospectedColumn column : table.getColumns()) {
+            XmlElement columnMap;
+            if (column.isIdentity()) {
+                columnMap = new XmlElement("id");
+            } else {
+                columnMap = new XmlElement("result");
+            }
+            columnMap.addAttribute(new Attribute("column", column.getActualColumnName()));
+            columnMap.addAttribute(new Attribute("jdbcType", column.getJdbcTypeName()));
+            columnMap.addAttribute(new Attribute("property", column.getJavaProperty()));
+            xmlElement.addElement(columnMap);
+        }
         return xmlElement;
     }
 
-    @Override
-    public XmlElement pagingElement(String id) {
-        XmlElement paging = sqlElement(id);
-        addXmlComment(paging);
-        paging.addElement(ifElement("limit != null", "limit #{limit}"));
-        paging.addElement(ifElement("offset != null", "offset #{offset}"));
-        return paging;
-    }
 
-    @Override
-    public XmlElement include(String refid) {
-        XmlElement xmlElement = new XmlElement("include");
-        xmlElement.addAttribute(new Attribute("refid", refid));
+    private XmlElement whenElement(String test, String text) {
+        XmlElement xmlElement = new XmlElement("when");
+        xmlElement.addAttribute(new Attribute("test", test));
+        xmlElement.addElement(new TextElement(text));
         return xmlElement;
     }
 
-    @Override
-    public XmlElement convert(org.dom4j.Element element) {
-        XmlElement xmlElement = new XmlElement(element.getName());
-        for (org.dom4j.Attribute src : element.attributes()) {
-            xmlElement.addAttribute(new Attribute(src.getName(), src.getValue()));
-        }
-        List<Element> elementList = element.elements();
-        for (Element element1 : elementList) {
 
-        }
-        return null;
+    private XmlElement foreach(String collection, String item) {
+        XmlElement foreach = new XmlElement("foreach");
+        foreach.addAttribute(new Attribute("collection", collection));
+        foreach.addAttribute(new Attribute("item", item));
+        return foreach;
     }
 
-    private XmlElement insertAll(IntrospectedTable table, boolean ignore) {
-        XmlElement xmlElement = insertElement("insertAll");
-        if (ignore) {
-            xmlElement = insertElement("insertAllIgnore");
-        }
-        FullyQualifiedJavaType type = NamingHelper.getBaseEntityType(table);
-        xmlElement.addAttribute(new Attribute(PARAM_TYPE, type.getFullyQualifiedName()));
-        addXmlComment(xmlElement);
-        StringBuilder stringBuilder = new StringBuilder();
-        if (!ignore) {
-            stringBuilder.append("insert into ");
+
+    private XmlElement whereClause(boolean forUpdate) {
+        XmlElement xmlElement = new XmlElement("sql");
+        if (forUpdate) {
+            xmlElement.addAttribute(new Attribute("id", XmlElementName.WHERE_CLAUSE_FOR_UPDATE.getName()));
         } else {
-            stringBuilder.append("insert ignore into ");
+            xmlElement.addAttribute(new Attribute("id", XmlElementName.WHERE_CLAUSE.getName()));
         }
-        stringBuilder.append(table.getFullyQualifiedTable().getIntrospectedTableName());
-        stringBuilder.append(" (");
-        for (int i = 0; i < table.getAllColumns().size(); i++) {
-            IntrospectedColumn column = table.getAllColumns().get(i);
-            stringBuilder.append(column.getActualColumnName());
-            stringBuilder.append(i == table.getAllColumns().size() - 1? ")" : ", ");
-            if (i != table.getAllColumns().size() - 1 && (i + 1) % 4 == 0) {
-                if (stringBuilder.charAt(stringBuilder.length() - 1) == ' ') {
-                    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-                }
-                xmlElement.addElement(new TextElement(stringBuilder.toString()));
-                stringBuilder = new StringBuilder();
-                stringBuilder.append("  ");
-            }
+        addXmlComment(xmlElement);
+        if (forUpdate) {
+            xmlElement.addElement(ifElement("criteria.valid"));
+        } else {
+            xmlElement.addElement(ifElement("valid"));
         }
-        TextElement textElement = new TextElement(stringBuilder.toString());
-        xmlElement.addElement(textElement);
-        stringBuilder = new StringBuilder();
-        stringBuilder.append("values (");
-        for (int i = 0; i < table.getAllColumns().size(); i++) {
-            IntrospectedColumn column = table.getAllColumns().get(i);
-            stringBuilder.append("#{");
-            stringBuilder.append(column.getJavaProperty());
-            stringBuilder.append(",jdbcType=");
-            stringBuilder.append(column.getJdbcTypeName());
-            stringBuilder.append("}");
-            stringBuilder.append(i == table.getAllColumns().size() - 1? ")" : ", ");
-            if (i != table.getAllColumns().size() - 1 &&  (i + 1) % 4 == 0) {
-                if (stringBuilder.charAt(stringBuilder.length() - 1) == ' ') {
-                    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-                }
-                xmlElement.addElement(new TextElement(stringBuilder.toString()));
-                stringBuilder = new StringBuilder();
-                stringBuilder.append("  ");
-            }
+
+        XmlElement choose = new XmlElement("choose");
+        choose.addElement(whenElement("criterion.noValue", "and ${criterion.condition}"));
+        choose.addElement(whenElement("criterion.singleValue", "and ${criterion.condition} #{criterion.value}"));
+        choose.addElement(whenElement("criterion.betweenValue", "and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}"));
+        XmlElement when = whenElement("criterion.listValue", "and ${criterion.condition}");
+        XmlElement foreach = foreach("criterion.value", "listItem");
+        foreach.addAttribute(new Attribute("close", ")"));
+        foreach.addAttribute(new Attribute("open", "("));
+        foreach.addAttribute(new Attribute("separator", ","));
+        foreach.addElement(new TextElement("#{listItem}"));
+        when.addElement(foreach);
+        choose.addElement(when);
+
+        foreach = foreach("bracketCriteria.criteria", "criterion");
+        foreach.addElement(choose);
+
+        XmlElement trim = new XmlElement("trim");
+        trim.addAttribute(new Attribute("prefix", "("));
+        trim.addAttribute(new Attribute("prefixOverrides", "and"));
+        trim.addAttribute(new Attribute("suffix", ")"));
+        trim.addElement(foreach);
+
+        XmlElement ifE = ifElement("bracketCriteria.valid");
+        ifE.addElement(trim);
+        if (forUpdate) {
+            foreach = foreach("criteria.oredCriteria", "bracketCriteria");
+        }  else {
+            foreach = foreach("oredCriteria", "bracketCriteria");
         }
-        textElement = new TextElement(stringBuilder.toString());
-        xmlElement.addElement(textElement);
+        foreach.addAttribute(new Attribute("separator", "or"));
+        foreach.addElement(ifE);
+
+        XmlElement where = new XmlElement("where");
+        where.addElement(foreach);
+        xmlElement.addElement(where);
         return xmlElement;
     }
 
-    @Override
-    public XmlElement insertIgnore(IntrospectedTable table) {
-        return null;
+    private XmlElement xmlTemplate(String name, String id) {
+        XmlElement xmlElement = new XmlElement(name);
+        xmlElement.addAttribute(new Attribute("id", id));
+        addXmlComment(xmlElement);
+        return xmlElement;
     }
 
-    @Override
-    public XmlElement insertAll(IntrospectedTable table) {
-        return insertAll(table, false);
+    private XmlElement ifElement(String test) {
+        XmlElement xmlElement = new XmlElement("if");
+        xmlElement.addAttribute(new Attribute("test", test));
+        return xmlElement;
     }
 
-    @Override
-    public XmlElement insertAllIgnore(IntrospectedTable table) {
-        return insertAll(table, true);
+    private XmlElement paging() {
+        XmlElement xmlElement = new XmlElement("sql");
+        xmlElement.addAttribute(new Attribute("id", XmlElementName.PAGING.getName()));
+        addXmlComment(xmlElement);
+        XmlElement ifElement = ifElement("limit != null");
+        ifElement.addElement(new TextElement("limit #{limit}"));
+        xmlElement.addElement(ifElement);
+
+        ifElement = ifElement("offset != null");
+        ifElement.addElement(new TextElement("offset #{offset}"));
+        xmlElement.addElement(ifElement);
+
+        return xmlElement;
     }
 
-    private String whereClauseOfAllFields(IntrospectedTable introspectedTable) {
-        StringBuilder builder = new StringBuilder("where ");
-        for (int i = 0; i < introspectedTable.getAllColumns().size(); i++) {
-            IntrospectedColumn column = introspectedTable.getAllColumns().get(i);
-            builder.append(column.getActualColumnName());
-            builder.append(" = #{");
-            builder.append(column.getJavaProperty());
-            builder.append(",jdbcType=");
-            builder.append(column.getJdbcTypeName());
-            builder.append("}");
-            if (i < introspectedTable.getAllColumns().size() - 1) {
-                builder.append(" and\n\t");
+    private boolean appendLineBreak(StringBuilder stringBuilder, int index) {
+        if ((index + 1) % 5 == 0 && index != table.getColumns().size() - 1) {
+            stringBuilder.append("\n");
+            return true;
+        }
+        return false;
+    }
+
+    private void prettyTableColumns(StringBuilder stringBuilder, IntrospectedColumn column, int index) {
+        stringBuilder.append(column.getActualColumnName());
+        if (index != table.getColumns().size() - 1) {
+            stringBuilder.append(", ");
+        }
+        if (appendLineBreak(stringBuilder, index)) {
+            stringBuilder.append("  ");
+        }
+    }
+
+    private XmlElement baseColumnList() {
+        XmlElement xmlElement = xmlTemplate("sql", XmlElementName.BASE_COLUMN_LIST.getName());
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            prettyTableColumns(stringBuilder, table.getColumns().get(i), i);
+        }
+        xmlElement.addElement(new TextElement(stringBuilder.toString()));
+        return xmlElement;
+    }
+
+    private XmlElement includeElement(String id) {
+        XmlElement include = new XmlElement("include");
+        include.addAttribute(new Attribute("refid", id));
+        return include;
+    }
+
+    private XmlElement selectElementTemplate(String id, String paramType) {
+        XmlElement xmlElement = xmlTemplate("select", id);
+        xmlElement.addAttribute(new Attribute("parameterType", paramType));
+        xmlElement.addAttribute(new Attribute("resultMap", XmlElementName.BASE_RESULT_MAP.getName()));
+
+        return xmlElement;
+    }
+
+    private String columnAsRightOperand(IntrospectedColumn column) {
+        return "#{" + column.getJavaProperty() + ",jdbcType=" + column.getJdbcTypeName() + "}";
+    }
+
+
+    private void appendByPkClause(XmlElement container) {
+        List<IntrospectedColumn> pkColumns = table.getPrimaryKeyColumns();
+        for (int i = 0; i < pkColumns.size(); i++) {
+            IntrospectedColumn column = pkColumns.get(i);
+            if (i > 0) {
+                container.addElement(new TextElement("and " + column.getActualColumnName() + " = " + columnAsRightOperand(column)));
+            } else {
+                container.addElement(new TextElement(column.getActualColumnName() + " = " + columnAsRightOperand(column)));
             }
         }
-        return builder.toString();
     }
 
-    @Override
-    public XmlElement selectByPkOfAllKeyTable(IntrospectedTable introspectedTable) {
-        XmlElement xmlElement = selectElement("selectByPk");
-        xmlElement.addAttribute(new Attribute(PARAM_TYPE, NamingHelper.getBaseEntityType(introspectedTable.getBaseRecordType()).getFullyQualifiedName()));
-        xmlElement.addAttribute(new Attribute("resultMap", "BASE_RESULT_MAP"));
-        addXmlComment(xmlElement);
+    private XmlElement selectByPk() {
+        XmlElement xmlElement = selectElementTemplate(XmlElementName.SELECT_BY_PK.getName(), table.getPrimaryKey().getFullyQualifiedName());
+        XmlElement ifelement = ifElement("_parameter != null");
+        ifelement.addElement(new TextElement("select"));
+        ifelement.addElement(includeElement(XmlElementName.BASE_COLUMN_LIST.getName()));
+        ifelement.addElement(new TextElement("from " + table.getTableName() + " where"));
+        appendByPkClause(ifelement);
+        xmlElement.addElement(ifelement);
+        return xmlElement;
+    }
+
+    private XmlElement privateSelectByCriteria() {
+        XmlElement xmlElement = selectElementTemplate(XmlElementName.PRIVATE_SELECT_BY_CRITERIA.getName(), "null");
+        xmlElement.getAttributes().clear();
+        xmlElement.setName("sql");
+        xmlElement.addAttribute(new Attribute("id", XmlElementName.PRIVATE_SELECT_BY_CRITERIA.getName()));
         xmlElement.addElement(new TextElement("select"));
-        xmlElement.addElement(new TextElement("<include refid=\"BASE_COLUMN_LIST\" />"));
-        xmlElement.addElement(new TextElement("from " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName()));
-        xmlElement.addElement(new TextElement(whereClauseOfAllFields(introspectedTable)));
+        xmlElement.addElement(includeElement(XmlElementName.BASE_COLUMN_LIST.getName()));
+        xmlElement.addElement(new TextElement("from " + table.getTableName()));
+        xmlElement.addElement(includeElement("WHERE_CLAUSE"));
+        XmlElement ifElement = ifElement("orderByClause != null");
+        ifElement.addElement(new TextElement("order by ${orderByClause}"));
+        xmlElement.addElement(ifElement);
+        xmlElement.addElement(includeElement("PAGING"));
+        ifElement = ifElement("forUpdate");
+        ifElement.addElement(new TextElement("for update"));
+        xmlElement.addElement(ifElement);
+
         return xmlElement;
     }
 
-    @Override
-    public XmlElement updateOfAllKeyTable(IntrospectedTable introspectedTable) {
-        XmlElement xmlElement = updateElement("update");
-        xmlElement.addAttribute(new Attribute("parameterType", NamingHelper.getBaseEntityType(introspectedTable.getBaseRecordType()).getFullyQualifiedName()));
-        addXmlComment(xmlElement);
-        xmlElement.addElement(new TextElement("update " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName()));
-        XmlElement setElement = new XmlElement("set");
-        for (IntrospectedColumn column : introspectedTable.getAllColumns()) {
-            setElement.addElement(ifElement(column.getJavaProperty() + " != null",
-                    column.getActualColumnName() + " = #{" + column.getJavaProperty() + ",jdbcType=" + column.getJdbcTypeName() + "},"));
-        }
-        xmlElement.addElement(setElement);
-        xmlElement.addElement(new TextElement(whereClauseOfAllFields(introspectedTable)));
+    private XmlElement selectByCriteria(XmlElementName elementName) {
+        XmlElement xmlElement = selectElementTemplate(elementName.getName(), table.getFullyQualifiedJavaType(
+                YobatisIntrospectedTable.ClassType.CRITERIA).getFullyQualifiedName());
+        xmlElement.addElement(includeElement(XmlElementName.PRIVATE_SELECT_BY_CRITERIA.getName()));
         return xmlElement;
     }
 
-    @Override
-    public XmlElement updateAllOfAllKeyTable(IntrospectedTable introspectedTable) {
-        XmlElement xmlElement = updateElement("updateAll");
-        xmlElement.addAttribute(new Attribute(PARAM_TYPE, NamingHelper.getBaseEntityType(introspectedTable.getBaseRecordType()).getFullyQualifiedName()));
-        addXmlComment(xmlElement);
-        xmlElement.addElement(new TextElement("update " + introspectedTable.getFullyQualifiedTable().getIntrospectedTableName()));
-        StringBuilder builder = new StringBuilder("set ");
-        for (IntrospectedColumn column : introspectedTable.getAllColumns()) {
-            builder.append(column.getActualColumnName());
-            builder.append(" = #{");
-            builder.append(column.getJavaProperty());
-            builder.append(",jdbcType=");
-            builder.append(column.getJdbcTypeName());
-            builder.append("},\n\t");
-        }
-        builder.deleteCharAt(builder.length() - 1);
-        builder.deleteCharAt(builder.length() - 1);
-        builder.deleteCharAt(builder.length() - 1);
-        xmlElement.addElement(new TextElement(builder.toString()));
-        xmlElement.addElement(new TextElement(whereClauseOfAllFields(introspectedTable)));
+    private XmlElement count() {
+        XmlElement xmlElement = xmlTemplate("select", XmlElementName.COUNT.getName());
+        xmlElement.addAttribute(new Attribute("parameterType", table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA).getFullyQualifiedName()));
+        xmlElement.addAttribute(new Attribute("resultType", "int"));
+        xmlElement.addElement(new TextElement("select count(*) from " + table.getTableName()));
+        xmlElement.addElement(includeElement("WHERE_CLAUSE"));
         return xmlElement;
+    }
+
+    private XmlElement updateTemplate(String name, String param) {
+        XmlElement xmlElement = xmlTemplate("update", name);
+        xmlElement.addAttribute(new Attribute("parameterType", param));
+        xmlElement.addElement(new TextElement("update " + table.getTableName()));
+        return xmlElement;
+    }
+
+    private XmlElement ifForUpdate(IntrospectedColumn column, String container) {
+        XmlElement ifElement = new XmlElement("if");
+        String javaProperty = container == null ? column.getJavaProperty() : container + "." + column.getJavaProperty();
+        ifElement.addAttribute(new Attribute("test", javaProperty + " != null" ));
+        ifElement.addElement(new TextElement(column.getActualColumnName() + " = #{" + javaProperty + ",jdbcType=" + column.getJdbcTypeName() + "},"));
+        return ifElement;
+    }
+
+    private boolean isPk(IntrospectedColumn column, List<IntrospectedColumn> pkColumns) {
+        for (IntrospectedColumn e : pkColumns) {
+            if (e.getActualColumnName().equals(column.getActualColumnName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private XmlElement updateByPk() {
+        XmlElement update = updateTemplate(XmlElementName.UPDATE_BY_PK.getName(), table.getPrimaryKey().getFullyQualifiedName());
+        XmlElement set = new XmlElement("set");
+        update.addElement(set);
+        boolean isAllKeyTable = table.getPrimaryKeyColumns().size() == table.getColumns().size();
+        for (IntrospectedColumn column : table.getColumns()) {
+            if (!isPk(column, table.getPrimaryKeyColumns()) || isAllKeyTable) {
+                set.addElement(ifForUpdate(column, null));
+            }
+        }
+        update.addElement(new TextElement("where"));
+        appendByPkClause(update);
+        return update;
+    }
+
+    private XmlElement updateByCriteria() {
+        XmlElement update = updateTemplate(XmlElementName.UPDATE_BY_CRITERIA.getName(), "map");
+        XmlElement set = new XmlElement("set");
+        update.addElement(set);
+        for (IntrospectedColumn column : table.getColumns()) {
+            set.addElement(ifForUpdate(column, "record"));
+        }
+        update.addElement(includeElement("WHERE_CLAUSE_FOR_UPDATE"));
+        return update;
+    }
+
+    private void appendSelectKey(XmlElement xmlElement) {
+        if (!table.isAutoIncPrimaryKey()) {
+            return;
+        }
+        IntrospectedColumn primaryKey = table.getPrimaryKeyColumns().get(0);
+        XmlElement selectKey = new XmlElement("selectKey");
+        selectKey.addAttribute(new Attribute("order", "AFTER"));
+        selectKey.addAttribute(new Attribute("resultType", primaryKey.getFullyQualifiedJavaType().getShortName()));
+        selectKey.addAttribute(new Attribute("keyProperty", primaryKey.getJavaProperty()));
+        XmlElement ifElement = ifElement(primaryKey.getJavaProperty() + " == null");
+        ifElement.addElement(new TextElement("select last_insert_id()"));
+        selectKey.addElement(ifElement);
+        ifElement = ifElement(primaryKey.getJavaProperty() + " != null");
+        ifElement.addElement(new TextElement("select #{" + primaryKey.getJavaProperty() + "}"));
+        selectKey.addElement(ifElement);
+        xmlElement.addElement(selectKey);
+    }
+
+
+    private XmlElement insert() {
+        XmlElement xmlElement = xmlTemplate("insert", XmlElementName.INSERT.getName());
+        xmlElement.addAttribute(new Attribute("parameterType", table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.BASE_ENTITY).getFullyQualifiedName()));
+        xmlElement.addElement(new TextElement("insert into " + table.getTableName()));
+        StringBuilder stringBuilder = new StringBuilder("(");
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            IntrospectedColumn column = table.getColumns().get(i);
+            prettyTableColumns(stringBuilder, column, i);
+        }
+        stringBuilder.append(")");
+        xmlElement.addElement(new TextElement(stringBuilder.toString()));
+        stringBuilder = new StringBuilder("values (");
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            IntrospectedColumn column = table.getColumns().get(i);
+            stringBuilder.append(columnAsRightOperand(column));
+            if (i != table.getColumns().size() - 1) {
+                stringBuilder.append(", ");
+            }
+            if (appendLineBreak(stringBuilder, i)) {
+                stringBuilder.append("  ");
+            }
+        }
+        stringBuilder.append(")");
+        xmlElement.addElement(new TextElement(stringBuilder.toString()));
+        appendSelectKey(xmlElement);
+        return xmlElement;
+    }
+
+    private XmlElement deleteByPk() {
+        XmlElement delete = xmlTemplate("delete", XmlElementName.DELETE_BY_PK.getName());
+        delete.addAttribute(new Attribute("parameterType", table.getPrimaryKey().getFullyQualifiedName()));
+        XmlElement ifElement = ifElement("_parameter != null");
+        ifElement.addElement(new TextElement("delete from " + table.getTableName() + " where"));
+        appendByPkClause(ifElement);
+        delete.addElement(ifElement);
+        return delete;
+    }
+
+    private XmlElement deleteByCriteria() {
+        XmlElement delete = xmlTemplate("delete", XmlElementName.DELETE_BY_CRITERIA.getName());
+        delete.addAttribute(new Attribute("parameterType", table.getFullyQualifiedJavaType(YobatisIntrospectedTable.ClassType.CRITERIA).getFullyQualifiedName()));
+        delete.addElement(new TextElement("delete from " + table.getTableName()));
+        delete.addElement(includeElement("WHERE_CLAUSE"));
+        return delete;
+    }
+
+    @Override
+    public XmlElement create(String name) {
+        XmlElementName elementName = XmlElementName.findByVal(name);
+        if (elementName == null) {
+            throw new IllegalArgumentException("Unknown name:" + name);
+        }
+        switch (elementName) {
+            case WHERE_CLAUSE:
+                return whereClause(false);
+            case WHERE_CLAUSE_FOR_UPDATE:
+                return whereClause(true);
+            case PAGING:
+                return paging();
+            case BASE_RESULT_MAP:
+                return baseResultMap();
+            case BASE_COLUMN_LIST:
+                return baseColumnList();
+            case PRIVATE_SELECT_BY_CRITERIA:
+                return privateSelectByCriteria();
+            case SELECT_BY_PK:
+                return selectByPk();
+            case SELECT_BY_CRITERIA:
+                return selectByCriteria(XmlElementName.SELECT_BY_CRITERIA);
+            case SELECT_LIST:
+                return selectByCriteria(XmlElementName.SELECT_LIST);
+            case INSERT:
+                return insert();
+            case UPDATE_BY_PK:
+                return updateByPk();
+            case UPDATE_BY_CRITERIA:
+                return updateByCriteria();
+            case COUNT:
+                return count();
+            case DELETE_BY_PK:
+                return deleteByPk();
+            case DELETE_BY_CRITERIA:
+                return deleteByCriteria();
+        }
+        throw new IllegalArgumentException("Should never happen.");
     }
 }

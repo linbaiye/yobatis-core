@@ -62,5 +62,25 @@ public final class TextUtil {
 		return null;
 	}
 
+	public static String addTimeoutToUrlIfAbsent(String url) {
+	    if (url == null) {
+	    	return null;
+		}
+		String timedoutUrl = url;
+		if (!timedoutUrl.contains("socketTimeout")) {
+			if (timedoutUrl.contains("?")) {
+				timedoutUrl = timedoutUrl + "&socketTimeout=3000";
+			} else {
+				timedoutUrl = timedoutUrl + "?socketTimeout=3000";
+			}
+		}
+		if (!timedoutUrl.contains("connectTimeout")) {
+			timedoutUrl = timedoutUrl + "&connectTimeout=1000";
+		}
+		return timedoutUrl;
+	}
+
+
+
 
 }

@@ -42,7 +42,7 @@ public abstract class DatabaseMetadataProvider {
 		return driverClassName;
 	}
 	
-	public abstract List<Table> getTables();
+	public abstract List<Table> fetchTables();
 	
 	public abstract String getSchema();
 
