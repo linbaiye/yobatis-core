@@ -33,7 +33,7 @@ public class Main {
         AbstractLogger.defaultLevel = AbstractLogger.LogLevel.DEBUG;
     }
 
-    @Test
+//    @Test
     public void debug() {
         TableElement tableElement = new TableElement("operate_record", true);
         tableElementList.add(tableElement);
